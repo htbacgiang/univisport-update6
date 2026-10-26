@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes univi-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 /* ===== Univi Font System =====
    Nội dung: SVN Gilroy Regular | Heading H1-H2: SVN Gilroy Medium
    H3-H4: SVN Gilroy Medium/Regular | Chú thích: SVN Gilroy Thin
