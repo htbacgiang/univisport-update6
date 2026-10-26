@@ -1,6 +1,6 @@
 import DefaultLayout2 from '../layout/DefaultLayout2';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { ChevronDown, SlidersHorizontal } from 'lucide-react';
 import BannerCarousel from './BannerCarousel';
@@ -64,6 +64,26 @@ export default function
     categorySlug.replace(/-/g, ' ').toUpperCase();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    const handleStart = (url) => {
+      if (url !== router.asPath) {
+        setIsNavigating(true);
+      }
+    };
+    const handleStop = () => setIsNavigating(false);
+
+    router.events.on('routeChangeStart', handleStart);
+    router.events.on('routeChangeComplete', handleStop);
+    router.events.on('routeChangeError', handleStop);
+
+    return () => {
+      router.events.off('routeChangeStart', handleStart);
+      router.events.off('routeChangeComplete', handleStop);
+      router.events.off('routeChangeError', handleStop);
+    };
+  }, [router]);
   const isGymCategory = categorySlug === GYM_CATEGORY_SLUG;
 
   // Đồng phục Gym không có trang con riêng cho từng dòng sản phẩm/kiểu cổ — sidebar
@@ -262,6 +282,7 @@ export default function
 
           <ProductGridSection
             products={displayProducts}
+            loading={isNavigating || router.isFallback}
             emptyMessage={
               filteredEmptyLabel
                 ? `Không tìm thấy sản phẩm nào thuộc ${filteredEmptyLabel}.`

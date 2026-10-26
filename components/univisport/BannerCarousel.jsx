@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import axios from 'axios';
-
-
+import BannerSkeleton from '../ui/banner-skeleton';
 
 const BannerCarousel = () => {
   const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -17,6 +17,8 @@ const BannerCarousel = () => {
         }
       } catch (err) {
         console.error('Failed to load sidebar banners:', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchBanners();
@@ -30,6 +32,7 @@ const BannerCarousel = () => {
     return () => clearInterval(interval);
   }, [banners]);
 
+  if (loading) return <BannerSkeleton />;
   if (banners.length === 0) return null;
 
   return (

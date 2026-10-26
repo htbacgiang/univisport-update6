@@ -11,6 +11,7 @@ import { FaTimes, FaTag, FaCheck } from 'react-icons/fa';
 import { FiPrinter, FiDroplet, FiPenTool, FiBox, FiSave, FiEdit2 } from 'react-icons/fi';
 import { GiSewingMachine } from 'react-icons/gi';
 import { ENTERPRISE_FLAT_SLUGS } from '../../lib/enterpriseFlatSlugs';
+import ProductDetailSkeleton from '../ui/product-detail-skeleton';
 
 const SIZE_GUIDE_BY_SHIRT_TYPE = {
   'ao-thun': {
@@ -153,11 +154,19 @@ export default function ProductQuickViewModal({ slug, onClose }) {
         </button>
 
         {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="w-8 h-8 border-2 border-[#105d97] border-t-transparent rounded-full animate-spin" />
+          <div className="p-4 md:p-6">
+            <ProductDetailSkeleton isModal={true} />
           </div>
         ) : !product ? (
-          <div className="flex items-center justify-center h-64 text-gray-500">Không tìm thấy sản phẩm</div>
+          <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
+            <p className="text-gray-500 mb-4">Không tìm thấy thông tin sản phẩm hoặc đã có lỗi xảy ra.</p>
+            <button
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-white bg-[#105d97] rounded-lg hover:bg-[#0c4d7d] transition-colors"
+            >
+              Đóng cửa sổ
+            </button>
+          </div>
         ) : (
           <div className="flex flex-col md:flex-row">
             {/* Image Section */}

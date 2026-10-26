@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import ProductCard from './ProductCard';
+import { ProductGridSkeleton } from '../ui/product-skeleton';
 
 // Khối "Sắp xếp + Hiển thị + Grid sản phẩm + Phân trang" dùng chung cho các
 // trang danh mục sản phẩm (trước đây logic này nằm riêng trong CategoryPageTemplate).
@@ -9,6 +10,7 @@ export default function ProductGridSection({
   emptyMessage = 'Không tìm thấy sản phẩm nào.',
   ariaLabel = 'Danh sách sản phẩm',
   filterButton = null,
+  loading = false,
 }) {
   const safeProducts = Array.isArray(initialProducts) ? initialProducts : [];
   const [products, setProducts] = useState(safeProducts);
@@ -153,7 +155,9 @@ export default function ProductGridSection({
 
       <hr className="border-gray-200 mb-6" />
 
-      {currentProducts.length > 0 ? (
+      {loading ? (
+        <ProductGridSkeleton count={itemsPerPage > 8 ? 8 : itemsPerPage} ariaLabel={ariaLabel} />
+      ) : currentProducts.length > 0 ? (
         <section className="grid gap-6 grid-cols-2 sm:grid-cols-2 lg:grid-cols-4" aria-label={ariaLabel}>
           {currentProducts.map((product) => (
             <div key={product.id}>
@@ -177,7 +181,7 @@ export default function ProductGridSection({
         <p className="text-center text-gray-500 py-12">{emptyMessage}</p>
       )}
 
-      {renderPagination()}
+      {!loading && renderPagination()}
     </>
   );
 }

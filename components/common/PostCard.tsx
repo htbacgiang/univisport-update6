@@ -2,6 +2,7 @@ import Image from "next/image";
 import { FC, useState } from "react";
 import { PostDetail as BasePostDetail } from "../../utils/types";
 import Link from "next/link";
+import ArticleCardSkeleton from "../ui/article-skeleton";
 
 // Mở rộng kiểu dữ liệu PostDetail gốc để thêm các thuộc tính mới
 interface ExtendedPostDetail extends BasePostDetail {
@@ -22,6 +23,7 @@ const PostCard: FC<Props> = ({
   busy,
   onDeleteClick,
 }): JSX.Element => {
+  if (busy) return <ArticleCardSkeleton />;
   if (!post) return <div className="bg-gray-50 p-6 rounded-xl border border-gray-100 text-gray-400">Không có dữ liệu bài viết</div>;
 
   const { title, slug, thumbnail, createdAt } = post;

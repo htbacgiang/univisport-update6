@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ProductCard from './ProductCard';
+import ProductCardSkeleton from '../ui/product-skeleton';
 import Link from 'next/link';
-const ProductSlider = ({ title, products, viewAllLink }) => {
+
+const ProductSlider = ({ title, products = [], viewAllLink, loading = false }) => {
   const scrollContainerRef = useRef(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
@@ -65,11 +67,19 @@ const ProductSlider = ({ title, products, viewAllLink }) => {
             className="flex gap-2 md:gap-3 overflow-x-auto scrollbar-hide scroll-smooth pb-2"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
-            {products.map((product) => (
-              <div key={product.id} className="flex-none w-[calc(45%-4px)] sm:w-[calc(33.333%-6px)] md:w-[280px] lg:w-[300px]">
-                <ProductCard {...product} slug={product.slug} layout="slider" />
-              </div>
-            ))}
+            {loading ? (
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex-none w-[calc(45%-4px)] sm:w-[calc(33.333%-6px)] md:w-[280px] lg:w-[300px]">
+                  <ProductCardSkeleton layout="slider" />
+                </div>
+              ))
+            ) : (
+              products.map((product) => (
+                <div key={product.id} className="flex-none w-[calc(45%-4px)] sm:w-[calc(33.333%-6px)] md:w-[280px] lg:w-[300px]">
+                  <ProductCard {...product} slug={product.slug} layout="slider" />
+                </div>
+              ))
+            )}
           </div>
 
           {showRightArrow && (

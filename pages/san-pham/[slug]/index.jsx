@@ -1,9 +1,11 @@
+import { useRouter } from "next/router";
 import DefaultLayout from "../../../components/layout/DefaultLayout";
 import db from "../../../utils/db";
 import Product from "../../../models/Product";
 import ProductDetailView from "../../../components/univisport/ProductDetailView";
 import { getProductLineLabel } from "../../../lib/productTaxonomy";
 import { ENTERPRISE_FLAT_SLUGS } from "../../../lib/enterpriseFlatSlugs";
+import ProductDetailSkeleton from "../../../components/ui/product-detail-skeleton";
 
 // ─── CATEGORY NAMES MAP ──────────────────────────────────────────────────────
 const CATEGORY_NAMES = {
@@ -23,6 +25,18 @@ const CATEGORY_NAMES = {
 const ENTERPRISE_CATEGORY_SLUG = 'dong-phuc-doanh-nghiep';
 
 const ProductDetailPage = ({ product, relatedProducts, meta }) => {
+  const router = useRouter();
+
+  if (router.isFallback || !product) {
+    return (
+      <DefaultLayout meta={meta}>
+        <div className="container mx-auto px-4 py-8 md:py-12">
+          <ProductDetailSkeleton />
+        </div>
+      </DefaultLayout>
+    );
+  }
+
   return (
     <DefaultLayout meta={meta}>
       <ProductDetailView product={product} relatedProducts={relatedProducts} />

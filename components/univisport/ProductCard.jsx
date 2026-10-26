@@ -46,7 +46,7 @@ const ProductCard = ({ id, name, description, price, maxPrice, discount, isNew, 
       >
         {/* Image Container */}
         <Link href={`/san-pham/${slug}`} legacyBehavior>
-          <a className="relative w-full aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl block">
+          <a className="relative w-full aspect-[3/4] overflow-hidden rounded-xl md:rounded-2xl block bg-gray-100">
             <Image
               src={imageError ? '/images/placeholder.jpg' : currentImageUrl}
               alt={name}
