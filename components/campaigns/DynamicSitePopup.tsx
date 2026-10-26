@@ -55,16 +55,22 @@ export const DynamicSitePopup: React.FC<DynamicSitePopupProps> = ({
   );
   const [hasLoadedConfig, setHasLoadedConfig] = useState(false);
 
-  // Không hiển thị popup trên các trang admin / dashboard trừ khi ép test bằng props
+  // Popup chỉ hiển thị duy nhất ở trang chủ (/)
   const currentPath = router?.asPath || router?.pathname || "";
+  const cleanPath = currentPath.split("?")[0].split("#")[0];
+  const isHomePage = router?.pathname === "/" || cleanPath === "" || cleanPath === "/";
+
+  // Đọc query param ?popup_test=... từ URL để test nhanh ngoài trang chủ (nếu cần)
+  const queryPopupTest = typeof router?.query?.popup_test === "string" ? router.query.popup_test : null;
+
+  // Loại trừ: Chỉ hiển thị duy nhất tại trang chủ (/), trừ khi ép test bằng forceType (preview trong dashboard) hoặc param ?popup_test
   const isExcludedRoute =
     !forceType &&
-    (currentPath.startsWith("/dashboard") ||
+    !queryPopupTest &&
+    (!isHomePage ||
+      currentPath.startsWith("/dashboard") ||
       currentPath.startsWith("/admin") ||
       currentPath.startsWith("/auth"));
-
-  // Đọc query param ?popup_test=... từ URL để test nhanh ngoài trang chủ
-  const queryPopupTest = typeof router?.query?.popup_test === "string" ? router.query.popup_test : null;
 
   // Tải cấu hình popup từ API
   useEffect(() => {

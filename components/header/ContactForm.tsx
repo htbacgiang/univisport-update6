@@ -182,6 +182,12 @@ export default function ContactForm({
       return;
     }
 
+    // Popup tự động chỉ hiển thị duy nhất ở trang chủ
+    const currentPath = typeof window !== "undefined" ? window.location.pathname : "";
+    if (currentPath !== "/" && currentPath !== "") {
+      return;
+    }
+
     if (hasDismissedThisPageLoad || internalOpen || hasOpenedThisPageLoad) {
       return;
     }
@@ -317,14 +323,6 @@ export default function ContactForm({
       }
     };
 
-    if (first && typeof first.focus === "function") {
-      try {
-        first.focus({ preventScroll: true });
-      } catch {
-        first.focus();
-      }
-    }
-
     window.addEventListener("keydown", onEscape);
     modal?.addEventListener("keydown", onTab);
     return () => {
@@ -442,7 +440,7 @@ export default function ContactForm({
 
         setStatus(
           result.message ||
-            "Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ lại sớm nhất."
+          "Gửi yêu cầu thành công! Chúng tôi sẽ liên hệ lại sớm nhất."
         );
         setFormData({
           name: "",
@@ -479,21 +477,19 @@ export default function ContactForm({
   };
 
   const inputBase =
-    "w-full bg-white border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#105d97] focus:ring-1 focus:ring-[#105d97]/20 transition-colors duration-200";
+    "w-full bg-white border border-gray-200 rounded-lg px-3.5 py-2.5 sm:px-4 sm:py-3 text-xs sm:text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-[#105d97] focus:ring-1 focus:ring-[#105d97]/20 transition-colors duration-200";
 
   const progressPercent = Math.max(0, Math.min(100, (countdown / autoCloseSeconds) * 100));
 
   const formContent = (
     <section
-      className={`${
-        isModal ? "bg-transparent p-0" : "bg-[#f3f3f0] py-6 px-6 md:px-6"
-      } font-sans`}
+      className={`${isModal ? "bg-transparent p-0" : "bg-[#f3f3f0] py-6 px-6 md:px-6"
+        } font-sans`}
     >
       <div
         ref={formRef}
-        className={`cf-animate mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 items-start ${
-          isModal ? "max-w-full p-2 sm:p-4" : "max-w-[1100px]"
-        }`}
+        className={`cf-animate mx-auto grid grid-cols-1 md:grid-cols-[1fr_1.5fr] gap-6 md:gap-10 items-start ${isModal ? "max-w-full p-1 sm:p-4" : "max-w-[1100px]"
+          }`}
       >
         {/* ── LEFT: info + image ── */}
         <div className="hidden md:flex flex-col gap-6">
@@ -514,7 +510,7 @@ export default function ContactForm({
           <form
             onSubmit={handleSubmit}
             role="form"
-            className="flex flex-col gap-[18px]"
+            className="flex flex-col gap-3 sm:gap-4 md:gap-[18px]"
           >
             {/* Honeypot field - hidden from human users */}
             <div
@@ -535,11 +531,11 @@ export default function ContactForm({
             </div>
 
             {/* Row 1: Họ tên + Điện thoại */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+              <div className="flex flex-col gap-1 sm:gap-1.5">
                 <label
                   htmlFor="name"
-                  className="text-[13px] font-medium text-gray-600"
+                  className="text-xs sm:text-[13px] font-medium text-gray-600"
                 >
                   Họ và Tên <span className="text-[#105d97]">*</span>
                 </label>
@@ -549,20 +545,21 @@ export default function ContactForm({
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
+                  onFocus={handleUserInteraction}
+                  onClick={handleUserInteraction}
                   placeholder="Nguyễn Văn A"
-                  className={`${inputBase} ${
-                    errors.name ? "border-red-400" : ""
-                  }`}
+                  className={`${inputBase} ${errors.name ? "border-red-400" : ""
+                    }`}
                 />
                 {errors.name && (
                   <p className="text-xs text-red-500">{errors.name}</p>
                 )}
               </div>
 
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1 sm:gap-1.5">
                 <label
                   htmlFor="phone"
-                  className="text-[13px] font-medium text-gray-600"
+                  className="text-xs sm:text-[13px] font-medium text-gray-600"
                 >
                   Điện thoại <span className="text-[#105d97]">*</span>
                 </label>
@@ -572,10 +569,11 @@ export default function ContactForm({
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
+                  onFocus={handleUserInteraction}
+                  onClick={handleUserInteraction}
                   placeholder="0987 654 321"
-                  className={`${inputBase} ${
-                    errors.phone ? "border-red-400" : ""
-                  }`}
+                  className={`${inputBase} ${errors.phone ? "border-red-400" : ""
+                    }`}
                 />
                 {errors.phone && (
                   <p className="text-xs text-red-500">{errors.phone}</p>
@@ -584,10 +582,10 @@ export default function ContactForm({
             </div>
 
             {/* Row 2: Email */}
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1 sm:gap-1.5">
               <label
                 htmlFor="email"
-                className="text-[13px] font-medium text-gray-600"
+                className="text-xs sm:text-[13px] font-medium text-gray-600"
               >
                 Email
               </label>
@@ -597,10 +595,11 @@ export default function ContactForm({
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
+                onFocus={handleUserInteraction}
+                onClick={handleUserInteraction}
                 placeholder="example@domain.com"
-                className={`${inputBase} ${
-                  errors.email ? "border-red-400" : ""
-                }`}
+                className={`${inputBase} ${errors.email ? "border-red-400" : ""
+                  }`}
               />
               {errors.email && (
                 <p className="text-xs text-red-500">{errors.email}</p>
@@ -608,23 +607,24 @@ export default function ContactForm({
             </div>
 
             {/* Row 3: Lời nhắn */}
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1 sm:gap-1.5">
               <label
                 htmlFor="message"
-                className="text-[13px] font-medium text-gray-600"
+                className="text-xs sm:text-[13px] font-medium text-gray-600"
               >
                 Lời nhắn
               </label>
               <textarea
                 id="message"
                 name="message"
-                rows={4}
+                rows={3}
                 value={formData.message}
                 onChange={handleChange}
+                onFocus={handleUserInteraction}
+                onClick={handleUserInteraction}
                 placeholder="Nhập yêu cầu tư vấn mẫu áo, chất liệu, số lượng..."
-                className={`${inputBase} resize-none ${
-                  errors.message ? "border-red-400" : ""
-                }`}
+                className={`${inputBase} resize-none ${errors.message ? "border-red-400" : ""
+                  }`}
               />
               {errors.message && (
                 <p className="text-xs text-red-500">{errors.message}</p>
@@ -638,7 +638,6 @@ export default function ContactForm({
                   ref={turnstileRef}
                   siteKey={siteKey}
                   onSuccess={(token) => {
-                    handleUserInteraction();
                     setTurnstileToken(token);
                     setTurnstileError("");
                     if (errors.turnstile) {
@@ -676,23 +675,23 @@ export default function ContactForm({
             </div>
 
             {/* Submit button */}
-            <div className="flex items-center justify-between pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-between pt-1 gap-2">
               <span className="text-[11px] text-gray-400 hidden sm:inline">
                 * Thông tin bắt buộc
               </span>
-              <div>
+              <div className="w-full sm:w-auto">
                 <button
                   type="submit"
                   disabled={status === "Đang gửi..." || !turnstileToken}
-                  className="inline-flex items-center gap-2.5 bg-white text-gray-900 border-2 border-gray-200 rounded-full px-6 py-3 text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-[#105d97] hover:text-[#105d97] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-gray-900 border-2 border-gray-200 rounded-full px-5 py-2 sm:px-6 sm:py-2.5 text-xs sm:text-sm font-semibold cursor-pointer transition-all duration-200 hover:border-[#105d97] hover:text-[#105d97] disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                 >
-                  {status === "Đang gửi..." ? "Đang gửi..." : "Gửi tin nhắn"}
+                  <span>{status === "Đang gửi..." ? "Đang gửi..." : "Gửi tin nhắn"}</span>
                   {status !== "Đang gửi..." && (
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-[#105d97] text-white flex-shrink-0">
+                    <span className="flex items-center justify-center w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#105d97] text-white flex-shrink-0">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
+                        width="14"
+                        height="14"
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
@@ -713,11 +712,10 @@ export default function ContactForm({
             {/* Status message */}
             {status && status !== "Đang gửi..." && (
               <p
-                className={`text-[13px] font-medium px-4 py-3 rounded-lg border-l-4 ${
-                  status.includes("thành công")
-                    ? "bg-green-50 border-green-500 text-green-700"
-                    : "bg-red-50 border-red-500 text-red-700"
-                }`}
+                className={`text-[13px] font-medium px-4 py-3 rounded-lg border-l-4 ${status.includes("thành công")
+                  ? "bg-green-50 border-green-500 text-green-700"
+                  : "bg-red-50 border-red-500 text-red-700"
+                  }`}
               >
                 {status}
               </p>
@@ -743,7 +741,7 @@ export default function ContactForm({
       {isModal ? (
         isCurrentlyOpen && (
           <div
-            className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm transition-all duration-300"
+            className="fixed inset-0 z-[99999] flex items-center justify-center p-2 sm:p-4 md:p-6 bg-black/60 backdrop-blur-sm transition-all duration-300"
             onClick={(e) => {
               if (e.target === e.currentTarget) handleClose();
             }}
@@ -753,29 +751,24 @@ export default function ContactForm({
           >
             <div
               ref={modalRef}
-              onFocusCapture={handleUserInteraction}
-              onInputCapture={handleUserInteraction}
-              onKeyDownCapture={handleUserInteraction}
-              onClickCapture={handleUserInteraction}
-              className="relative w-full max-w-5xl max-h-[92vh] flex flex-col bg-white dark:bg-slate-900 rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200"
+              className="relative w-full max-w-5xl max-h-[96vh] sm:max-h-[92vh] flex flex-col bg-white dark:bg-slate-900 rounded-xl sm:rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 animate-in fade-in zoom-in-95 duration-200"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Thanh đếm ngược tiến trình ở mép trên cùng */}
-              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 overflow-hidden">
+              <div className="w-full bg-slate-100 dark:bg-slate-800 h-1 sm:h-1.5 overflow-hidden">
                 <div
-                  className={`h-full transition-all duration-1000 linear ${
-                    isInteracted
-                      ? "bg-emerald-500 w-full"
-                      : "bg-gradient-to-r from-[#105d97] via-cyan-500 to-amber-400"
-                  }`}
+                  className={`h-full transition-all duration-1000 linear ${isInteracted
+                    ? "bg-emerald-500 w-full"
+                    : "bg-gradient-to-r from-[#105d97] via-cyan-500 to-amber-400"
+                    }`}
                   style={{ width: isInteracted ? "100%" : `${progressPercent}%` }}
                 />
               </div>
 
               {/* Header Modal UniVi sang trọng */}
-              <div className="relative px-4 sm:px-6 py-3.5 sm:py-4 bg-gradient-to-r from-slate-900 via-[#0d4c7a] to-[#105d97] text-white flex flex-wrap items-center justify-between gap-3 shadow-md shrink-0">
-                <div className="flex items-center gap-3">
-                  <div className="relative w-20 sm:w-24 h-7 sm:h-8 shrink-0 rounded-lg p-1 backdrop-blur-sm">
+              <div className="relative px-3 sm:px-6 py-2.5 sm:py-3.5 bg-gradient-to-r from-slate-900 via-[#0d4c7a] to-[#105d97] text-white flex items-center justify-between gap-2 sm:gap-3 shadow-md shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+                  <div className="relative hidden md:block w-20 sm:w-24 h-7 sm:h-8 shrink-0 rounded-lg p-1 backdrop-blur-sm">
                     <Image
                       src="/logo-univi.webp"
                       alt="Đồng Phục UniVi"
@@ -784,32 +777,32 @@ export default function ContactForm({
                       priority
                     />
                   </div>
-                  <div>
-                    <h3 className="text-sm sm:text-base md:text-lg font-bold tracking-tight text-white leading-tight">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-xs sm:text-base md:text-lg font-bold tracking-tight text-white leading-tight truncate sm:whitespace-normal">
                       {title}
                     </h3>
-                    <p className="text-[11px] sm:text-xs text-sky-100/90 hidden sm:block">
+                    <p className="text-[11px] sm:text-xs text-sky-100/90 hidden sm:block truncate">
                       {subtitle}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                   {/* Huy hiệu đếm ngược / Tương tác */}
                   {isInteracted ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 animate-pulse">
-                      <FaCheckCircle className="text-emerald-400 text-xs" />
-                      <span>Đang điền thông tin</span>
+                    <span className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 animate-pulse">
+                      <FaCheckCircle className="text-emerald-400 text-[10px] sm:text-xs" />
+                      <span>Đang điền</span>
                     </span>
                   ) : (
                     <span
-                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-white/15 text-white border border-white/20 backdrop-blur-sm shadow-sm"
+                      className="inline-flex items-center gap-1 sm:gap-1.5 px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-white/15 text-white border border-white/20 backdrop-blur-sm shadow-sm"
                       title="Sẽ tự động đóng sau khi hết đếm ngược nếu chưa điền form"
                     >
-                      <FaClock className="text-amber-300 animate-spin-slow text-xs" />
+                      <FaClock className="text-amber-300 animate-spin-slow text-[10px] sm:text-xs" />
                       <span>
-                        Tự đóng sau{" "}
-                        <strong className="font-bold text-amber-300 text-sm">
+                        <span className="hidden sm:inline">Tự đóng sau </span>
+                        <strong className="font-bold text-amber-300 text-xs sm:text-sm">
                           {countdown}s
                         </strong>
                       </span>
@@ -820,34 +813,34 @@ export default function ContactForm({
                   <button
                     type="button"
                     onClick={handleClose}
-                    className="w-8 h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-transform hover:rotate-90 duration-200"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center bg-white/10 hover:bg-white/20 text-white transition-transform hover:rotate-90 duration-200"
                     aria-label="Đóng popup"
                   >
-                    <FaTimes size={16} />
+                    <FaTimes size={14} className="sm:w-4 sm:h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Thanh ghi chú nhanh bảo mật & hỗ trợ */}
-              <div className="bg-sky-50 dark:bg-slate-800/80 px-4 py-2 border-b border-sky-100 dark:border-slate-800 flex flex-wrap items-center justify-between text-[11px] sm:text-xs text-slate-600 dark:text-slate-300 gap-2 shrink-0">
-                <div className="flex items-center gap-1.5 text-[#105d97] dark:text-sky-400 font-medium">
-                  <FaShieldAlt className="shrink-0" />
-                  <span>Cam kết bảo mật 100% • Thiết kế demo 3D miễn phí • Hotline: 0834.204.999</span>
+              <div className="bg-sky-50 dark:bg-slate-800/80 px-3 py-1.5 sm:px-4 sm:py-2 border-b border-sky-100 dark:border-slate-800 flex items-center justify-between text-[10px] sm:text-xs text-slate-600 dark:text-slate-300 gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 text-[#105d97] dark:text-sky-400 font-medium truncate">
+                  <FaShieldAlt className="shrink-0 text-xs" />
+                  <span className="truncate">Bảo mật 100% • Thiết kế 3D miễn phí • Hotline: 0834.204.999</span>
                 </div>
                 {isInteracted ? (
-                  <span className="text-emerald-700 dark:text-emerald-400 font-medium">
-                    ✓ Đã tạm dừng đếm ngược để bạn yên tâm điền form
+                  <span className="text-emerald-700 dark:text-emerald-400 font-medium shrink-0">
+                    ✓ Đã dừng đếm ngược
                   </span>
                 ) : (
-                  <span className="text-slate-500">
-                    Chạm hoặc gõ vào form để giữ popup
+                  <span className="text-slate-400 shrink-0 hidden sm:inline">
+                    Chạm vào ô nhập để giữ popup
                   </span>
                 )}
               </div>
 
               {/* Nội dung ContactForm */}
-              <div className="overflow-y-auto flex-1 p-2 sm:p-4 md:p-6 bg-slate-50 dark:bg-slate-950">
-                <div className="bg-white dark:bg-slate-900 rounded-xl p-2 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800">
+              <div className="overflow-y-auto flex-1 p-1.5 sm:p-4 md:p-6 bg-slate-50 dark:bg-slate-950">
+                <div className="bg-white dark:bg-slate-900 rounded-lg sm:rounded-xl p-2.5 sm:p-4 shadow-sm border border-slate-100 dark:border-slate-800">
                   {formContent}
                 </div>
               </div>
