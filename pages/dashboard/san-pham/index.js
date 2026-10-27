@@ -1173,7 +1173,7 @@ export default function JSONProductsListPage() {
                     </label>
                     <input
                       type="text"
-                      placeholder="VD: /video-univi-2-baseline.mp4 hoặc https://res.cloudinary.com/.../video.mp4"
+                      placeholder="VD: https://res.cloudinary.com/djwdvetlr/video/upload/v1787114111/BEST-SELLER_zla1jb.mp4"
                       value={featuredConfigForm.videoUrl}
                       onChange={(e) => setFeaturedConfigForm(f => ({ ...f, videoUrl: e.target.value }))}
                       className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-xs bg-white"

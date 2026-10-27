@@ -7,11 +7,20 @@ import { FiExternalLink } from 'react-icons/fi';
 
 function Card1VideoPlayer({ src }) {
   const videoRef = useRef(null);
+  const containerRef = useRef(null);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+
+  const isYouTube = typeof src === 'string' && (src.includes('youtube.com') || src.includes('youtu.be'));
+  const getYouTubeId = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url?.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+  const ytId = isYouTube ? getYouTubeId(src) : null;
 
   const formatVideoTime = (seconds) => {
     if (!seconds || Number.isNaN(seconds)) return "0:00";
@@ -21,8 +30,12 @@ function Card1VideoPlayer({ src }) {
   };
 
   useEffect(() => {
+    if (isYouTube) return;
     const video = videoRef.current;
     if (!video) return;
+
+    video.muted = true;
+    video.defaultMuted = true;
 
     const handlePlay = () => setPlaying(true);
     const handlePause = () => setPlaying(false);
@@ -30,15 +43,42 @@ function Card1VideoPlayer({ src }) {
     video.addEventListener("play", handlePlay);
     video.addEventListener("pause", handlePause);
 
-    video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+    // Initial play attempt with muted autoplay
+    const promise = video.play();
+    if (promise !== undefined) {
+      promise
+        .then(() => setPlaying(true))
+        .catch(() => {
+          video.muted = true;
+          video.play().then(() => setPlaying(true)).catch(() => setPlaying(false));
+        });
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!video) return;
+        if (entry.isIntersecting) {
+          video.play().then(() => setPlaying(true)).catch(() => {});
+        } else {
+          video.pause();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (containerRef.current) {
+      observer.observe(containerRef.current);
+    }
 
     return () => {
       video.removeEventListener("play", handlePlay);
       video.removeEventListener("pause", handlePause);
+      observer.disconnect();
     };
-  }, [src]);
+  }, [src, isYouTube]);
 
   useEffect(() => {
+    if (isYouTube) return;
     const video = videoRef.current;
     if (!video) return;
 
@@ -60,7 +100,7 @@ function Card1VideoPlayer({ src }) {
       video.removeEventListener("timeupdate", updateTime);
       video.removeEventListener("loadedmetadata", updateDuration);
     };
-  }, [src]);
+  }, [src, isYouTube]);
 
   const togglePlay = (e) => {
     e?.stopPropagation();
@@ -78,8 +118,9 @@ function Card1VideoPlayer({ src }) {
     e?.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
-    video.muted = !video.muted;
-    setMuted(video.muted);
+    const nextMuted = !video.muted;
+    video.muted = nextMuted;
+    setMuted(nextMuted);
   };
 
   const handleSeek = (event) => {
@@ -93,14 +134,32 @@ function Card1VideoPlayer({ src }) {
     setCurrentTime(video.currentTime);
   };
 
+  if (isYouTube && ytId) {
+    return (
+      <div ref={containerRef} className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden bg-black" onClick={(e) => e.stopPropagation()}>
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${ytId}?autoplay=1&mute=1&loop=1&playlist=${ytId}&playsinline=1&controls=1&modestbranding=1&rel=0`}
+          title="Product Video"
+          className="w-full h-full object-cover border-0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+        />
+      </div>
+    );
+  }
+
   return (
-    <div className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden group/video bg-[#0a0a0a]" onClick={(e) => e.stopPropagation()}>
+    <div
+      ref={containerRef}
+      className="relative w-full h-full rounded-xl lg:rounded-2xl overflow-hidden group/video bg-[#0a0a0a]"
+      onClick={(e) => e.stopPropagation()}
+    >
       <video
         ref={videoRef}
         src={src}
         autoPlay
         loop
-        muted={muted}
+        muted
         playsInline
         onClick={togglePlay}
         className="w-full h-full object-cover rounded-xl lg:rounded-2xl cursor-pointer block"
@@ -114,8 +173,8 @@ function Card1VideoPlayer({ src }) {
           aria-label="Phát video"
           className="absolute inset-0 z-10 flex items-center justify-center border-0 bg-transparent p-0 cursor-pointer"
         >
-          <span className="flex h-8 w-12 sm:h-11 sm:w-16 items-center justify-center rounded-lg sm:rounded-xl bg-[#FF0000]/70 shadow-lg transition-transform duration-300 group-hover/video:scale-110">
-            <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="white">
+          <span className="flex h-10 w-14 sm:h-12 sm:w-16 items-center justify-center rounded-xl bg-red-600/80 hover:bg-red-600 text-white shadow-lg transition-transform duration-300 hover:scale-110">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-0.5" viewBox="0 0 24 24" fill="white">
               <polygon points="6,4 20,12 6,20" />
             </svg>
           </span>
@@ -163,14 +222,12 @@ function Card1VideoPlayer({ src }) {
             className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-0 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/20 hover:bg-white/35 transition-colors"
           >
             {playing ? (
-              // Pause icon
               <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="white">
                 <rect x="5" y="3" width="4" height="18" rx="1" />
                 <rect x="15" y="3" width="4" height="18" rx="1" />
               </svg>
             ) : (
-              // Play icon
-              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5" viewBox="0 0 24 24" fill="white">
+              <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-0.5" viewBox="0 0 24 24" fill="white">
                 <polygon points="5,3 19,12 5,21" />
               </svg>
             )}
@@ -184,14 +241,12 @@ function Card1VideoPlayer({ src }) {
             className="w-7 h-7 sm:w-9 sm:h-9 rounded-full border-0 flex items-center justify-center cursor-pointer backdrop-blur-sm bg-white/20 hover:bg-white/35 transition-colors"
           >
             {muted ? (
-              // Muted icon
               <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                 <line x1="23" y1="9" x2="17" y2="15" />
                 <line x1="17" y1="9" x2="23" y2="15" />
               </svg>
             ) : (
-              // Sound icon
               <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
                 <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
@@ -213,7 +268,6 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   if (!product) return null;
 
   const [selectedColorIdx, setSelectedColorIdx] = useState(0);
-  const [card1MediaIdx, setCard1MediaIdx] = useState(0);
   const [card2ImgIdx, setCard2ImgIdx] = useState(0);
   const [contactOpen, setContactOpen] = useState(false);
   const [fullscreenMedia, setFullscreenMedia] = useState(null);
@@ -222,6 +276,9 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   const cfg = product.featuredConfig || {};
   const colors = Array.isArray(product.colors) ? product.colors : [];
   const selectedColor = colors[selectedColorIdx] || null;
+
+  // Card 1 Video Source (Single video, autoplay)
+  const card1VideoUrl = cfg.videoUrl?.trim() || product.videoUrl || product.video || 'https://res.cloudinary.com/djwdvetlr/video/upload/v1787114111/BEST-SELLER_zla1jb.mp4';
 
   // Card 2 (Center Card) Image List from Product Colors & Gallery
   let card2ImagesList = [];
@@ -299,61 +356,9 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
   const displayDescription = cfg.customDescription || product.description;
   const customBadgeText = cfg.badgeText || '';
 
-  // Card 1 (Left Card): Independent Media List (Video / Fixed Images)
-  let card1MediaList = [];
-
-  if (cfg.videoUrl) {
-    card1MediaList.push({ type: 'video', url: cfg.videoUrl });
-  }
-
-  if (cfg.customSecondaryImage) {
-    const customImgs = cfg.customSecondaryImage.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
-    customImgs.forEach(img => {
-      if (!card1MediaList.some(m => m.url === img)) {
-        card1MediaList.push({ type: 'image', url: img });
-      }
-    });
-  }
-
-  // Fallback to gallery, product colors, or main image ONLY if card1MediaList is empty
-  if (card1MediaList.length === 0) {
-    if (Array.isArray(product.gallery) && product.gallery.length > 0) {
-      product.gallery.forEach(img => {
-        const url = typeof img === 'string' ? img : img?.src;
-        if (url && !card1MediaList.some(m => m.url === url)) {
-          card1MediaList.push({ type: 'image', url });
-        }
-      });
-    } else if (colors.length > 0) {
-      colors.forEach(c => {
-        if (c.image && !card1MediaList.some(m => m.url === c.image)) {
-          card1MediaList.push({ type: 'image', url: c.image });
-        }
-      });
-    } else if (product.image) {
-      card1MediaList.push({ type: 'image', url: product.image });
-    } else {
-      card1MediaList.push({ type: 'image', url: '/images/placeholder.jpg' });
-    }
-  }
-
-  const currentCard1Media = card1MediaList[card1MediaIdx % card1MediaList.length] || card1MediaList[0];
-
-  const handlePrevCard1 = (e) => {
-    e.stopPropagation();
-    setCard1MediaIdx(prev => (prev - 1 + card1MediaList.length) % card1MediaList.length);
-  };
-
-  const handleNextCard1 = (e) => {
-    e.stopPropagation();
-    setCard1MediaIdx(prev => (prev + 1) % card1MediaList.length);
-  };
-
   const openFullscreenCard1 = (e) => {
     e?.stopPropagation();
-    if (currentCard1Media) {
-      setFullscreenMedia({ type: currentCard1Media.type, url: currentCard1Media.url, source: 'card1' });
-    }
+    setFullscreenMedia({ type: 'video', url: card1VideoUrl, source: 'card1' });
   };
 
   const openFullscreenCard2 = (e) => {
@@ -396,80 +401,24 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
     <section className="px-4 py-4 md:py-6 bg-white">
       <div className="container mx-auto">
 
-        {/* 3-Column Layout: 2 Image Cards side-by-side on mobile, 3 columns on desktop */}
+        {/* 3-Column Layout: 2 Cards side-by-side on mobile, 3 columns on desktop */}
         <div className="grid grid-cols-2 md:grid-cols-12 gap-3 sm:gap-4 md:gap-5 lg:gap-6 items-stretch">
-          {/* Column 1: Left Card - Independent Video / Multi-Image Slider with Fullscreen Popup */}
+          {/* Column 1: Left Card - Single Video with Autoplay */}
           <div
             onClick={openFullscreenCard1}
-            className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden cursor-pointer bg-[#f3f3f5] border border-gray-200 shadow-sm"
+            className="col-span-1 md:col-span-4 rounded-xl lg:rounded-2xl relative flex items-center justify-center aspect-[4/5] min-h-[200px] sm:min-h-[280px] md:min-h-[440px] group overflow-hidden cursor-pointer bg-[#0a0a0a] border border-gray-200 shadow-sm"
           >
-            {/* Card 1 Media (Video or Image) */}
-            {currentCard1Media?.type === 'video' ? (
-              <Card1VideoPlayer key={currentCard1Media.url} src={currentCard1Media.url} />
-            ) : (
-              <Image
-                src={imageError[`sec_${card1MediaIdx}`] ? '/images/placeholder.jpg' : getImageUrl(currentCard1Media?.url)}
-                alt={`${displayTitle} preview`}
-                fill
-                className="object-cover rounded-xl lg:rounded-2xl transition-transform duration-500 group-hover:scale-105"
-                onError={() => setImageError(prev => ({ ...prev, [`sec_${card1MediaIdx}`]: true }))}
-                unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
-              />
-            )}
-
-            {/* Left Navigation Arrow */}
-            {card1MediaList.length > 1 && (
-              <button
-                type="button"
-                onClick={handlePrevCard1}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
-                aria-label="Hình/Video trước"
-              >
-                <FaChevronLeft size={12} />
-              </button>
-            )}
-
-            {/* Right Navigation Arrow */}
-            {card1MediaList.length > 1 && (
-              <button
-                type="button"
-                onClick={handleNextCard1}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 z-30 bg-black/50 hover:bg-black/80 text-white w-8 h-8 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shadow-md"
-                aria-label="Hình/Video tiếp theo"
-              >
-                <FaChevronRight size={12} />
-              </button>
-            )}
+            <Card1VideoPlayer key={card1VideoUrl} src={card1VideoUrl} />
 
             {/* Expand / Fullscreen Button on bottom right (Opens Lightbox Popup) */}
             <button
               type="button"
               onClick={openFullscreenCard1}
-              className="absolute bottom-4 right-4 z-30 w-9 h-9 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-md"
-              title="Xem phóng to dạng Lightbox"
+              className="absolute bottom-4 right-4 z-30 w-9 h-9 bg-black/70 hover:bg-black/90 text-white rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-md cursor-pointer"
+              title="Xem phóng to video"
             >
               <FaExpand size={13} />
             </button>
-
-            {/* Card 1 Dots Indicator (Max 3 dots) */}
-            {card1MediaList.length > 1 && (
-              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.5 px-2.5 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                {card1MediaList.slice(0, 3).map((_, idx) => {
-                  const activeDotIdx = card1MediaList.length <= 3
-                    ? card1MediaIdx
-                    : card1MediaIdx % 3;
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                      className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/50 hover:bg-white/80'}`}
-                      aria-label={`Chuyển sang slide ${idx + 1}`}
-                    />
-                  );
-                })}
-              </div>
-            )}
           </div>
 
           {/* Column 2: Center Card - Main Product Image (Responds to Color Selection & Slider Arrows) */}
@@ -752,69 +701,12 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
               )}
             </div>
           ) : (
-            <>
-              {/* Lightbox Left Nav Arrow */}
-              {card1MediaList.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); handlePrevCard1(e); }}
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
-                  aria-label="Hình/Video trước"
-                >
-                  <FaChevronLeft size={18} />
-                </button>
-              )}
-
-              {currentCard1Media?.type === 'video' ? (
-                <div className="relative w-full h-[82vh] sm:h-[85vh] max-w-[360px] sm:max-w-md aspect-[9/16] flex items-center justify-center bg-black overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
-                  <Card1VideoPlayer key={currentCard1Media.url} src={currentCard1Media.url} />
-                </div>
-              ) : (
-                <div className="relative w-full h-full sm:h-[85vh] sm:max-w-5xl flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
-                  <Image
-                    key={currentCard1Media?.url}
-                    src={getImageUrl(currentCard1Media?.url)}
-                    alt={displayTitle}
-                    fill
-                    style={{ objectFit: 'contain' }}
-                    className="sm:rounded-xl shadow-2xl transition-all duration-300"
-                    unoptimized={getImageUrl(currentCard1Media?.url).startsWith('http')}
-                  />
-                </div>
-              )}
-
-              {/* Lightbox Right Nav Arrow */}
-              {card1MediaList.length > 1 && (
-                <button
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); handleNextCard1(e); }}
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-50 bg-white/20 hover:bg-white/40 text-white w-9 h-9 sm:w-12 sm:h-12 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-xl"
-                  aria-label="Hình/Video tiếp theo"
-                >
-                  <FaChevronRight size={18} />
-                </button>
-              )}
-
-              {/* Lightbox Dots Indicator */}
-              {card1MediaList.length > 1 && (
-                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-black/40 backdrop-blur-md px-3.5 py-1.5 rounded-full">
-                  {card1MediaList.slice(0, 3).map((_, idx) => {
-                    const activeDotIdx = card1MediaList.length <= 3
-                      ? card1MediaIdx
-                      : card1MediaIdx % 3;
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={(e) => { e.stopPropagation(); setCard1MediaIdx(idx); }}
-                        className={`w-2 h-2 rounded-full transition-all ${activeDotIdx === idx ? 'bg-white scale-125' : 'bg-white/40 hover:bg-white/80'}`}
-                        aria-label={`Chuyển sang slide ${idx + 1}`}
-                      />
-                    );
-                  })}
-                </div>
-              )}
-            </>
+            <div
+              className="relative w-full h-[82vh] sm:h-[85vh] max-w-[360px] sm:max-w-md aspect-[9/16] flex items-center justify-center bg-black overflow-hidden rounded-xl sm:rounded-2xl shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Card1VideoPlayer key={fullscreenMedia?.url || card1VideoUrl} src={fullscreenMedia?.url || card1VideoUrl} />
+            </div>
           )}
         </div>
       )}
