@@ -1,7 +1,15 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import axios from "axios";
-import { FiVideo, FiRefreshCw, FiX, FiSearch, FiCheck } from "react-icons/fi";
+import {
+  FiVideo,
+  FiRefreshCw,
+  FiX,
+  FiSearch,
+  FiCheck,
+  FiChevronLeft,
+  FiChevronRight,
+} from "react-icons/fi";
 import { BsPlayFill } from "react-icons/bs";
 import Button from "./Button";
 import useOutsideClick from "./useOutsideClick";
@@ -60,6 +68,9 @@ const EmbedCloudinaryVideo: FC<Props> = ({
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [ratioFilter, setRatioFilter] = useState<"all" | "horizontal" | "vertical" | "square">("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(20);
+  const listContainerRef = useRef<HTMLDivElement>(null);
 
   const hideForm = useCallback(() => {
     setVisible(false);
@@ -96,6 +107,39 @@ const EmbedCloudinaryVideo: FC<Props> = ({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [visible, hideForm]);
 
+  // Khóa scroll trang khi mở modal centered
+  useEffect(() => {
+    if (!visible || !centered) return;
+
+    const html = document.documentElement;
+    const editorScrollContainers = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-editor-scroll-container]")
+    );
+    const previousHtmlOverflow = html.style.overflow;
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousEditorOverflow = editorScrollContainers.map((element) => ({
+      element,
+      overflow: element.style.overflow,
+      overflowY: element.style.overflowY,
+    }));
+
+    html.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    editorScrollContainers.forEach((element) => {
+      element.style.overflow = "hidden";
+      element.style.overflowY = "hidden";
+    });
+
+    return () => {
+      html.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousBodyOverflow;
+      previousEditorOverflow.forEach(({ element, overflow, overflowY }) => {
+        element.style.overflow = overflow;
+        element.style.overflowY = overflowY;
+      });
+    };
+  }, [visible, centered]);
+
 
 
   // Bộ lọc video theo tìm kiếm & tỷ lệ khung hình
@@ -121,14 +165,50 @@ const EmbedCloudinaryVideo: FC<Props> = ({
     [videos]
   );
 
+  // Reset trang về 1 khi thay đổi tìm kiếm, bộ lọc hoặc số lượng trên trang
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, ratioFilter, pageSize]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredVideos.length / pageSize));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * pageSize;
+  const paginatedVideos = useMemo(
+    () => filteredVideos.slice(startIndex, startIndex + pageSize),
+    [filteredVideos, startIndex, pageSize]
+  );
+
+  const handlePageChange = (newPage: number) => {
+    const target = Math.max(1, Math.min(newPage, totalPages));
+    setCurrentPage(target);
+    listContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const getPaginationRange = () => {
+    const delta = 1;
+    const range: (number | string)[] = [];
+    for (let i = 1; i <= totalPages; i++) {
+      if (
+        i === 1 ||
+        i === totalPages ||
+        (i >= safePage - delta && i <= safePage + delta)
+      ) {
+        range.push(i);
+      } else if (range[range.length - 1] !== "...") {
+        range.push("...");
+      }
+    }
+    return range;
+  };
+
   const modalContent = (
     <div
       ref={popupRef}
       onClick={(e) => e.stopPropagation()}
       className={`bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden transition-all duration-200 ${
         centered
-          ? "w-full max-w-4xl max-h-[88vh] my-auto"
-          : "absolute right-0 top-full z-50 mt-2.5 w-[min(94vw,860px)] max-h-[82vh]"
+          ? "w-full max-w-4xl h-[85vh] max-h-[88vh] my-auto"
+          : "absolute right-0 top-full z-50 mt-2.5 w-[min(94vw,860px)] h-[80vh] max-h-[82vh]"
       }`}
     >
       {/* Header modal */}
@@ -252,7 +332,15 @@ const EmbedCloudinaryVideo: FC<Props> = ({
       </div>
 
       {/* Body: Danh sách Video */}
-      <div className="flex-1 overflow-y-auto p-5 custom-scrollbar min-h-[260px] max-h-[60vh] bg-gray-50/50 dark:bg-gray-850/50">
+      <div
+        ref={listContainerRef}
+        className="flex-1 min-h-0 overflow-y-auto p-5 custom-scrollbar bg-gray-50/50 dark:bg-gray-850/50 overscroll-contain"
+        style={{
+          overflowY: "auto",
+          WebkitOverflowScrolling: "touch",
+          touchAction: "pan-y",
+        }}
+      >
         {loading && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {Array.from({ length: 8 }).map((_, idx) => (
@@ -300,9 +388,9 @@ const EmbedCloudinaryVideo: FC<Props> = ({
           </div>
         )}
 
-        {!loading && !error && filteredVideos.length > 0 && (
+        {!loading && !error && paginatedVideos.length > 0 && (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-            {filteredVideos.map((video) => {
+            {paginatedVideos.map((video) => {
               const isSelected = selectedVideo?.src === video.src;
 
               return (
@@ -378,18 +466,103 @@ const EmbedCloudinaryVideo: FC<Props> = ({
         )}
       </div>
 
-      {/* Footer modal */}
-      <div className="px-5 py-2.5 border-t border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/80 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-        <div>
-          Đang hiển thị{" "}
-          <span className="font-semibold text-gray-700 dark:text-gray-200">
-            {filteredVideos.length}
-          </span>{" "}
-          / {videos.length} video
+      {/* Footer modal: Phân trang & Thông tin */}
+      <div className="px-5 py-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50/90 dark:bg-gray-800/90 flex flex-wrap items-center justify-between gap-3 text-xs">
+        {/* Info & Chọn số video / trang */}
+        <div className="flex items-center gap-3 text-gray-500 dark:text-gray-400">
+          <span>
+            {filteredVideos.length > 0 ? (
+              <>
+                Đang hiển thị{" "}
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                  {startIndex + 1}-{Math.min(startIndex + pageSize, filteredVideos.length)}
+                </span>{" "}
+                /{" "}
+                <span className="font-semibold text-gray-800 dark:text-gray-200">
+                  {filteredVideos.length}
+                </span>{" "}
+                video
+              </>
+            ) : (
+              "0 video"
+            )}
+          </span>
+
+          {filteredVideos.length > 20 && (
+            <div className="hidden sm:flex items-center gap-1.5 border-l border-gray-200 dark:border-gray-700 pl-3">
+              <span className="text-[11px] text-gray-400">Số lượng:</span>
+              <select
+                value={pageSize}
+                onChange={(e) => setPageSize(Number(e.target.value))}
+                className="bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded px-1.5 py-0.5 text-xs text-gray-700 dark:text-gray-200 focus:outline-none focus:ring-1 focus:ring-[#105d97]"
+              >
+                <option value={20}>20 / trang</option>
+                <option value={30}>30 / trang</option>
+                <option value={50}>50 / trang</option>
+              </select>
+            </div>
+          )}
         </div>
-        <div className="text-[11px]">
-          Nhấp vào video để chèn trực tiếp vào bài viết
-        </div>
+
+        {/* Nút điều khiển phân trang */}
+        {totalPages > 1 && (
+          <div className="flex items-center gap-1 ml-auto">
+            <button
+              type="button"
+              onClick={() => handlePageChange(safePage - 1)}
+              disabled={safePage === 1}
+              className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-650 transition-colors cursor-pointer flex items-center gap-1"
+              title="Trang trước"
+            >
+              <FiChevronLeft size={14} />
+              <span className="hidden sm:inline text-[11px]">Trước</span>
+            </button>
+
+            <div className="flex items-center gap-1">
+              {getPaginationRange().map((pageItem, idx) => {
+                if (pageItem === "...") {
+                  return (
+                    <span
+                      key={`ellipsis-${idx}`}
+                      className="px-1.5 py-1 text-gray-400 select-none text-xs"
+                    >
+                      ...
+                    </span>
+                  );
+                }
+
+                const pageNum = Number(pageItem);
+                const isActive = pageNum === safePage;
+
+                return (
+                  <button
+                    type="button"
+                    key={`page-${pageNum}`}
+                    onClick={() => handlePageChange(pageNum)}
+                    className={`min-w-[28px] h-7 px-2 text-xs rounded-lg font-medium transition-all cursor-pointer ${
+                      isActive
+                        ? "bg-[#105d97] text-white shadow-xs font-semibold"
+                        : "bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-650"
+                    }`}
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+
+            <button
+              type="button"
+              onClick={() => handlePageChange(safePage + 1)}
+              disabled={safePage === totalPages}
+              className="px-2 py-1 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-100 dark:hover:bg-gray-650 transition-colors cursor-pointer flex items-center gap-1"
+              title="Trang sau"
+            >
+              <span className="hidden sm:inline text-[11px]">Sau</span>
+              <FiChevronRight size={14} />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -397,7 +570,7 @@ const EmbedCloudinaryVideo: FC<Props> = ({
   const popup = visible ? (
     centered ? (
       <div
-        className="fixed inset-0 z-[100000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fadeIn"
+        className="fixed inset-0 z-[100000] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-hidden animate-fadeIn"
         onClick={hideForm}
       >
         {modalContent}

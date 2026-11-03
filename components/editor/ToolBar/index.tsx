@@ -122,7 +122,7 @@ const ToolBar: FC<Props> = ({
     if (!dropdownOpen) return;
 
     const html = document.documentElement;
-    const containers = Array.from(document.querySelectorAll<HTMLElement>(".custom-scrollbar, [data-editor-scroll-container]"));
+    const containers = Array.from(document.querySelectorAll<HTMLElement>("[data-editor-scroll-container]"));
     const previous = {
       htmlOverflow: html.style.overflow,
       bodyOverflow: document.body.style.overflow,
