@@ -22,6 +22,7 @@ import CountdownTimer from "../univisport/CountdownTimer";
 import ProcessSteps from "../univisport/ProcessSteps";
 import ProductSlider from "../univisport/ProductSlider";
 import AoPoloProcessSteps from "../univisport/bai-viet/AoPoloProcessSteps";
+import UniviOrderProcess from "../univisport/order-process/UniviOrderProcess";
 import ArticleImageGallery, {
   parseArticleGalleryImages,
 } from "../common/ArticleImageGallery";
@@ -41,6 +42,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   ProcessSteps,
   ProductSlider,
   AoPoloProcessSteps,
+  UniviOrderProcess,
 };
 
 type PostData = {
@@ -117,6 +119,43 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
             title={domNode.attribs["data-title"] || "Thư viện hình ảnh"}
           />
         );
+      }
+
+      if (
+        domNode.type === "tag" &&
+        (domNode.attribs?.["data-univi-order-process"] === "true" ||
+          domNode.attribs?.["data-component"] === "UniviOrderProcess")
+      ) {
+        let props: Record<string, any> = {};
+        try {
+          if (domNode.attribs["data-props"]) {
+            props = JSON.parse(domNode.attribs["data-props"]);
+          }
+        } catch (_) {}
+        if (!props.steps && domNode.attribs["data-steps"]) {
+          try {
+            props.steps = JSON.parse(domNode.attribs["data-steps"]);
+          } catch (_) {}
+        }
+        if (!props.title && domNode.attribs["data-title"]) {
+          props.title = domNode.attribs["data-title"];
+        }
+        if (!props.badge && domNode.attribs["data-badge"]) {
+          props.badge = domNode.attribs["data-badge"];
+        }
+        if (!props.footerTitle && domNode.attribs["data-footer-title"]) {
+          props.footerTitle = domNode.attribs["data-footer-title"];
+        }
+        if (!props.footerText && domNode.attribs["data-footer-text"]) {
+          props.footerText = domNode.attribs["data-footer-text"];
+        }
+        if (!props.ctaText && domNode.attribs["data-cta-text"]) {
+          props.ctaText = domNode.attribs["data-cta-text"];
+        }
+        if (!props.ctaSubtext && domNode.attribs["data-cta-subtext"]) {
+          props.ctaSubtext = domNode.attribs["data-cta-subtext"];
+        }
+        return <UniviOrderProcess {...props} />;
       }
 
       if (domNode.type === "tag" && domNode.attribs?.["data-component"]) {

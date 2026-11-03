@@ -36,18 +36,11 @@ export const EMBEDDABLE_COMPONENTS = [
   },
 
   {
-    name: "ProcessSteps",
-    label: "Quy trình đặt may (ProcessSteps)",
-    description: "Quy trình 8 bước chuẩn hóa từ tư vấn đến giao hàng (<ProcessSteps />)",
-    icon: "🔢",
-    category: "Nội dung",
-  },
-  {
-    name: "AoPoloProcessSteps",
-    label: "Quy trình áo polo",
-    description: "Quy trình đặt may áo polo đồng phục tại Univi",
-    icon: "👕",
-    category: "Nội dung",
+    name: "UniviOrderProcess",
+    label: "Quy trình đặt hàng Univi",
+    description: "Quy trình đặt may 4 bước chuẩn hóa Univi (chỉnh sửa trực tiếp)",
+    icon: "📋",
+    category: "Thành phần Univi",
   },
 ] as const;
 
@@ -91,16 +84,19 @@ const PARTNERS_CATEGORY_OPTIONS = [
   { value: "yoga-studio", label: "🌸 Studio Yoga", desc: "Chỉ hiện logo studio Yoga" },
 ];
 
-const PROCESS_STEPS_VARIANT_OPTIONS = [
-  { value: "", label: "📐 Dạng thẻ lưới (Mặc định)", desc: "Hiển thị lưới 8 bước chuẩn hóa kèm nút đăng ký tư vấn (<ProcessSteps />)" },
-  { value: "vertical", label: "📏 Dạng timeline dọc", desc: "Hiển thị danh sách 8 bước dọc nhỏ gọn theo từng bước (<ProcessSteps variant=\"vertical\" />)" },
+const FABRIC_TAB_OPTIONS = [
+  { value: "uniair", label: "UNI AIR - UNIA12 (Mặc định)", desc: "Mỏng • Nhẹ • Thoáng khí (150 GSM) - Running, Cầu lông, Gym" },
+  { value: "elite", label: "UNI ELITE - UNIA11", desc: "Nhẹ • Nhanh khô • Họa tiết sang trọng (170 GSM) - Polo Golf, Pickleball" },
+  { value: "quickdry", label: "UNI QUICKDRY - UNIA01", desc: "Mỏng • Mịn • Co giãn • Nhanh khô (180 GSM) - Đa dụng" },
+  { value: "supercool", label: "UNI SUPERCOOL - UNIA02", desc: "Mềm • Mượt • Mát • Mịn • Siêu co giãn (180 GSM) - Yoga, Pilates, PT" },
+  { value: "cool-pique", label: "UNI COOL PIQUÉ - UNIA114", desc: "Piqué thể thao cao cấp • Mát lạnh (175 GSM) - Polo doanh nghiệp, sự kiện" },
 ];
 
 const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
   const [search, setSearch] = useState("");
-  const [pickingSubOption, setPickingSubOption] = useState<"partners" | "processSteps" | null>(null);
+  const [pickingSubOption, setPickingSubOption] = useState<"partners" | "fabric" | null>(null);
   const [pendingName, setPendingName] = useState<EmbeddableComponentName | null>(null);
 
   const hideForm = useCallback(() => {
@@ -124,9 +120,9 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
       setPickingSubOption("partners");
       return;
     }
-    if (name === "ProcessSteps") {
+    if (name === "FabricCatalogView") {
       setPendingName(name);
-      setPickingSubOption("processSteps");
+      setPickingSubOption("fabric");
       return;
     }
     onSubmit(name);
@@ -138,8 +134,8 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
     let props: Record<string, string> = {};
     if (pendingName === "PartnersSection" && val) {
       props = { category: val };
-    } else if (pendingName === "ProcessSteps" && val) {
-      props = { variant: val };
+    } else if (pendingName === "FabricCatalogView" && val) {
+      props = { defaultTab: val };
     }
     onSubmit(pendingName, Object.keys(props).length > 0 ? props : undefined);
     hideForm();
@@ -213,23 +209,41 @@ const InsertComponent: FC<Props> = ({ onSubmit, onToggle }): JSX.Element => {
                 ))}
               </div>
             </>
-          ) : pickingSubOption === "processSteps" ? (
+          ) : pickingSubOption === "fabric" ? (
             <>
               <div className="flex items-center gap-2 px-4 pt-4 pb-3 border-b border-gray-100 dark:border-gray-700">
-                <button onClick={() => setPickingSubOption(null)} className="text-[#105d97] hover:text-[#0d4a7a] text-xs flex items-center gap-1 cursor-pointer">← Quay lại</button>
+                <button
+                  type="button"
+                  onClick={() => setPickingSubOption(null)}
+                  className="text-[#105d97] hover:text-[#0d4a7a] text-xs flex items-center gap-1 cursor-pointer"
+                >
+                  ← Quay lại
+                </button>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">Chọn kiểu hiển thị ProcessSteps</h3>
-                  <p className="text-xs text-gray-400 mt-0.5">Quy trình 8 bước chuẩn hóa Univi</p>
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">
+                    Chọn Tab Vải Hiển Thị Đầu Tiên
+                  </h3>
+                  <p className="text-xs text-gray-400 mt-0.5">
+                    Tab được chọn sẽ mở sẵn khi xem bài viết
+                  </p>
                 </div>
               </div>
-              <div className="overflow-y-auto" style={{ maxHeight: "280px" }}>
-                {PROCESS_STEPS_VARIANT_OPTIONS.map((opt) => (
-                  <button key={opt.value} type="button" onClick={() => handleSubOptionPick(opt.value)}
-                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0 cursor-pointer">
-                    <span className="text-xl flex-shrink-0 mt-0.5">{opt.label.split(" ")[0]}</span>
+              <div className="overflow-y-auto" style={{ maxHeight: "300px" }}>
+                {FABRIC_TAB_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    onClick={() => handleSubOptionPick(opt.value)}
+                    className="w-full flex items-start gap-3 px-4 py-3 hover:bg-[#105d97]/5 transition-colors text-left border-b border-gray-50 dark:border-gray-700/50 last:border-0 cursor-pointer"
+                  >
+                    <span className="text-xl flex-shrink-0 mt-0.5">🧵</span>
                     <div className="flex-1 min-w-0">
-                      <div className="font-medium text-sm text-gray-800 dark:text-gray-100">{opt.label.split(" ").slice(1).join(" ")}</div>
-                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{opt.desc}</div>
+                      <div className="font-medium text-sm text-gray-800 dark:text-gray-100">
+                        {opt.label}
+                      </div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                        {opt.desc}
+                      </div>
                     </div>
                   </button>
                 ))}

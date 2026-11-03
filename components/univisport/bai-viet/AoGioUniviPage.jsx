@@ -433,9 +433,6 @@ export default function AoGioUniviPage() {
             Hệ thống sản xuất hỗ trợ đơn cho phòng tập, CLB và doanh nghiệp trên toàn quốc. Quy mô xưởng là điều kiện để chủ động, nhưng chất lượng cuối cùng vẫn phụ thuộc hồ sơ kỹ thuật, mẫu duyệt, vật liệu và khâu kiểm soát. Vì vậy, mỗi dự án cần một cấu hình rõ thay vì dùng chung một lời hứa cho mọi loại áo.
           </p>
           <p>
-            Chất liệu của Univi được định hướng kiểm định theo QCVN 01:2017/BCT, gồm giới hạn Formaldehyde và amin thơm chuyển hóa từ thuốc nhuộm Azo. Nói đơn giản, đây là các tiêu chí an toàn cần quan tâm khi sản phẩm tiếp xúc da và được sử dụng lặp lại. Đối tác nên yêu cầu xác nhận phù hợp với mã vải thực tế trong báo giá.
-          </p>
-          <p>
             Năng lực R&D giúp Univi đánh giá chất liệu, form dáng, độ thoáng, độ bền, độ co giãn và trải nghiệm vận động. Với đồng phục áo gió, hoạt động thử cần mô phỏng điều kiện thật: di chuyển, vung tay, kéo khóa, đội mũ, gấp áo và mặc chồng lên lớp bên trong.
           </p>
         </div>

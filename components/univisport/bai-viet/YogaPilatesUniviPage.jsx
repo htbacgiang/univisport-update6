@@ -95,7 +95,6 @@ export const yogaPilatesFaqs = [
   ['Đồng phục HLV Yoga nên là bra, tank top hay T-shirt?', 'Tùy định vị studio và mức độ tự tin của đội ngũ. Bra và legging phù hợp lớp chuyên sâu. Tank top hoặc T-shirt ôm vừa phù hợp nhiều vóc dáng hơn và dễ dùng cho studio mới triển khai đồng phục.'],
   ['Có nên làm đồng phục riêng cho hội viên không?', 'Có, nếu studio muốn xây cộng đồng và tăng nhận diện. Đồng phục hội viên có thể bắt đầu từ áo workshop, áo retreat hoặc sản phẩm theo khóa học thay vì triển khai ngay một set tập đầy đủ.'],
   ['Univi có lưu file thiết kế để đặt bổ sung không?', 'Studio nên lưu bảng màu, logo, vị trí in, mã vải và size chart. Univi có thể hỗ trợ quy trình này để các đợt đặt bổ sung ổn định hơn và tránh lệch mẫu giữa các lần sản xuất.'],
-  ['Chất liệu có được kiểm định an toàn không?', 'Theo tài liệu nội bộ, các dòng vải Univi được kiểm định theo QCVN 01:2017/BCT. Nói dễ hiểu, đây là bước kiểm tra để hạn chế các hóa chất không phù hợp tiếp xúc trực tiếp với da.'],
   ['Univi có giao hàng toàn quốc không?', 'Có. Univi hỗ trợ giao hàng toàn quốc cho các dự án đồng phục thể thao, bao gồm Yoga Studio, Pilates Studio, trung tâm Wellness, Fitness Center và đội nhóm thể thao.'],
   ['Studio nên chuẩn bị gì trước khi liên hệ tư vấn?', 'Bạn nên chuẩn bị logo, màu thương hiệu, số lượng dự kiến, nhóm người mặc, mô hình studio và mục tiêu sử dụng như HLV, lễ tân, hội viên, workshop, retreat hoặc chương trình wellness cho doanh nghiệp.'],
 ];

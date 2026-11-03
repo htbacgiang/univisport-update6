@@ -58,7 +58,7 @@ function Card1VideoPlayer({ src }) {
       ([entry]) => {
         if (!video) return;
         if (entry.isIntersecting) {
-          video.play().then(() => setPlaying(true)).catch(() => {});
+          video.play().then(() => setPlaying(true)).catch(() => { });
         } else {
           video.pause();
         }
@@ -368,7 +368,7 @@ export default function CategoryFeaturedProduct({ product, sectionTitle }) {
     }
   };
 
-  const soldCount = cfg.soldCount || '1.500+ sản phẩm';
+  const soldCount = cfg.soldCount || '1.1000+ sản phẩm';
   const recentCustomersRaw = cfg.recentCustomers || 'California Fitness | /feedback/california-fitness, VNPay | https://vnpay.vn, Techcombank';
 
   // Parse recent customers list (Format: Name | Link)

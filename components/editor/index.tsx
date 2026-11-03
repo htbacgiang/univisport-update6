@@ -33,6 +33,7 @@ import { FacebookReel } from "./FacebookReel";
 import { CloudinaryVideo } from "./CloudinaryVideo";
 import { AdBanner } from "./AdBanner";
 import { EmbedComponent } from "./EmbedComponent";
+import { UniviOrderProcessNode } from "./UniviOrderProcessNode";
 import { GalleryImage, ImageGallery } from "./ImageGallery";
 import { InternalLink } from "./InternalLink";
 
@@ -247,6 +248,7 @@ const Editor: FC<Props> = ({
       CloudinaryVideo,
       AdBanner,
       EmbedComponent,
+      UniviOrderProcessNode,
       ImageGallery.configure({
         onEditRequest: editGalleryCallbackRef,
       }),

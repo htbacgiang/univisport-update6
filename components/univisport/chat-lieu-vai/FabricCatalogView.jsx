@@ -52,11 +52,37 @@ const SoftLightIcon = ({ className = "w-4 h-4 text-white/90" }) => (
   </svg>
 );
 
-export default function FabricCatalogView({ syncHash = false }) {
+export default function FabricCatalogView({
+  syncHash = false,
+  defaultTab = 'uniair',
+  initialTab = '',
+  tab = '',
+}) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('uniair');
+
+  const resolveFabricId = (val) => {
+    if (!val) return 'uniair';
+    const clean = String(val).toLowerCase().trim();
+    const matched = FABRIC_MATERIALS.find(
+      (f) =>
+        f.id.toLowerCase() === clean ||
+        f.code.toLowerCase() === clean ||
+        f.slug.toLowerCase() === clean
+    );
+    return matched ? matched.id : 'uniair';
+  };
+
+  const initialResolved = resolveFabricId(defaultTab || initialTab || tab);
+  const [activeTab, setActiveTab] = useState(initialResolved);
   const [contactModalOpen, setContactModalOpen] = useState(false);
   const [contactSubject, setContactSubject] = useState('');
+
+  // Cập nhật tab khi prop thay đổi
+  useEffect(() => {
+    if (defaultTab || initialTab || tab) {
+      setActiveTab(resolveFabricId(defaultTab || initialTab || tab));
+    }
+  }, [defaultTab, initialTab, tab]);
 
   // Sync tab with URL hash if present (only when syncHash is enabled)
   useEffect(() => {

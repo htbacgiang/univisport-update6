@@ -684,7 +684,7 @@ export default function DoanhNghiepPillarPage() {
             {[
               { icon: Building2, label: "Xưởng sản xuất", value: "2.000m²" },
               { icon: Package, label: "Công suất", value: "100.000 sp/tháng" },
-              { icon: Users, label: "Doanh nghiệp phục vụ", value: "500+" },
+              { icon: Users, label: "Doanh nghiệp phục vụ", value: "1000+" },
               { icon: BarChart3, label: "Kinh nghiệm", value: "9+ năm" },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="py-4 px-4 text-center">
@@ -1236,7 +1236,7 @@ export default function DoanhNghiepPillarPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[
               { title: "Xưởng sản xuất", text: "2.000m² tại phường Chương Mỹ, Hà Nội. Công suất công bố 100.000 sản phẩm/tháng." },
-              { title: "Kinh nghiệm & khách hàng", text: "Hơn 9 năm kinh nghiệm. Phục vụ toàn quốc, 500+ doanh nghiệp, phòng tập và câu lạc bộ thể thao." },
+              { title: "Kinh nghiệm & khách hàng", text: "Hơn 9 năm kinh nghiệm. Phục vụ toàn quốc, 1000+ doanh nghiệp, phòng tập và câu lạc bộ thể thao." },
               { title: "Chất liệu & kiểm định", text: "R&D về chất liệu và hiệu suất vận động" },
             ].map(({ title, text }) => (
               <InfoCard key={title} title={title}>{text}</InfoCard>

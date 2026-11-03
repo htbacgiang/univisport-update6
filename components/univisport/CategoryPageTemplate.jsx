@@ -10,6 +10,7 @@ import CategoryBreadcrumb from './CategoryBreadcrumb';
 import CategoryCardGrid from './CategoryCardGrid';
 import ProductGridSection from './ProductGridSection';
 import parse from 'html-react-parser';
+import UniviOrderProcess from './order-process/UniviOrderProcess';
 import { normalizeInternalLinkAttributes } from '../../utils/internalLinks';
 import { computeGymTaxonomyCounts } from '../../lib/gymTaxonomyCounts';
 import { SIDEBAR_CATEGORIES } from '../../lib/siteCategories';
@@ -120,6 +121,43 @@ export default function
         replace(domNode) {
           if (domNode.type === "tag" && domNode.name === "a") {
             normalizeInternalLinkAttributes(domNode.attribs);
+          }
+
+          if (
+            domNode.type === "tag" &&
+            (domNode.attribs?.["data-univi-order-process"] === "true" ||
+              domNode.attribs?.["data-component"] === "UniviOrderProcess")
+          ) {
+            let props = {};
+            try {
+              if (domNode.attribs["data-props"]) {
+                props = JSON.parse(domNode.attribs["data-props"]);
+              }
+            } catch (_) {}
+            if (!props.steps && domNode.attribs["data-steps"]) {
+              try {
+                props.steps = JSON.parse(domNode.attribs["data-steps"]);
+              } catch (_) {}
+            }
+            if (!props.title && domNode.attribs["data-title"]) {
+              props.title = domNode.attribs["data-title"];
+            }
+            if (!props.badge && domNode.attribs["data-badge"]) {
+              props.badge = domNode.attribs["data-badge"];
+            }
+            if (!props.footerTitle && domNode.attribs["data-footer-title"]) {
+              props.footerTitle = domNode.attribs["data-footer-title"];
+            }
+            if (!props.footerText && domNode.attribs["data-footer-text"]) {
+              props.footerText = domNode.attribs["data-footer-text"];
+            }
+            if (!props.ctaText && domNode.attribs["data-cta-text"]) {
+              props.ctaText = domNode.attribs["data-cta-text"];
+            }
+            if (!props.ctaSubtext && domNode.attribs["data-cta-subtext"]) {
+              props.ctaSubtext = domNode.attribs["data-cta-subtext"];
+            }
+            return <UniviOrderProcess {...props} />;
           }
 
           if (

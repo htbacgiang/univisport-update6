@@ -15,6 +15,7 @@ import InternalLinks from "../univisport/InternalLinks";
 import FabricCardComponent from "../univisport/FabricCardComponent";
 import CountdownTimer from "../univisport/CountdownTimer";
 import ProductSlider from "../univisport/ProductSlider";
+import UniviOrderProcess from "../univisport/order-process/UniviOrderProcess";
 
 const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   ContactForm,
@@ -30,6 +31,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   FabricCardComponent,
   CountdownTimer,
   ProductSlider,
+  UniviOrderProcess,
 };
 
 export default function EmbedComponentView({ node, deleteNode }: NodeViewProps) {

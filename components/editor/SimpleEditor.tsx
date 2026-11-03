@@ -23,6 +23,7 @@ import axios from "axios";
 import { FacebookReel } from "./FacebookReel";
 import { CloudinaryVideo } from "./CloudinaryVideo";
 import { AdBanner } from "./AdBanner";
+import { UniviOrderProcessNode } from "./UniviOrderProcessNode";
 import { InternalLink } from "./InternalLink";
 
 interface Props {
@@ -126,6 +127,7 @@ const SimpleEditor: FC<Props> = ({ content, onChange }): JSX.Element => {
       FacebookReel,
       CloudinaryVideo,
       AdBanner,
+      UniviOrderProcessNode,
       ImageGallery.configure({
         onEditRequest: editGalleryCallbackRef,
       }),

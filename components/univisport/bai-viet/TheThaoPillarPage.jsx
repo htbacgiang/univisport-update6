@@ -623,7 +623,7 @@ export default function TheThaoPillarPage() {
             {[
               { icon: Building2, label: "Xưởng sản xuất", value: "2.000m²" },
               { icon: Package, label: "Công suất", value: "100.000 sp/tháng" },
-              { icon: Users, label: "Phòng tập & Đội nhóm", value: "500+" },
+              { icon: Users, label: "Phòng tập & Đội nhóm", value: "1000+" },
               { icon: BarChart3, label: "Kinh nghiệm R&D", value: "9+ năm" },
             ].map(({ icon: Icon, label, value }) => (
               <div key={label} className="py-4 px-4 text-center">

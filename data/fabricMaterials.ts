@@ -247,6 +247,6 @@ export const FABRIC_FAQS = [
   {
     question: "Vải Univi có bị xù lông hoặc phai màu sau nhiều lần giặt không?",
     answer:
-      "Toàn bộ vải của Univi đều trải qua quy trình dệt nhuộm công nghệ cao và kiểm định độ bền màu đạt chuẩn QCVN 01:2017/BCT. Vải giữ form tốt, không xù lông và giữ màu sắc tươi mới sau hơn 200 lần giặt tiêu chuẩn.",
+      "Toàn bộ vải của Univi đều trải qua quy trình dệt nhuộm công nghệ cao và kiểm định độ bền màu đạt chuẩn QCVN. Vải giữ form tốt, không xù lông và giữ màu sắc tươi mới sau hơn 200 lần giặt tiêu chuẩn.",
   },
 ];

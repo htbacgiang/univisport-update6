@@ -411,7 +411,7 @@ export default function JSONProductsListPage() {
       customSecondaryImage: parseImageList(product.featuredConfig?.customSecondaryImage, defaultSecondaryList),
       videoUrl: product.featuredConfig?.videoUrl || '',
       badgeText: product.featuredConfig?.badgeText || 'NỔI BẬT',
-      soldCount: product.featuredConfig?.soldCount || '1.500+ sản phẩm',
+      soldCount: product.featuredConfig?.soldCount || '1.1000+ sản phẩm',
       recentCustomers: rawCust,
     });
   };
@@ -1066,7 +1066,7 @@ export default function JSONProductsListPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-semibold text-gray-700 mb-1">
-                      Số lượng đã bán (VD: 1.500+ hoặc 2.000+)
+                      Số lượng đã bán (VD: 1.1000+ hoặc 2.000+)
                     </label>
                     <input
                       type="text"

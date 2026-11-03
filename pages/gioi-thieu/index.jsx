@@ -152,7 +152,7 @@ export default function AboutUs({ meta }) {
                   </div>
                   <div className="flex items-start gap-2 col-span-1 md:col-span-2">
                     <Users className="w-4 h-4 text-[#105d97] mt-0.5" />
-                    <span><strong>Khách hàng:</strong> 500+ doanh nghiệp, phòng tập và câu lạc bộ thể thao.</span>
+                    <span><strong>Khách hàng:</strong> 1000+ doanh nghiệp, phòng tập và câu lạc bộ thể thao.</span>
                   </div>
                 </div>
               </div>
@@ -319,7 +319,7 @@ export async function getServerSideProps() {
       "@type": "AboutPage",
       "@id": "https://dongphucunivi.com/gioi-thieu#webpage",
       "name": "Giới Thiệu Đồng Phục Univi — Xưởng May Đồng Phục Thể Thao Chuyên Dụng",
-      "description": `Đồng Phục Univi thành lập năm 2017, xưởng 2.000m² tại phường Chương Mỹ, Hà Nội. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp B2B. Hơn ${yearsExperience} năm kinh nghiệm, 500+ khách hàng tin tưởng, công suất 100.000 sản phẩm/tháng.`,
+      "description": `Đồng Phục Univi thành lập năm 2017, xưởng 2.000m² tại phường Chương Mỹ, Hà Nội. Chuyên đồng phục Gym, Yoga, Pickleball cho phòng tập & doanh nghiệp B2B. Hơn ${yearsExperience} năm kinh nghiệm, 1000+ khách hàng tin tưởng, công suất 100.000 sản phẩm/tháng.`,
       "url": "https://dongphucunivi.com/gioi-thieu",
       "inLanguage": "vi-VN",
       "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
@@ -351,7 +351,7 @@ export async function getServerSideProps() {
     canonical: "https://dongphucunivi.com/gioi-thieu",
     og: {
       title: `Đồng Phục Univi: Xưởng May ${yearsExperience} Năm Kinh Nghiệm`,
-      description: `Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội — ${yearsExperience}+ năm, 2.000m², 100.000 sp/tháng. Vải UNI DRY nhập khẩu, kiểm định QCVN 01:2017/BCT.`,
+      description: `Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội — ${yearsExperience}+ năm, 2.000m², 100.000 sp/tháng. Vải UNI DRY nhập khẩu, kiểm định QCVN .`,
       type: "website",
       image: "https://dongphucunivi.com/images/gioi-thieu/xuong-san-xuat.jpg",
       imageWidth: "1200",

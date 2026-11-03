@@ -31,6 +31,7 @@ import EmbedFacebookReels from "./EmbedFacebookReels";
 import EmbedCloudinaryVideo from "./EmbedCloudinaryVideo";
 import InsertAdBanner from "./InsertAdBanner";
 import InsertComponent from "./InsertComponent";
+import { DEFAULT_ORDER_PROCESS_DATA } from "../../univisport/order-process/orderProcessData";
 import FindReplace from "./FindReplace";
 import { FiPhoneCall } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -279,6 +280,12 @@ const ToolBar: FC<Props> = ({
 
   const handleInsertComponent = (name: string, props?: Record<string, string>) => {
     if (!editor) return;
+    if (name === "UniviOrderProcess") {
+      if (typeof (editor.chain().focus() as any).setUniviOrderProcess === "function") {
+        (editor.chain().focus() as any).setUniviOrderProcess(DEFAULT_ORDER_PROCESS_DATA).run();
+        return;
+      }
+    }
     editor.chain().focus().setEmbedComponent({ name, props: props ? JSON.stringify(props) : "{}" }).run();
   };
 

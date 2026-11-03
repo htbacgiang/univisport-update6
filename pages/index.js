@@ -41,8 +41,7 @@ const CTABannerSection = dynamic(
 // ─────────────────────────────────────────────────────────────
 const DEFAULT_META = {
   title: "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
-  description:
-    "Đồng Phục Univi - xưởng 2.000m² tại phường Chương Mỹ, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
+  description: "Đồng Phục Univi – Tiên phong giải pháp đồng phục thể thao cho phòng Gym, Pilates, Pickleball và doanh nghiệp. Thiết kế miễn phí, sản xuất theo yêu cầu.",
   keywords:
     "đồng phục thể thao, đồng phục Gym, đồng phục Yoga, đồng phục Pilates, đồng phục Pickleball, đồng phục Áo Gió, đồng phục Áo Polo, đồng phục phòng tập, xưởng may đồng phục Hà Nội, công nghệ UNI DRY, đồng phục doanh nghiệp B2B, may đồng phục theo yêu cầu, Đồng Phục Univi",
   robots: "index, follow",
@@ -50,8 +49,7 @@ const DEFAULT_META = {
   canonical: "https://dongphucunivi.com/",
   og: {
     title: "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
-    description:
-      "Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội - công nghệ UNI DRY, vải nhập khẩu, kiểm định QCVN 01:2017/BCT. Phục vụ phòng tập Gym, Yoga, Pilates, Pickleball, Áo Gió, Áo Polo và doanh nghiệp toàn quốc.",
+    description: "Đồng Phục Univi – Tiên phong giải pháp đồng phục thể thao cho phòng Gym, Pilates, Pickleball và doanh nghiệp. Thiết kế miễn phí, sản xuất theo yêu cầu.",
     type: "website",
     image: "https://dongphucunivi.com/images/banner-home-1.jpg",
     imageWidth: "1200",
@@ -64,8 +62,8 @@ const DEFAULT_META = {
   twitter: {
     card: "summary_large_image",
     title: "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
-    description:
-      "Xưởng sản xuất đồng phục thể thao chuyên dụng tại Hà Nội - công nghệ UNI DRY, vải nhập khẩu, kiểm định QCVN 01:2017/BCT.",
+    description: "Đồng Phục Univi – Tiên phong giải pháp đồng phục thể thao cho phòng Gym, Pilates, Pickleball và doanh nghiệp. Thiết kế miễn phí, sản xuất theo yêu cầu.",
+
     image: "https://dongphucunivi.com/images/banner-home-1.jpg",
   },
   schema: [
@@ -75,7 +73,7 @@ const DEFAULT_META = {
       "@id": "https://dongphucunivi.com/#webpage",
       "url": "https://dongphucunivi.com/",
       "name": "Đồng Phục Univi: Xưởng May Đồng Phục Thể Thao Tại Hà Nội",
-      "description": "Đồng Phục Univi - xưởng 2.000m² tại phường Chương Mỹ, Hà Nội, công suất 100.000 sp/tháng. Chuyên đồng phục thể thao, giải pháp đồng phục cho các câu lạc bộ, phòng tập & doanh nghiệp B2B. Vải UNI DRY kiểm định QCVN. Thiết kế miễn phí — gọi ngay: 0834.204.999",
+      "description": "Đồng Phục Univi – Tiên phong giải pháp đồng phục thể thao cho phòng Gym, Pilates, Pickleball và doanh nghiệp. Thiết kế miễn phí, sản xuất theo yêu cầu.",
       "isPartOf": { "@id": "https://dongphucunivi.com/#website" },
       "about": { "@id": "https://dongphucunivi.com/#organization" },
       "inLanguage": "vi-VN",

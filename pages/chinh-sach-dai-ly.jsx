@@ -38,7 +38,7 @@ export default function DealerPolicy() {
     {
       id: "01",
       title: "Sản phẩm chất lượng kiểm định",
-      desc: "Vải nhập khẩu từ nước ngoài, công nghệ UNI DRY độc quyền, kiểm định đạt QCVN 01:2017/BCT",
+      desc: "Vải nhập khẩu từ nước ngoài, công nghệ UNI DRY độc quyền",
       img: "https://live.staticflickr.com/65535/55255763715_ff43b3f548_b.jpg"
     },
     {
@@ -237,7 +237,7 @@ export default function DealerPolicy() {
                             className="text-white text-sm font-bold"
                             style={{ writingMode: "vertical-rl" }}
                           >
-                            500+
+                            1000+
                           </span>
                         </div>
                       </div>
