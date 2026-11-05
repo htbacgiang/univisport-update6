@@ -1,26 +1,27 @@
 import CategoryPageTemplate from '../../components/univisport/CategoryPageTemplate';
-import GymUniviPage, { gymFaqs } from '../../components/univisport/bai-viet/GymUniviPage';
+import GymUniviPage, { gymFaqs, GymHero } from '../../components/univisport/bai-viet/GymUniviPage';
 import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProductsByCategory';
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-gym';
-const META_TITLE = 'May Đồng Phục Gym Theo Yêu Cầu Cho Phòng Tập & Fitness Center | UNIVI';
+const SITE = 'https://dongphucunivi.com';
+const META_TITLE = 'Đồng Phục Gym & Áo Tập Gym Cho Phòng Tập | Univi';
 const META_DESCRIPTION =
-  'May đồng phục Gym theo yêu cầu cho phòng tập, PT Studio và chuỗi Fitness Center. Tư vấn UNI DRY, thiết kế miễn phí, lưu chuẩn tái sản xuất, giao toàn quốc.';
-const AUTHOR_URL = 'https://dongphucunivi.com/dong-sang-lap-univi-sport-tran-hien';
+  'Đồng phục Gym, áo tập Gym cho phòng tập, HLV và PT. Khám phá 24 mẫu áo Univi, 5 dòng vải thể thao và giải pháp thiết kế theo nhận diện thương hiệu.';
+const PAGE_NAME = 'Đồng phục Gym – Áo tập Gym cho phòng tập và đội ngũ Fitness';
+const AUTHOR_URL = `${SITE}/dong-sang-lap-univi-sport-tran-hien`;
 const AUTHOR_ID = `${AUTHOR_URL}#person`;
 
 const META_KEYWORDS =
-  'đồng phục Gym, may đồng phục Gym, đồng phục phòng tập Gym, đồng phục Fitness Center, đồng phục PT Gym, đồng phục huấn luyện viên Gym, đồng phục lễ tân phòng Gym, đồng phục nhân viên phòng tập, áo Gym đồng phục, đồng phục phòng tập theo yêu cầu, xưởng may đồng phục Gym, UNI DRY, UNI QUICK DRY, UNI SUPER COOL, Giải pháp 2S Uniform';
-const OG_IMAGE = 'https://dongphucunivi.com/images/banner-ao-gym.jpg';
-const OG_IMAGE_ALT =
-  'Đồng phục Gym thiết kế theo yêu cầu cho phòng tập và chuỗi Fitness Center';
+  'đồng phục Gym, áo tập Gym, đồng phục phòng Gym, đồng phục cho phòng tập, đồng phục Fitness, đồng phục HLV Gym, đồng phục nhân viên phòng Gym, áo tập Gym cho nam, áo tập Gym cho nữ, áo Polo thể thao, UNI DRY, UNI SUPERCOOL, UNI QUICKDRY, 2S Uniform';
+const OG_IMAGE = `${SITE}/images/banner-ao-gym.jpg`;
+const OG_IMAGE_ALT = 'Đồng phục Gym và áo tập Gym Univi cho phòng tập, HLV và PT';
 
 function buildFaqSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    '@id': `https://dongphucunivi.com/${SLUG}#faq`,
+    '@id': `${SITE}/${SLUG}#faq`,
     'mainEntity': gymFaqs.map(([question, answer]) => ({
       '@type': 'Question',
       'name': question,
@@ -32,8 +33,16 @@ function buildFaqSchema() {
   };
 }
 
-function buildMeta(products = []) {
-  const canonical = `https://dongphucunivi.com/${SLUG}`;
+// FAQ schema chỉ phát ra khi trang đang hiển thị bài mặc định (GymUniviPage), tránh lệch với nội dung
+// hiển thị nếu Dashboard chuyển sang bài "custom" hoặc ẩn bài.
+function shouldEmitDefaultFaq(categoryArticle) {
+  if (!categoryArticle) return true;
+  if (categoryArticle.isVisible === false) return false;
+  return !(categoryArticle.articleType === 'custom' && categoryArticle.article);
+}
+
+function buildMeta(products = [], categoryArticle = null) {
+  const canonical = `${SITE}/${SLUG}`;
   return {
     title: META_TITLE,
     description: META_DESCRIPTION,
@@ -65,20 +74,22 @@ function buildMeta(products = []) {
         '@type': 'CollectionPage',
         '@id': `${canonical}#webpage`,
         'url': canonical,
-        'name': META_TITLE,
+        'name': PAGE_NAME,
         'description': META_DESCRIPTION,
-        'isPartOf': { '@id': 'https://dongphucunivi.com/#website' },
-        'about': { '@id': 'https://dongphucunivi.com/#organization' },
+        'isPartOf': { '@id': `${SITE}/#website` },
+        'about': { '@id': `${SITE}/#organization` },
         'author': { '@id': AUTHOR_ID },
+        'breadcrumb': { '@id': `${canonical}#breadcrumb` },
         'inLanguage': 'vi-VN',
+        ...(products.length > 0 ? { 'mainEntity': { '@id': `${canonical}#itemlist` } } : {}),
       },
       {
         '@context': 'https://schema.org',
         '@type': 'Service',
         '@id': `${canonical}#service`,
-        'name': 'May đồng phục Gym thiết kế theo yêu cầu',
+        'name': 'Thiết kế và may đồng phục Gym theo yêu cầu',
         'description': META_DESCRIPTION,
-        'provider': { '@id': 'https://dongphucunivi.com/#organization' },
+        'provider': { '@id': `${SITE}/#organization` },
         'serviceType': 'May đồng phục thể thao theo yêu cầu',
         'category': 'Đồng phục Gym',
         'areaServed': { '@type': 'Country', 'name': 'Việt Nam' },
@@ -89,25 +100,26 @@ function buildMeta(products = []) {
         '@type': 'BreadcrumbList',
         '@id': `${canonical}#breadcrumb`,
         'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Trang chủ', 'item': 'https://dongphucunivi.com/' },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Gym', 'item': canonical },
+          { '@type': 'ListItem', 'position': 1, 'name': 'Trang chủ', 'item': `${SITE}/` },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Thể Thao', 'item': `${SITE}/dong-phuc-the-thao` },
+          { '@type': 'ListItem', 'position': 3, 'name': 'Đồng Phục Gym', 'item': canonical },
         ],
       },
       ...(products.length > 0 ? [{
         '@context': 'https://schema.org',
         '@type': 'ItemList',
         '@id': `${canonical}#itemlist`,
-        'name': META_TITLE,
+        'name': 'Bộ sưu tập đồng phục Gym Univi',
         'url': canonical,
         'numberOfItems': products.length,
-        'itemListElement': products.slice(0, 20).map((p, i) => ({
+        'itemListElement': products.map((p, i) => ({
           '@type': 'ListItem',
           'position': i + 1,
-          'url': `https://dongphucunivi.com/san-pham/${p.slug}`,
+          'url': `${SITE}/san-pham/${p.slug}`,
           'name': p.name,
         })),
       }] : []),
-      buildFaqSchema(),
+      ...(shouldEmitDefaultFaq(categoryArticle) ? [buildFaqSchema()] : []),
     ],
   };
 }
@@ -125,6 +137,8 @@ export default function DongPhucGym({
       categoryCounts={categoryCounts}
       enterpriseCounts={enterpriseCounts}
       ArticleComponent={GymUniviPage}
+      HeroComponent={GymHero}
+      productsAnchorId="bo-suu-tap-gym"
       categoryArticle={categoryArticle}
     />
   );
@@ -132,11 +146,16 @@ export default function DongPhucGym({
 
 export async function getServerSideProps() {
   try {
-    const [initialProducts, sidebarCounts, categoryArticle] = await Promise.all([
+    const [allProducts, sidebarCounts, categoryArticle] = await Promise.all([
       getProductsByCategory(SLUG),
       getSidebarNavCounts(),
       getCategoryArticleSetting(SLUG),
     ]);
+
+    // Trang này không hiển thị `description` (mô tả ngắn được sinh từ dữ liệu có cấu trúc),
+    // nên không gửi xuống client: giảm payload __NEXT_DATA__ và tránh đưa claim chưa xác minh vào HTML.
+    // Không thay đổi dữ liệu sản phẩm trong DB.
+    const initialProducts = allProducts.map(({ description, ...rest }) => rest);
 
     return {
       props: {
@@ -144,7 +163,7 @@ export async function getServerSideProps() {
         categoryCounts: sidebarCounts.categoryCounts,
         enterpriseCounts: sidebarCounts.enterpriseCounts,
         categoryArticle,
-        meta: buildMeta(initialProducts),
+        meta: buildMeta(initialProducts, categoryArticle),
       },
     };
   } catch (error) {

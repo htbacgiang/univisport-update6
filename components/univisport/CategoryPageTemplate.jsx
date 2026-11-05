@@ -57,7 +57,22 @@ const CATEGORY_DESCRIPTION = {
 
 
 export default function
-  CategoryPageTemplate({ categorySlug, initialProducts, categoryCounts = {}, gymCounts: gymCountsProp, enterpriseCounts, ArticleComponent, categoryArticle }) {
+  CategoryPageTemplate({
+    categorySlug,
+    initialProducts,
+    categoryCounts = {},
+    gymCounts: gymCountsProp,
+    enterpriseCounts,
+    ArticleComponent,
+    categoryArticle,
+    // Tùy chọn (hiện chỉ /dong-phuc-gym dùng). Không truyền → giữ nguyên giao diện cũ.
+    // HeroComponent: thay khối H1 + mô tả mặc định (component phải tự render H1 duy nhất).
+    // CollectionComponent: thay lưới sản phẩm phân trang khi KHÔNG có bộ lọc ?line/?collar.
+    HeroComponent,
+    CollectionComponent,
+    // productsAnchorId: id neo đặt ngay trước lưới sản phẩm (cho nút "Xem bộ sưu tập"). Không truyền → không render.
+    productsAnchorId,
+  }) {
   const router = useRouter();
   const safeProducts = Array.isArray(initialProducts) ? initialProducts : [];
   const displayCategory =
@@ -249,7 +264,7 @@ export default function
       );
     }
 
-    return ArticleComponent ? <ArticleComponent /> : null;
+    return ArticleComponent ? <ArticleComponent products={safeProducts} /> : null;
   };
 
   const sidebarContent = (
@@ -283,41 +298,26 @@ export default function
         >
           <CategoryBreadcrumb items={breadcrumbItems} />
 
-          {/* H1 + mô tả + Stats card — hiển thị cho tất cả danh mục */}
-          <>
-            {/* H1 + đoạn mô tả */}
+          {/* H1 + mô tả — trang có HeroComponent riêng sẽ tự render H1 */}
+          {HeroComponent ? (
+            <HeroComponent />
+          ) : (
             <section className="bg-white rounded-xl border border-gray-100 p-3 mb-4">
               <h1 className="text-xl md:text-3xl font-medium tracking-tight leading-6 text-gray-900 mb-1">
-                {categorySlug === 'dong-phuc-gym'
-                  ? 'May Đồng Phục Gym Theo Yêu Cầu Cho Phòng Tập, PT Studio Và Fitness Center'
-                  : CATEGORY_H1[categorySlug] || displayCategory}
+                {CATEGORY_H1[categorySlug] || displayCategory}
               </h1>
-              {categorySlug === 'dong-phuc-gym' ? (
-                <div className="hidden md:block space-y-2 text-gray-700 leading-6">
-                  <p>
-                    Đồng phục Gym không chỉ là trang phục làm việc mà còn là một phần
-                    của trải nghiệm thương hiệu trong phòng tập hiện đại. Từ huấn luyện
-                    viên cá nhân, GroupX Instructor, lễ tân đến đội ngũ sale và hội viên,
-                    mỗi vị trí đều cần một cấu hình đồng phục khác nhau về chất liệu,
-                    form dáng và khả năng vận động.
-                  </p>
-                  <p>
-                    Một hệ đồng phục được thiết kế đúng ngay từ đầu sẽ giúp phòng tập
-                    nâng cao nhận diện thương hiệu, tạo trải nghiệm chuyên nghiệp cho
-                    hội viên và giảm đáng kể chi phí phát sinh khi mở rộng thêm cơ sở
-                    hoặc tuyển mới nhân sự trong tương lai.
-                  </p>
-                </div>
-              ) : (
-                <p className="hidden md:block text-gray-700 leading-6">
-                  {CATEGORY_DESCRIPTION[categorySlug] ||
-                    `Khám phá các mẫu ${displayCategory.toLowerCase()} tại Đồng Phục Univi. Nhận thiết kế và sản xuất theo yêu cầu cho phòng tập, CLB, đội nhóm và doanh nghiệp.`}
-                </p>
-              )}
+              <p className="hidden md:block text-gray-700 leading-6">
+                {CATEGORY_DESCRIPTION[categorySlug] ||
+                  `Khám phá các mẫu ${displayCategory.toLowerCase()} tại Đồng Phục Univi. Nhận thiết kế và sản xuất theo yêu cầu cho phòng tập, CLB, đội nhóm và doanh nghiệp.`}
+              </p>
             </section>
+          )}
 
-          </>
+          {productsAnchorId && <div id={productsAnchorId} className="scroll-mt-24" aria-hidden="true" />}
 
+          {CollectionComponent && !activeProductLine && !activeCollarType ? (
+            <CollectionComponent products={safeProducts} />
+          ) : (
           <ProductGridSection
             products={displayProducts}
             loading={isNavigating || router.isFallback}
@@ -337,6 +337,7 @@ export default function
               </button>
             }
           />
+          )}
 
           {hasArticle && isArticleVisible && (
             <div className="mt-8 md:mt-10">

@@ -2,923 +2,903 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import ContactForm from '../../header/ContactForm';
-import FabricCardComponent from '../FabricCardComponent';
-import UniformStylesComponent from '../UniformStylesComponent';
-import ProcessSteps from '../ProcessSteps';
+import ArticleImageGallery from '../../common/ArticleImageGallery';
+import FabricCatalogView from '../chat-lieu-vai/FabricCatalogView';
+import UniviOrderProcess from '../order-process/UniviOrderProcess';
+import GymMockupCollection from '../gym/GymMockupCollection';
 
-const heroStats = [
-  'Xưởng 2.000m2 tại phường Chương Mỹ, Hà Nội',
-  'Công suất 100.000 sản phẩm/tháng',
-  'Công nghệ UNI DRY',
-  'Phòng R&D riêng',
-  'Thiết kế miễn phí',
-  'Giao hàng toàn quốc',
-];
+/*
+ * Pillar landing /dong-phuc-gym.
+ * File này export 3 phần được CategoryPageTemplate ghép theo thứ tự:
+ *   GymHero (H1 duy nhất)  →  lưới sản phẩm mặc định (ProductGridSection, anchor #bo-suu-tap-gym)  →  GymUniviPage (nội dung pillar)
+ *
+ * Nguồn nội dung: docs/knowledge (05, 10, 11, 19, 04). Không dùng UNI BLENDED / UNI POWERZIP,
+ * địa chỉ xưởng, email, MOQ, tiến độ dạng con số vì còn [CẦN XÁC MINH] trong 27-can-xac-minh.md.
+ */
 
-const trustBadges = [
-  ['Xưởng sản xuất 2.000m2 tại phường Chương Mỹ, Hà Nội', 'Chủ động sản xuất, kiểm soát chất lượng và tiến độ cho phòng Gym, PT Studio và chuỗi Fitness Center.'],
-  ['Công suất 100.000 sản phẩm/tháng', 'Phù hợp đơn B2B, chuỗi phòng tập, sự kiện hội viên và nhu cầu đặt bổ sung theo từng cơ sở.'],
-  ['Công nghệ UNI DRY', 'Hỗ trợ thoát ẩm một chiều, giảm cảm giác bí bách ở vùng lưng, vai, nách và cổ áo.'],
-  ['Phòng R&D riêng', 'Nghiên cứu chất liệu, form dáng, trải nghiệm vận động và khả năng tái sản xuất đồng bộ.'],
-  ['Thiết kế miễn phí', 'Lên concept theo màu thương hiệu, logo, vai trò nhân sự, Staff Uniform và Member Uniform.'],
-  ['Đặt từ 10 áo ở dòng phù hợp', 'Phòng tập mới có thể bắt đầu gọn với đồng phục PT, lễ tân hoặc áo member.'],
-];
-
-const reasons = [
-  ['Tạo ấn tượng đầu tiên', 'Đồng phục chỉn chu giúp khách mới thấy phòng tập có hệ thống vận hành rõ ràng ngay tại quầy lễ tân và sàn tập.'],
-  ['Xây dựng thương hiệu', 'Đội ngũ trở thành bộ nhận diện di động trong ảnh lớp nhóm, video tư vấn, livestream và nội dung social.'],
-  ['Phân vai đội ngũ', 'Hội viên dễ nhận ra ai là PT, HLV sàn, lễ tân, sale consultant, quản lý ca hoặc nhân sự vận hành.'],
-  ['Gia tăng trải nghiệm hội viên', 'Hội viên mới dễ tìm đúng người hỗ trợ, còn hội viên lâu năm có thêm cảm giác cộng đồng qua áo member, challenge hoặc workshop.'],
-  ['Hỗ trợ bán hàng và marketing', 'Hình ảnh đội ngũ ổn định giúp phòng tập sản xuất nội dung, chạy quảng cáo và truyền thông sự kiện tốt hơn.'],
-];
-
-const materialRows = [
-  ['UNI DRY', 'Công nghệ xử lý thoát ẩm', 'Hỗ trợ đưa hơi ẩm từ da ra lớp ngoài vải để giảm bết lưng, bí nách và ẩm cổ áo.', 'HLV, PT, Functional Training, cardio, ca làm việc dài'],
-  ['UNI QUICK DRY', 'Polyester cao cấp nhanh khô', 'Nhẹ, khô nhanh, dễ bảo quản, phù hợp số lượng lớn và tần suất giặt cao.', 'Áo member, áo challenge, T-shirt Gym, áo sự kiện'],
-  ['UNI SUPER COOL', 'Polyamide mềm mịn', 'Mềm, mượt, mát, mịn, co giãn tốt và giảm ma sát khi tiếp xúc da.', 'PT cao cấp, boutique gym, GroupX, Yoga trong Fitness Center'],
-  ['UNI BLENDED', 'Nhóm vải pha cân bằng', 'Đứng form hơn, dễ mặc hằng ngày, cân bằng hiệu năng vận động và hình ảnh dịch vụ.', 'Lễ tân, sale, quản lý, Polo thể thao'],
-  ['UNI POWERZIP', 'Polo thể thao khóa kéo', 'Gọn, hiện đại, cao cấp hơn T-shirt nhưng vẫn giữ tính vận động.', 'PT senior, quản lý sàn, HLV lớp premium, đội sự kiện'],
-];
-
-const painPoints = [
-  ['Chọn vải quá dày', 'Dày không đồng nghĩa với bền. Nếu thoát ẩm kém, áo sẽ nặng, nóng bí và nhanh bị đội ngũ bỏ qua.'],
-  ['Mockup đẹp nhưng mặc không tốt', 'Logo lớn ở vùng kéo căng, phối màu rườm rà ở vai, form quá bó hoặc cổ áo cứng đều có thể cản trở vận động.'],
-  ['Không phân vai màu sắc', 'HLV, PT, sale, lễ tân và hội viên dùng chung một mẫu khiến khách khó nhận diện người hỗ trợ trong giờ cao điểm.'],
-  ['Không lưu file thiết kế', 'Đợt đặt sau dễ lệch màu, lệch logo hoặc lệch form nếu không lưu mã vải, file thiết kế, size chart và kỹ thuật hoàn thiện.'],
-  ['Không tính mở rộng hệ thống', 'Chuỗi phòng tập cần xác định từ đầu mẫu cho nhân sự, hội viên, sự kiện và sản phẩm có thể tái sản xuất khi mở cơ sở mới.'],
-];
-
-const designPrinciples = [
-  ['Athletic Fit', 'Phù hợp HLV và PT vì tạo hình ảnh gọn, khỏe và thể thao. Form cần ôm vừa, không siết nách hoặc kéo vai khi thị phạm.'],
-  ['Raglan tăng biên độ vai', 'Đường ráp chéo từ cổ xuống nách giúp vai linh hoạt hơn khi nâng tay, kéo xô, plank, stretching hoặc demo động tác.'],
-  ['Đường may giảm ma sát', 'Nên kiểm tra vùng vai, nách, cổ áo và sườn áo vì đây là các điểm dễ ma sát khi tập lặp lại.'],
-  ['Logo không cản chuyển động', 'Logo ngực trái, sau lưng hoặc tay áo nên có thứ bậc rõ; tránh đặt logo quá lớn ở vùng thường xuyên kéo căng.'],
-  ['Hỗ trợ cường độ cao', 'Với HIIT, cardio, bootcamp hoặc functional training, áo cần nhẹ, thoát ẩm, co giãn và không gây vướng.'],
-];
-
-const modelSolutions = [
-  ['Gym Private', 'Ưu tiên đồng phục PT và HLV trước: Polo hoặc T-shirt Athletic Fit, màu tiết chế, logo gọn và chất liệu SUPER COOL hoặc BLENDED theo định vị.'],
-  ['Boutique Fitness Studio', 'Cần nhận diện rõ trong ảnh, video và social. HLV lớp nhóm có thể dùng T-shirt, tanktop hoặc áo phối màu theo bộ nhận diện.'],
-  ['Fitness Center', 'Có nhiều điểm chạm: lễ tân, sale, PT, HLV sàn, quản lý, hội viên, lớp nhóm và sự kiện. Nên triển khai theo hệ thống thay vì từng mẫu rời.'],
-  ['Chuỗi phòng tập', 'Cần chuẩn hóa form, màu, chất liệu, vị trí logo và file thiết kế để mỗi cơ sở mới không lệch hình ảnh.'],
-  ['Cross Training Studio', 'Ưu tiên chất liệu thoát ẩm, nhanh khô, co giãn và form không cản vai lưng cho HIIT, bootcamp hoặc lớp cường độ cao.'],
-  ['Functional Training Studio', 'Cần kiểm tra kỹ vùng vai, nách, lưng trên và gấu áo. Nếu có sự kiện ngoài trời, nên có thêm áo member nhanh khô.'],
-  ['Hybrid Training và Strength & Conditioning', 'Cần form Athletic Fit, biên độ vai rộng và chất liệu chịu được cả bài sức mạnh, conditioning lẫn các buổi tập hỗn hợp cường độ cao.'],
-  ['Recovery Zone', 'Nhân sự hỗ trợ phục hồi cần trang phục mềm, gọn, đứng form vừa đủ và khác màu đội HLV để hội viên nhận diện đúng khu vực dịch vụ.'],
-];
-
-const productGroups = [
-  ['Polo PT', 'PT senior, Head Coach, quản lý sàn hoặc phòng tập cần hình ảnh tư vấn cao hơn.', 'SUPER COOL, BLENDED hoặc cấu hình Polo thể thao', 'https://live.staticflickr.com/65535/55265084647_9069991283_b.jpg'],
-  ['T-shirt PT', 'HLV lớp nhóm, functional training, HIIT hoặc đội ngũ thường xuyên thị phạm.', 'UNI DRY, UNI QUICK DRY, vải co giãn thoát ẩm', 'https://live.staticflickr.com/65535/55266185304_dc8d39cfde_b.jpg'],
-  ['Áo dài tay raglan', 'Phòng máy lạnh, mùa lạnh, lớp ngoài trời, PT Studio hoặc đội nhóm cần hình ảnh gọn hơn.', 'QUICK DRY, UNI DRY', 'https://live.staticflickr.com/65535/55344727492_5af4cfe3e6_b.jpg'],
-  ['Đồng phục lễ tân, sale, quản lý', 'Nhóm cần hình ảnh dịch vụ, đứng form và khác biệt vừa đủ với HLV.', 'UNI BLENDED, Polo thể thao', 'https://live.staticflickr.com/65535/55358736832_0baa501a38_b.jpg'],
-  ['Áo member, VIP, challenge', 'Hội viên, cộng đồng lớp nhóm, workshop, sự kiện hoặc merchandise.', 'QUICK DRY, UNI DRY, cấu hình dễ mặc', 'https://live.staticflickr.com/65535/55342902322_3613b86d05_b.jpg'],
-];
+const BRAND = '#105d97';
+const linkClass = 'font-semibold text-[#105d97] hover:underline';
 
 
-const rolloutScenarios = [
-  ['Gym Private', 'Bắt đầu từ đồng phục PT và HLV, sau đó mở rộng sang áo member hoặc VIP.'],
-  ['Fitness Center', 'Triển khai theo vai trò: lễ tân, sale, PT, HLV, quản lý và hội viên để vận hành rõ ràng hơn.'],
-  ['Chuỗi phòng tập', 'Ưu tiên bộ quy chuẩn tái sản xuất để các cơ sở không lệch màu, lệch form hoặc lệch nhận diện theo thời gian.'],
-  ['Franchise', 'Đưa đồng phục vào brand manual: màu, logo, chất liệu, size, vị trí in và quy trình đặt bổ sung.'],
-];
+// Mẫu áo hiển thị trong section Nam / Nữ — CHỈ điền slug sản phẩm sau khi Univi xác nhận
+// ảnh và mã đúng phiên bản nam/nữ. Mảng rỗng → section chỉ hiển thị nội dung tư vấn, không hiển thị sản phẩm.
+const GENDER_SHOWCASE = {
+  nam: [],
+  nu: [],
+};
 
-const relatedLinks = [
-  ['Giải pháp 2S Uniform', '/giai-phap-2s'],
-  ['Công nghệ UNI DRY', '/cong-nghe-uni-dry'],
-  ['Vải Super Cool là gì', '/vai-super-cool-la-gi'],
-  ['Đồng phục Fitness Center', '/dong-phuc-fitness-center'],
-  ['Đồng phục PT Gym', '/dong-phuc-pt'],
-  ['Đồng phục lễ tân phòng Gym', '/bai-viet/dong-phuc-le-tan-phong-gym'],
-  ['Đồng phục phòng tập theo yêu cầu', '/bai-viet/dong-phuc-phong-tap-theo-yeu-cau'],
-  ['Xưởng may đồng phục thể thao UNIVI', '/xuong-may-dong-phuc-univi'],
-];
+// Gallery cuối section Nam / Nữ — dùng chung component ArticleImageGallery (giống Gallery chèn từ Toolbar Editor).
+// Thêm ảnh: { src, altText, width, height } — width/height chỉ là tỉ lệ dự phòng, component tự đọc kích thước thật.
+// Mảng rỗng → không hiển thị gallery.
+const GENDER_GALLERY = {
+  nam: {
+    title: 'Hình ảnh áo tập Gym cho nam',
+    images: [
+      { src: 'https://live.staticflickr.com/65535/55380945263_10ec0cab13_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55264459937_28e7b233bb_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 6, height: 4 },
+      { src: 'https://live.staticflickr.com/65535/55344321100_52c7e53de9_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55266084938_7b79b79100_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55566121184_6ef1e98895_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55265622715_f30258d608_b.jpg', altText: 'Áo tập Gym cho nam ...', width: 4, height: 6 },
 
-export const gymFaqs = [
-  ['Đồng phục Gym nên dùng chất liệu gì?', 'Đồng phục Gym nên chọn chất liệu theo vai trò. HLV và PT nên ưu tiên UNI SUPER COOL hoặc cấu hình vải co giãn, thoát ẩm tốt. Hội viên, áo sự kiện và áo member có thể dùng UNI QUICK DRY vì nhẹ, nhanh khô và dễ bảo quản. Lễ tân, sale và quản lý phù hợp với UNI BLENDED hoặc Polo thể thao đứng form.'],
-  ['Đồng phục Gym có cần co giãn 4 chiều không?', 'Có, đặc biệt với HLV, PT và Fitness Instructor. Co giãn 4 chiều giúp người mặc nâng tay, xoay vai, cúi người, plank, squat và thị phạm động tác linh hoạt hơn, từ đó giảm cảm giác bị kéo căng ở vai, lưng và nách.'],
-  ['Phòng Gym nên chọn Polo hay T-shirt cho HLV?', 'Polo phù hợp với PT senior, Head Coach, quản lý sàn hoặc mô hình cần hình ảnh dịch vụ cao hơn. T-shirt thể thao phù hợp với HLV lớp nhóm, functional training, cardio và môi trường phòng Gym năng động. Nhiều phòng tập nên kết hợp cả hai theo vai trò.'],
-  ['Đồng phục PT khác gì đồng phục hội viên?', 'Đồng phục PT ưu tiên nhận diện rõ, form gọn, hình ảnh chuyên nghiệp và khả năng hỗ trợ vận động khi huấn luyện trực tiếp. Đồng phục hội viên ưu tiên sự thoải mái, dễ mặc, nhanh khô và phù hợp nhiều vóc dáng.'],
-  ['Phòng tập có nên bán đồng phục cho hội viên không?', 'Có. Áo hội viên, áo challenge, áo workshop hoặc áo VIP giúp tăng nhận diện thương hiệu, tạo cảm giác cộng đồng và mở thêm giá trị merchandise cho phòng tập. Đây là một phần quan trọng của Member Uniform trong hệ 2S Uniform.'],
-  ['UNIVI có hỗ trợ thiết kế theo màu thương hiệu không?', 'Có. UNIVI hỗ trợ tư vấn phối màu, vị trí logo, form dáng, chất liệu và mockup theo bộ nhận diện thương hiệu của từng phòng Gym, PT Studio hoặc Fitness Center.'],
-  ['Có lên mockup trước khi sản xuất không?', 'Có. Mockup giúp phòng tập hình dung phối màu, logo, vị trí in, vai trò nhân sự và tổng thể hệ đồng phục trước khi chuyển sang sản xuất.'],
-  ['Số lượng đặt tối thiểu là bao nhiêu?', 'Theo chính sách đối tác trong dữ liệu sản phẩm, một số dòng phù hợp có thể bắt đầu từ 10 áo. Với mẫu riêng hoàn toàn theo yêu cầu, số lượng tối thiểu có thể thay đổi theo cấu hình sản phẩm, chất liệu và mức độ tùy chỉnh.'],
-  ['Có đặt bổ sung sau khi tuyển thêm nhân sự không?', 'Có. Để đặt bổ sung không lệch màu hoặc lệch logo, phòng tập nên lưu lại file thiết kế, mã màu, chất liệu, form, bảng size và kỹ thuật hoàn thiện ngay từ đơn đầu tiên.'],
-  ['UNIVI có hỗ trợ chuỗi phòng tập nhiều cơ sở không?', 'Có. Với chuỗi phòng tập, UNIVI có thể tư vấn hệ đồng phục theo 2S Uniform, gồm Staff Uniform cho nhân sự và Member Uniform cho hội viên, đồng thời lưu chuẩn tái sản xuất để triển khai đồng bộ cho nhiều cơ sở.'],
-];
+    ],
+  },
+  nu: {
+    title: 'Hình ảnh áo tập Gym cho nữ',
+    images: [
+      { src: 'https://live.staticflickr.com/65535/55565725111_d49f099ba1_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55380999219_86dc9f2d37_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/54903524904_6435ef5990_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55344054408_c3aa34465e_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55564700402_9d21f092ae_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+      { src: 'https://live.staticflickr.com/65535/55381212595_52005bc82f_b.jpg', altText: 'Áo tập Gym cho nữ ...', width: 4, height: 6 },
+
+    ],
+  },
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helpers dữ liệu sản phẩm (chỉ đọc dữ liệu có cấu trúc, không dùng description trong DB)
+// ─────────────────────────────────────────────────────────────────────────────
+
+function getImageUrl(path) {
+  if (!path) return '/images/placeholder.jpg';
+  if (path.startsWith('http://') || path.startsWith('https://') || path.startsWith('/')) return path;
+  return `/${path}`;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// UI helpers
+// ─────────────────────────────────────────────────────────────────────────────
 
 function Section({ id, title, children, className = '' }) {
   return (
-    <article id={id} className={`scroll-mt-24 bg-white py-4 ${className}`}>
-      <h2 className="mb-3 text-xl md:text-2xl font-medium tracking-tight leading-6 text-gray-900">
+    <section id={id} aria-labelledby={`${id}-title`} className={`scroll-mt-24 py-2 md:py-3 ${className}`}>
+      <h2 id={`${id}-title`} className="mb-4 text-xl md:text-2xl font-semibold tracking-tight text-gray-900">
         {title}
       </h2>
       {children}
-    </article>
+    </section>
+  );
+}
+
+function H3({ children, id }) {
+  return (
+    <h3 id={id} className="mb-2 text-lg font-semibold text-gray-900">
+      {children}
+    </h3>
   );
 }
 
 function TextCard({ title, children }) {
   return (
-    <div className="border-l-4 border-[#105d97]/20 py-1 pl-4">
-      <h3 className="mb-1 text-base font-medium text-gray-900">{title}</h3>
+    <div className="border-l-4 border-[#105d97]/25 py-1 pl-4">
+      <h3 className="mb-1 text-base font-semibold text-gray-900">{title}</h3>
       <div className="text-sm leading-6 text-gray-700 md:text-base">{children}</div>
     </div>
   );
 }
 
-function SimpleTable({ headers, rows }) {
+function Figure({ src, alt, caption, width = 1200, height = 800, sizes = '(max-width: 1024px) 100vw, 860px' }) {
   return (
-    <div className="overflow-x-auto border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
-        <thead className="bg-gray-50">
-          <tr>
-            {headers.map((header) => (
-              <th key={header} className="px-4 py-3 text-left font-semibold text-gray-900">
-                {header}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100 bg-white">
-          {rows.map((row) => (
-            <tr key={row.join('-')}>
-              {row.map((cell, index) => (
-                <td key={`${cell}-${index}`} className="px-4 py-3 align-top text-gray-700">
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-function ImageBlock({ src, alt, caption, priority = false }) {
-  return (
-    <figure className="overflow-hidden">
-      <Image
-        src={src}
-        alt={alt}
-        width={1200}
-        height={675}
-        className="h-auto w-full object-cover"
-        sizes="(max-width: 1024px) 100vw, 900px"
-        priority={priority}
-      />
-      <figcaption className="px-4 py-3 text-center text-sm italic text-gray-500">
-        {caption}
-      </figcaption>
+    <figure className="overflow-hidden rounded-lg ">
+      <Image src={src} alt={alt} width={width} height={height} sizes={sizes} className="h-auto w-full object-cover" />
+      {caption && <figcaption className="px-4 py-3 text-center text-base text-gray-500">{caption}</figcaption>}
     </figure>
   );
 }
 
-export default function GymUniviPage() {
-  const [isQuoteFormOpen, setIsQuoteFormOpen] = useState(false);
+function PrimaryButton({ onClick, children }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-[#105d97] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0e4f82] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#105d97]"
+    >
+      {children}
+    </button>
+  );
+}
+
+function SecondaryLink({ href, children }) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-800 transition hover:border-[#105d97] hover:text-[#105d97]"
+    >
+      {children}
+    </Link>
+  );
+}
+
+/** Bảng trên desktop, danh sách thẻ trên mobile để tránh cuộn ngang. */
+function ResponsiveTable({ caption, headers, rows }) {
+  return (
+    <>
+      <div className="hidden md:block overflow-hidden rounded-lg border border-gray-200">
+        <table className="w-full divide-y divide-gray-200 text-sm">
+          <caption className="sr-only">{caption}</caption>
+          <thead className="bg-[#105d97]/5">
+            <tr>
+              {headers.map((h) => (
+                <th key={h} scope="col" className="px-4 py-3 text-left font-semibold text-gray-900">
+                  {h}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 bg-white">
+            {rows.map((row) => (
+              <tr key={row[0]}>
+                {row.map((cell, i) =>
+                  i === 0 ? (
+                    <th key={i} scope="row" className="px-4 py-3 text-left align-top font-semibold text-gray-900">
+                      {cell}
+                    </th>
+                  ) : (
+                    <td key={i} className="px-4 py-3 align-top text-gray-700">
+                      {cell}
+                    </td>
+                  )
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <ul className="space-y-3 md:hidden" aria-label={caption}>
+        {rows.map((row) => (
+          <li key={row[0]} className="rounded-lg border border-gray-200 bg-white p-4">
+            <p className="mb-2 font-semibold text-gray-900">{row[0]}</p>
+            <dl className="space-y-1 text-sm">
+              {row.slice(1).map((cell, i) => (
+                <div key={i}>
+                  <dt className="inline font-medium text-gray-500">{headers[i + 1]}: </dt>
+                  <dd className="inline text-gray-700">{cell}</dd>
+                </div>
+              ))}
+            </dl>
+          </li>
+        ))}
+      </ul>
+    </>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// 01. HERO
+// ─────────────────────────────────────────────────────────────────────────────
+
+export function GymHero() {
+  const [open, setOpen] = useState(false);
 
   return (
-    <div className="text-gray-700">
-      <section className="bg-white pb-8">
-        <p className="mb-2 text-xs font-medium text-[#105d97] uppercase tracking-[0.15em]">Smart Sport Uniform by UNIVI</p>
-        <p className="text-2xl md:text-3xl font-medium tracking-tight leading-6 text-gray-900">
-          May Đồng Phục Gym Theo Yêu Cầu Cho Phòng Tập, PT Studio Và Fitness Center        </p>
-        <div className="mt-4 space-y-3 text-base leading-6 text-gray-700">
-          <p>
-            Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục thể thao
-            chuyên nghiệp cho phòng Gym, Fitness Center và PT Studio tại Việt Nam.
+    <section aria-labelledby="gym-h1" className="mb-6 overflow-hidden rounded-xl border border-gray-100 bg-white">
+      <div className="p-4 md:p-6">
+        <div className="container">
+          <h1 id="gym-h1" className="text-2xl md:text-3xl font-semibold leading-tight tracking-tight text-gray-900">
+            Đồng Phục Gym, Áo Tập Gym Cho Phòng Tập Và Fitness Center
+          </h1>
+          <p className="mt-4 text-base leading-7 text-gray-700 hidden md:block">
+            Univi thiết kế và sản xuất đồng phục Gym, áo tập Gym theo màu và logo riêng cho phòng Gym, Fitness Center,
+            PT Studio, CLB thể thao, đội ngũ HLV, PT và nhân viên phòng tập. Khi HLV mặc áo bí, lễ tân mặc một kiểu, PT mặc một kiểu, hội viên khó nhận ra ai đang hỗ trợ mình và
+            hình ảnh phòng tập trên ảnh, video cũng thiếu nhất quán. Đồng phục Gym đúng cách giải quyết cả hai việc:
+            đội ngũ thoải mái khi vận động và phòng tập có một bộ nhận diện rõ ràng.
           </p>
-          <p>
-            Đồng phục Gym không chỉ là áo để nhân sự mặc trong ca làm việc. Với{' '}
-            <Link href="/gioi-thieu" className="font-semibold text-[#105d97] hover:underline">
-              Đồng Phục Univi
-            </Link>
-            , đây là hệ thống nhận diện giúp phân vai đội ngũ, hỗ trợ vận hành, tăng sự chuyên nghiệp
-            và tạo cảm giác tin cậy cho hội viên.
-          </p>
+          <div className="mt-3 space-y-3 text-base leading-7 text-gray-700">
+
+            <p>
+              Đồng Phục Univi là đơn vị TIÊN PHONG cung cấp giải pháp đồng phục thể thao chuyên nghiệp cho các chuỗi
+              phòng tập và các đội nhóm tập Gym, Fitness tại Việt Nam.
+            </p>
+          </div>
+          <div className="mt-3 flex  gap-3 sm:flex-row">
+            <PrimaryButton onClick={() => setOpen(true)}>Nhận tư vấn</PrimaryButton>
+            <SecondaryLink href="#bo-suu-tap-gym">Xem bộ sưu tập</SecondaryLink>
+          </div>
         </div>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setIsQuoteFormOpen(true)}
-            className="rounded border border-[#105d97] bg-[#105d97] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0e4f82]"
-          >
-            Nhận thiết kế miễn phí
-          </button>
-          <Link
-            href="#bo-suu-tap-gym"
-            className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-[#105d97] hover:text-[#105d97]"
-          >
-            Xem bộ sưu tập
+      </div>
+      <ContactForm source="Đồng phục Gym - Hero - Nhận tư vấn" isModal isOpen={open} onClose={() => setOpen(false)} />
+    </section>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Dữ liệu nội dung
+// ─────────────────────────────────────────────────────────────────────────────
+
+const tocItems = [
+  ['giai-phap-phong-tap', 'Giải pháp cho phòng tập Gym và Fitness'],
+  ['ao-tap-gym-nam', 'Áo tập Gym cho nam'],
+  ['ao-tap-gym-nu', 'Áo tập Gym cho nữ'],
+  ['mau-mockup-ao-tap-gym', 'Các mẫu mockup áo tập Gym'],
+  ['dong-phuc-hlv-pt-nhan-vien', 'Đồng phục HLV, PT và nhân viên'],
+  ['chat-lieu', 'Chất liệu và công nghệ vải'],
+  ['kinh-nghiem-chon-ao', 'Kinh nghiệm chọn áo đồng phục Gym'],
+  ['du-an', 'Dự án đồng phục Gym và Fitness'],
+  ['giai-phap-2s', 'Giải pháp 2S Uniform'],
+  ['quy-trinh', 'Quy trình đặt may'],
+  ['bai-viet-lien-quan', 'Bài viết liên quan'],
+  ['faq', 'Câu hỏi thường gặp'],
+];
+
+
+// Section 4 — mỗi vị trí 1 ảnh minh họa (w-full). image: null → chưa có ảnh, chỉ hiển thị nội dung.
+// Ảnh 1024×683 trừ lễ tân (1024×1024); khai báo đúng kích thước để không lệch bố cục (CLS).
+const staffRoles = [
+  {
+    id: 'dong-phuc-hlv-gym',
+    title: 'Đồng phục huấn luyện viên Gym',
+    text: 'HLV sàn và HLV lớp nhóm vận động nhiều nhất trong ca: nâng tay, xoay vai, thị phạm liên tục. Cần áo co giãn, thoát ẩm, form gọn và dễ nhận diện từ xa. Áo thun Fit Body phù hợp môi trường năng động; polo thể thao dành cho phòng tập muốn hình ảnh chỉn chu hơn.',
+    image: {
+      src: 'https://live.staticflickr.com/65535/55545804128_66629d6247_b.jpg',
+      alt: 'Đồng phục huấn luyện viên Gym – áo thun thể thao co giãn',
+      caption: 'Áo thun thể thao co giãn cho huấn luyện viên Gym.',
+      width: 1024,
+      height: 683,
+    },
+  },
+  {
+    id: 'dong-phuc-pt-gym',
+    title: 'Đồng phục PT',
+    text: (
+      <>
+        PT tiếp xúc hội viên nhiều nhất, từ buổi đánh giá thể trạng đến tư vấn gói tập, nên hình ảnh ảnh hưởng trực tiếp
+        tới niềm tin. Áo cần hỗ trợ vận động nhưng vẫn truyền tải sự chuyên nghiệp: áo thun Fit Body cổ trụ hoặc polo thể
+        thao. Xem riêng giải pháp{' '}
+        <Link href="/dong-phuc-pt" className={linkClass}>
+          đồng phục PT
+        </Link>
+        .
+      </>
+    ),
+    image: {
+      src: 'https://live.staticflickr.com/65535/55361569106_a2e591a93f_b.jpg',
+      alt: 'Áo đồng phục PT dạng polo thể thao co giãn',
+      caption: 'Polo thể thao cho PT: chỉn chu khi tư vấn, thoải mái khi hướng dẫn.',
+      width: 1024,
+      height: 683,
+    },
+  },
+  {
+    id: 'dong-phuc-le-tan-gym',
+    title: 'Đồng phục lễ tân và tư vấn viên',
+    text: (
+      <>
+        Lễ tân và tư vấn viên là điểm chạm đầu tiên với khách mới: đón khách, check-in, tư vấn gói tập và dẫn khách
+        tham quan sàn tập. Hai vị trí ít vận động mạnh nhưng đi lại nhiều trong ca, nên ưu tiên polo thể thao đứng form,
+        ít nhăn, màu ổn định theo nhận diện thương hiệu, vừa lịch sự vừa thoải mái. Tham khảo thêm{' '}
+        <Link href="/bai-viet/dong-phuc-le-tan-phong-gym" className={linkClass}>
+          đồng phục lễ tân phòng Gym
+        </Link>
+        .
+      </>
+    ),
+    image: {
+      src: '/images/gym/dong-phuc-le-tan.jpg',
+      alt: 'Đồng phục lễ tân và tư vấn viên phòng Gym – áo polo đứng form',
+      caption: 'Polo đứng form, lịch sự cho lễ tân và tư vấn viên phòng Gym.',
+      width: 1024,
+      height: 1024,
+    },
+  },
+  {
+    id: 'dong-phuc-quan-ly-gym',
+    title: 'Đồng phục quản lý và nhân viên vận hành',
+    text: 'Quản lý hòa vào hệ nhận diện chung nhưng có dấu hiệu phân cấp vừa đủ: màu trung tính, viền màu thương hiệu hoặc tag vai trò; polo thể thao hoặc polo dài tay là phương án dễ triển khai. Nhân viên kỹ thuật, vệ sinh, vận hành cần áo bền, dễ giặt, không cản trở thao tác. Không nên tạo quá nhiều mẫu: 2–3 biến thể theo vai trò là dễ quản lý size và đơn bổ sung.',
+    image: {
+      src: '/images/gym/dong-phuc-quan-ly.jpg',
+      alt: 'Đồng phục quản lý và nhân viên vận hành phòng Gym',
+      caption: 'Đồng phục quản lý và vận hành: cùng hệ nhận diện, phân cấp vừa đủ.',
+      width: 1024,
+      height: 683,
+    },
+  },
+  {
+    id: 'dong-phuc-su-kien-cong-dong-gym',
+    title: 'Đồng phục nhóm sự kiện và cộng đồng',
+    text: 'Áo thử thách, workshop, CLB hội viên: giữ màu thương hiệu nhưng khác Staff Uniform ở phối màu hoặc vị trí logo, để hội viên vẫn nhận ra nhân sự trên sàn tập.',
+    image: {
+      src: 'https://live.staticflickr.com/65535/55577023382_63a9c45ec6_b.jpg',
+      alt: 'Áo thun thể thao cổ tròn cho sự kiện và thử thách hội viên phòng Gym',
+      caption: 'Áo cổ tròn cho sự kiện, thử thách và cộng đồng hội viên.',
+      width: 1024,
+      height: 683,
+    },
+  },
+  {
+    id: 'ao-tap-hoc-vien-hoi-vien-gym',
+    title: 'Áo tập cho học viên, hội viên',
+    text: (
+      <>
+        Áo tập in logo phòng tập giúp học viên, hội viên có trang phục phù hợp khi tập và tạo cảm giác thuộc về một cộng
+        đồng. Hội viên mặc áo khi tập và khi ra ngoài, nên mỗi chiếc áo trở thành một điểm nhận diện thương hiệu. Áo tập
+        cho hội viên nên dùng form Regular Fit dễ mặc, bảng size rộng và chất liệu nhẹ, nhanh khô như UNI QUICKDRY; thiết
+        kế khác Staff Uniform để không nhầm với nhân sự. Đây là một phần của Member Uniform trong{' '}
+        <Link href="/giai-phap-2s" className={linkClass}>
+          giải pháp 2S Uniform
+        </Link>
+        .
+      </>
+    ),
+    image: {
+      src: 'https://live.staticflickr.com/65535/55593401433_e6b6c2e62a_b.jpg',
+      alt: 'Học viên, hội viên mặc áo tập màu đen in logo phòng tập tại sự kiện cộng đồng',
+      caption: 'Áo tập đồng bộ giúp học viên, hội viên cảm thấy là một phần của cộng đồng phòng tập.',
+      width: 1024,
+      height: 683,
+    },
+  },
+];
+
+const projects = [
+  {
+    name: 'Goldmark Fitness',
+    image: '/images/gym/dong-phuc-hlv-goldmark-fitness-univi.jpg',
+    alt: 'Đội ngũ HLV Goldmark Fitness mặc đồng phục Gym Univi',
+    text: 'Đồng phục cho đội ngũ HLV phải giữ form gọn khi squat, thị phạm và hỗ trợ hội viên trong cả ca làm việc. Goldmark Fitness nằm trong danh sách khách hàng đã đặt mẫu AG18.',
+    feedback: '/feedback/feedback-goldmark-fitness',
+    article: '/bai-viet/dong-phuc-hlv-goldmark-fitness',
+  },
+  {
+    name: 'The One KickFit',
+    image: '/images/gym/univi-dong-hanh-cung-the-one-kickfit-3.jpg',
+    alt: 'Huấn luyện viên The One KickFit mặc áo tập Gym Univi',
+    text: 'Môi trường Boxing, Kickfit cường độ cao. HLV và PT tại đây phản hồi áo nhẹ, thoáng, co giãn và giúp hội viên nhận ra HLV ngay trên sàn tập.',
+    feedback: '/feedback/feedback-the-one-kickfit',
+    article: '/bai-viet/feedback-the-one-kickfit-ao-gym-pt-thoang-nhe-univi',
+  },
+  {
+    name: 'AhaGym',
+    image: '/images/gym/univi-dong-hanh-cung-ahagym-1.jpg',
+    alt: 'Đồng phục HLV AhaGym may bằng vải UNI SUPERCOOL',
+    text: 'Bài toán cân bằng giữa form đứng, chuyên nghiệp và sự thoải mái khi coaching. Đồng phục HLV dùng vải UNI SUPERCOOL.',
+    feedback: '/feedback/feedback-dong-phuc-ahagym',
+    article: '/bai-viet/feedback-ahagym',
+  },
+  {
+    name: 'FitCaree',
+    image: '/images/gym/univi-dong-hanh-cung-fitcaree-2.jpg',
+    alt: 'Chuỗi phòng tập FitCaree với đồng phục đội ngũ đồng bộ',
+    text: 'Chuỗi phòng tập cần đồng phục xuất hiện nhất quán ở sàn tập, ảnh đội ngũ, mạng xã hội và hoạt động cộng đồng.',
+    feedback: '/feedback/feedback-fitcaree',
+    article: '/bai-viet/univi-dong-hanh-cung-fitcaree',
+  },
+  {
+    name: 'A100 GYM Dabaco Từ Sơn',
+    image: 'https://live.staticflickr.com/65535/55593291116_bacb817a21_b.jpg',
+    alt: 'Đội ngũ HLV, PT và nhân sự A100 GYM Dabaco Từ Sơn mặc đồng phục Gym đồng bộ',
+    text: 'Toàn đội ngũ HLV, PT và nhân sự cùng mặc một hệ đồng phục. Hai mẫu được triển khai là áo Gym AG1 và AG29.',
+    feedback: '/feedback/feeback-a100-tu-son',
+    article: '/bai-viet/feedback-dong-phuc-a100-gym-dabaco-tu-son',
+  },
+  {
+    name: 'One Coach Fitness Bắc Ninh',
+    image: 'https://live.staticflickr.com/65535/55593292807_01aea1a06f_b.jpg',
+    alt: 'PT One Coach Fitness Bắc Ninh mặc đồng phục polo thể thao tại phòng tập',
+    imagePosition: 'object-[50%_40%]',
+    text: 'Đồng phục chọn theo nhận diện của phòng tập, sử dụng mẫu polo thể thao AGPL17.',
+    feedback: '/feedback/feedback-one-coach-fitnnes-bac-ninh',
+    article: '/bai-viet/feedback-dong-phuc-one-coach-fitness-bac-ninh-or-univi',
+  },
+  {
+    name: 'Welly Fitness',
+    image: 'https://live.staticflickr.com/65535/55225938034_6cf39d08ee_b.jpg',
+    alt: 'PT chuỗi phòng tập Welly Fitness mặc đồng phục Gym phối màu tím theo nhận diện',
+    text: 'Chuỗi phòng tập cần đồng phục PT đồng bộ giữa các cơ sở, phối màu theo bộ nhận diện của thương hiệu.',
+    feedback: '/feedback/chuoi-phong-tap-welly-fitness',
+    article: '/bai-viet/welly-fitness-chon-univi-dong-phuc-5-sao',
+  },
+  {
+    name: 'Mysterise Fitness',
+    image: 'https://live.staticflickr.com/65535/55226107445_2106f30576_b.jpg',
+    alt: 'HLV, PT chuỗi phòng tập Mysterise Fitness mặc đồng phục Gym màu đen',
+    text: 'HLV và PT phản hồi áo nhẹ, thoáng, co giãn và giữ form sau nhiều lần giặt. Mysterise Fitness cũng nằm trong danh sách khách hàng đã đặt mẫu AG18.',
+    feedback: '/feedback/chuoi-phong-tap-mysterise-fitness',
+  },
+];
+
+const rolloutScenarios = [
+  ['Phòng Gym nhỏ, PT Studio', 'Bắt đầu từ đồng phục HLV và PT, sau đó mở rộng sang áo hội viên hoặc áo sự kiện.'],
+  ['Fitness Center', 'Triển khai theo vai trò: lễ tân, tư vấn viên, PT, HLV, quản lý và hội viên.'],
+  ['Chuỗi phòng tập', 'Chốt bộ quy chuẩn: màu, form, chất liệu, vị trí logo, bảng size để các cơ sở không lệch nhau.'],
+  ['Nhượng quyền', 'Đưa đồng phục vào bộ nhận diện thương hiệu kèm quy trình đặt bổ sung cho cơ sở mới.'],
+];
+
+const relatedArticles = [
+  ['Áo tập Gym đường trần Univi', '/bai-viet/ao-tap-gym-duong-tran-unvi', 'Đường may trần và cảm giác mặc khi vận động.'],
+  ['20+ mẫu áo Gym đẹp cho phòng tập và PT Studio', '/bai-viet/20-mau-ao-gym-dep-cho-phong-tap-2026', 'Tổng hợp mẫu áo theo kiểu dáng và vai trò.'],
+  ['3 mẫu áo Gym được ưa chuộng tại Univi', '/bai-viet/3-mau-ao-gym-duoc-ua-chuong-tai-univi', 'Các mẫu được phòng tập chọn nhiều.'],
+  ['Đồng phục Personal Trainer: chọn áo phù hợp cho PT', '/bai-viet/dong-phuc-personal-trainer-chon-ao-phu-hop-cho-pt', 'Cách chọn áo theo hình ảnh và công việc của PT.'],
+  ['Áo Gym dài tay: 8 mẫu và cách chọn', '/bai-viet/ao-gym-dai-tay-8-mau-and-cach-chon-cho-phong-tap', 'Khi nào phòng tập nên dùng áo dài tay.'],
+  ['Polo hay áo thun thể thao cho phòng tập?', '/bai-viet/polo-hay-ao-thun-the-thao-phong-tap-univi', 'So sánh hai kiểu áo theo vị trí nhân sự.'],
+  ['Đồng phục lễ tân phòng Gym', '/bai-viet/dong-phuc-le-tan-phong-gym', 'Gợi ý cho quầy lễ tân và tư vấn viên.'],
+  ['Chất liệu vải đồng phục thể thao', '/chat-lieu-vai', 'Thông số 5 dòng vải và bảng màu Univi.'],
+];
+
+export const gymFaqs = [
+  [
+    'Nên chọn áo đồng phục nào cho phòng Gym?',
+    'Nên chọn theo vị trí thay vì một mẫu cho tất cả. HLV và PT thường dùng áo thun Fit Body hoặc polo thể thao co giãn; lễ tân, tư vấn viên và quản lý hợp với polo thể thao đứng form; hội viên và sự kiện dùng áo thun Regular Fit nhanh khô. Các nhóm nên giữ chung màu chủ đạo và vị trí logo.',
+  ],
+  [
+    'Áo tập Gym cho nam và nữ có gì khác nhau?',
+    'Khác biệt chủ yếu nằm ở form và cách áo ôm theo vóc dáng. Nhóm nam và nhóm nữ nên thử áo mẫu riêng, kiểm tra khi giơ tay, cúi người và thị phạm. Màu, logo và chi tiết phối nên giữ giống nhau để đội ngũ vẫn đồng bộ.',
+  ],
+  [
+    'Nên chọn chất liệu nào cho đồng phục Fitness?',
+    'HLV và PT vận động nhiều giờ hợp với UNI SUPERCOOL (mềm, mát, co giãn cao). Áo hội viên và áo sự kiện số lượng lớn hợp với UNI QUICKDRY hoặc UNI AIR (nhẹ, nhanh khô). Polo cho lễ tân, quản lý nên dùng UNI COOL PIQUÉ hoặc UNI ELITE.',
+  ],
+  [
+    'Phòng tập có thể đặt đồng phục theo nhận diện thương hiệu không?',
+    'Có. Univi may theo màu thương hiệu, logo, vị trí in/thêu và có thể in tên riêng từng người. Phòng tập được duyệt mockup trước khi sản xuất; dịch vụ thiết kế và tư vấn concept miễn phí.',
+  ],
+  [
+    'Nên chọn áo nào cho HLV và PT?',
+    'Tùy định vị phòng tập. Polo thể thao cho hình ảnh lịch sự, phù hợp PT tư vấn trực tiếp; áo thun Fit Body cho môi trường năng động, thiên về vận động. Nếu chọn polo, nên dùng vải thể thao như UNI COOL PIQUÉ hoặc UNI ELITE thay vì polo văn phòng dày.',
+  ],
+  [
+    'Univi có thể tư vấn thiết kế đồng phục cho chuỗi phòng tập không?',
+    'Có. Univi hỗ trợ chuỗi phòng tập nhiều cơ sở theo giải pháp 2S Uniform (Staff Uniform cho nhân sự và Member Uniform cho hội viên), đồng thời lưu thông số mẫu chuẩn để các cơ sở đặt bổ sung không bị lệch màu, lệch form.',
+  ],
+  [
+    'Đồng phục Gym có cần co giãn 4 chiều không?',
+    'Nên có, vì HLV và PT thị phạm động tác đa hướng liên tục như squat, plank, chống đẩy, giơ tay qua đầu. Vải thiếu co giãn sẽ kéo căng ở vai, nách và làm logo biến dạng.',
+  ],
+  [
+    'Phòng tập ít nhân sự có đặt đồng phục được không?',
+    'Được. Phòng tập nhỏ có thể bắt đầu với nhóm HLV và PT rồi mở rộng sang lễ tân hoặc áo hội viên. Số lượng tối thiểu được tư vấn theo mẫu và chất liệu cụ thể.',
+  ],
+];
+
+function GenderShowcase({ slugs = [], products = [] }) {
+  if (!slugs.length) return null;
+  const items = slugs.map((s) => products.find((p) => p.slug === s)).filter(Boolean);
+  if (!items.length) return null;
+  return (
+    <ul className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+      {items.map((p) => (
+        <li key={p.slug} className="rounded-lg border border-gray-100 p-2">
+          <Link href={`/san-pham/${p.slug}`} className="block">
+            <Image src={getImageUrl(p.image)} alt={p.name} width={600} height={800} sizes="(max-width: 640px) 46vw, 200px" className="aspect-[3/4] h-auto w-full rounded-md bg-gray-50 object-contain" />
+            <span className="mt-2 block text-sm font-semibold text-gray-900">{p.name}</span>
           </Link>
-        </div>
-        <div className="mt-5 flex flex-wrap gap-2">
-          {heroStats.map((stat) => (
-            <span key={stat} className="rounded border border-gray-200 px-3 py-1 text-sm text-gray-700">
-              {stat}
-            </span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// NỘI DUNG PILLAR (section 03 → 14)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export default function GymUniviPage({ products = [] }) {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <div className="text-gray-700 ">
+      <nav aria-label="Mục lục" className="rounded-xl hidden md:block border border-gray-100 bg-[#105d97]/[0.03] p-4 md:p-5">
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#105d97]">Nội dung chính</p>
+        <ol className="grid gap-x-6 gap-y-1 text-sm sm:grid-cols-2">
+          {tocItems.map(([id, label], i) => (
+            <li key={id}>
+              <a href={`#${id}`} className="text-gray-700 hover:text-[#105d97] hover:underline">
+                {i < 11 ? `${i + 1}. ` : ''}
+                {label}
+              </a>
+            </li>
           ))}
-        </div>
-      </section>
+        </ol>
+      </nav>
 
-      <Section id="dong-phuc-gym-la-gi" title="1. Đồng Phục Gym Là Gì?" className="border-t border-gray-100">
-        <div className="space-y-2 leading-6">
+      {/* 03 */}
+      <Section id="giai-phap-phong-tap" title="1. Giải pháp đồng phục cho phòng tập Gym và Fitness">
+        <div className="space-y-3 leading-7">
           <p>
-            Đồng phục Gym là hệ trang phục thể thao được thiết kế cho môi trường phòng Gym, Fitness Center, PT Studio, lớp Group X và các mô hình huấn luyện vận động. Người mặc có thể là HLV, PT, lễ tân, quản lý, nhân viên tư vấn hoặc hội viên. Vì nhiệm vụ của từng nhóm khác nhau, đồng phục Gym không nên được hiểu là một mẫu áo thun in logo dùng chung cho toàn bộ hệ thống.
+            Hội viên đánh giá phòng tập qua không gian, nhân sự và hình ảnh trước khi đánh giá máy móc hay giáo án. Đồng
+            phục xuất hiện ở mọi điểm chạm đó: quầy lễ tân, sàn tập, buổi tư vấn gói tập, ảnh đội ngũ trên mạng xã hội.
+            Mỗi mô hình kinh doanh lại cần một cách triển khai đồng phục cho phòng tập khác nhau.
           </p>
-          <p>
-            Điểm khác biệt nằm ở mục đích sử dụng. HLV và PT phải nâng tay, xoay vai, squat, plank và thị phạm liên tục. Lễ tân cần vẻ chỉn chu nhưng vẫn di chuyển nhiều trong ca làm. Hội viên cần áo dễ mặc, khô nhanh và phù hợp nhiều vóc dáng. Một cấu hình đúng phải nối được ba yếu tố: trải nghiệm vận động, nhận diện thương hiệu và hiệu quả vận hành.
-          </p>
-
-          <div className="mt-6 space-y-6">
-            <div>
-              <h3 className="mb-2 text-lg md:text-xl font-medium text-gray-900">
-                1.1 Feature: Cấu Trúc Được Phát Triển Cho Vận Động
-              </h3>
-              <p className="mb-3">
-                Áo Gym chuyên dụng ưu tiên độ co giãn, khả năng thoát ẩm, form phù hợp chuyển động và kỹ thuật hoàn thiện tương ứng với tần suất sử dụng. Đây là phần “gốc” quyết định người mặc có muốn dùng áo mỗi ngày hay không.
-              </p>
-              <p>
-                Khi duyệt mẫu, đừng chỉ nhìn người mẫu đứng thẳng. Hãy yêu cầu người mặc nâng tay qua đầu, xoay thân, gập người, chống đẩy và chạy nhẹ. Áo phù hợp không kéo căng vùng nách, không cuộn gấu quá mức và không làm logo biến dạng khi cơ thể chuyển động.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 text-lg md:text-xl font-medium text-gray-900">
-                1.2 Advantage: Đồng Bộ Nhưng Không Đồng Nhất Máy Móc
-              </h3>
-              <p>
-                Một hệ đồng phục Gym có thể dùng chung màu chủ đạo, ngôn ngữ phối màu và vị trí logo nhưng thay đổi form hoặc chi tiết theo vai trò. PT có thể mặc Athletic Fit; lễ tân dùng polo đứng form; hội viên dùng T-shirt Regular Fit. Nhờ vậy, phòng tập giữ được nhận diện chung mà mỗi nhóm vẫn có trang phục phù hợp với công việc.
-              </p>
-            </div>
-
-            <div>
-              <h3 className="mb-2 text-lg md:text-xl font-medium text-gray-900">
-                1.3 Benefit: Một Khoản Đầu Tư Cho Trải Nghiệm Dịch Vụ
-              </h3>
-              <p>
-                Khi hội viên dễ nhận ra người hỗ trợ, đội ngũ thoải mái khi làm việc và hình ảnh trong ảnh/video được nhất quán, đồng phục Gym tạo giá trị vượt ra ngoài chiếc áo. Nó trở thành một phần của quy trình dịch vụ, nội dung marketing và văn hóa đội nhóm. Với mô hình đa dịch vụ, bạn có thể tham khảo thêm cách tổ chức{' '}
-                <Link href="/dong-phuc-fitness-center" className="font-semibold text-[#105d97] hover:underline">
-                  đồng phục Fitness Center
-                </Link>{' '}
-                cho toàn hệ thống.
-              </p>
-            </div>
-          </div>
         </div>
-        <div className="mt-6">
-          <ImageBlock
-            src="https://live.staticflickr.com/65535/55231241008_13de6ef716_b.jpg"
-            alt="Đồng phục Gym thiết kế theo yêu cầu cho phòng tập và Fitness Center"
-            caption="Hệ đồng phục Gym giúp phòng tập tạo nhận diện ngay từ điểm chạm đầu tiên."
-            priority
+        <div className="mt-6 grid gap-5 md:grid-cols-2">
+          <TextCard title="Chuỗi phòng Gym">
+            <p>
+              Cần chuẩn hóa màu, form, chất liệu, vị trí logo và file thiết kế ngay từ đơn đầu tiên, để mỗi cơ sở mới đặt
+              bổ sung vẫn ra đúng hình ảnh. Xem thêm cách triển khai{' '}
+              <Link href="/bai-viet/dong-phuc-chuoi-phong-tap" className={linkClass}>
+                đồng phục cho chuỗi phòng tập
+              </Link>
+              .
+            </p>
+          </TextCard>
+          <TextCard title="Fitness Center">
+            <p>
+              Nhiều điểm chạm và nhiều vai trò: lễ tân, tư vấn viên, PT, HLV lớp nhóm, quản lý, hội viên. Nên triển khai
+              theo hệ thống thay vì từng mẫu rời; chi tiết tại trang{' '}
+              <Link href="/dong-phuc-fitness-center" className={linkClass}>
+                đồng phục trung tâm Fitness
+              </Link>
+              .
+            </p>
+          </TextCard>
+          <TextCard title="PT Studio">
+            <p>
+              Đội ngũ nhỏ, hình ảnh PT quyết định niềm tin của khách. Có thể bắt đầu với đồng phục PT rồi mở rộng sau; tham
+              khảo{' '}
+              <Link href="/bai-viet/phong-gym-private-duoi-10-nhan-su-nen-mac-gi-cho-dung-nhat" className={linkClass}>
+                phòng Gym dưới 10 nhân sự nên mặc gì
+              </Link>
+              .
+            </p>
+          </TextCard>
+          <TextCard title="CLB thể thao">
+            <p>
+              Ưu tiên áo hội viên, áo thử thách và áo sự kiện: dễ mặc, nhanh khô, bảng size rộng, chi phí hợp lý khi đặt số
+              lượng lớn.
+            </p>
+          </TextCard>
+          <TextCard title="Đội ngũ HLV và PT">
+            <p>
+              Là nhóm vận động nhiều nhất và tiếp xúc hội viên nhiều nhất, nên cần áo co giãn, thoát ẩm và form gọn. Cách
+              chọn theo từng vai trò ở mục 5.
+            </p>
+          </TextCard>
+        </div>
+        <div className="mt-6 rounded-lg bg-gray-50 p-4 md:p-5">
+          <p className="mb-2 font-semibold text-gray-900">Điểm chung khi đặt đồng phục phòng Gym</p>
+          <ul className="list-disc space-y-1 pl-5 leading-7">
+            <li><strong>Đồng bộ hình ảnh:</strong> cùng màu chủ đạo, cùng ngôn ngữ phối màu cho toàn đội ngũ.</li>
+            <li><strong>Nhận diện thương hiệu:</strong> logo đặt ở vị trí rõ, không nằm ở vùng vải bị kéo căng.</li>
+            <li><strong>Phân biệt vị trí:</strong> hội viên nhận ra ngay ai là PT, ai là lễ tân, ai là quản lý.</li>
+            <li><strong>Phù hợp môi trường:</strong> sàn tập cần vải thoát ẩm, quầy lễ tân cần áo đứng form.</li>
+            <li><strong>Đặt bổ sung theo đợt:</strong> lưu file thiết kế, mã màu, chất liệu và bảng size để đơn sau không lệch đơn đầu.</li>
+          </ul>
+        </div>
+        <div className="mt-6 w-full">
+          <Figure
+            src="https://live.staticflickr.com/65535/55545803713_233c663a96_b.jpg"
+            alt="Đội ngũ HLV nam và nữ mặc đồng phục Gym Univi đồng bộ màu sắc tại phòng tập"
+            caption="Đồng phục đồng bộ giúp hội viên nhận ra đội ngũ ngay trên sàn tập."
+            width={1024}
+            height={683}
           />
         </div>
       </Section>
 
-      <Section id="nang-luc-univi" title="2. Năng Lực Sản Xuất Và Proof Point">
-        <p className="mb-3 leading-6">
-          Với UNIVI, đồng phục không bắt đầu từ câu hỏi mẫu nào đẹp. Câu hỏi đúng hơn là: ai mặc,
-          mặc trong bối cảnh nào, vận động ra sao, cần hình ảnh thương hiệu thế nào và phòng tập có
-          cần đặt bổ sung cho giai đoạn sau không. Chủ đầu tư có thể đối chiếu{' '}
-          <Link href="/ho-so-nang-luc" className="font-semibold text-[#105d97] hover:underline">
-            hồ sơ năng lực
-          </Link>{' '}
-          và khả năng vận hành của{' '}
-          <Link href="/xuong-may-dong-phuc-univi" className="font-semibold text-[#105d97] hover:underline">
-            xưởng may đồng phục thể thao
-          </Link>{' '}
-          trước khi triển khai cho toàn hệ thống.
+      {/* 04 */}
+      <Section id="ao-tap-gym-nam" title="2. Áo tập Gym cho nam">
+        <p className="leading-7">
+          Với HLV và PT nam, áo tập Gym cần cho phép giơ tay qua đầu, xoay vai, squat và hướng dẫn máy mà không kéo căng
+          vùng nách hay làm logo biến dạng. Các tiêu chí nên cân nhắc:
         </p>
-        <div className="mb-6 overflow-hidden border border-gray-200">
-          <iframe
-            className="aspect-video w-full"
-            src="https://www.youtube.com/embed/0AABoh2a-Sk"
-            title="Năng lực sản xuất đồng phục thể thao UNIVI"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            allowFullScreen
-          />
-        </div>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {trustBadges.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
-            </TextCard>
+        <dl className="mt-4 grid gap-4 grid-cols-2">
+          {[
+            ['Kiểu dáng', 'Áo thun Fit Body cho sàn tập; polo thể thao cho PT tư vấn và quản lý; áo sát nách có thể dùng ở phòng tập sức mạnh.'],
+            ['Form áo', 'Athletic Fit hoặc Slim Fit vừa phải cho HLV, PT: ôm gọn nhưng không bó. Regular Fit cho nhân viên và hội viên.'],
+            ['Cổ áo', 'Cổ tròn gọn và năng động; cổ trụ chỉn chu hơn; polo cho hình ảnh dịch vụ.'],
+            ['Tay áo', 'Tay raglan (đường ráp chéo từ cổ xuống nách) giúp vai linh hoạt hơn; áo dài tay cho phòng máy lạnh hoặc mùa lạnh.'],
+            ['Chất liệu', 'UNI SUPERCOOL cho HLV, PT mặc nhiều giờ; UNI QUICKDRY cho áo hội viên, sự kiện.'],
+            ['Khả năng vận động', 'Khi duyệt áo mẫu, cho người mặc squat, plank, chống đẩy và giơ tay để kiểm tra vai, nách, gấu áo.'],
+          ].map(([t, d]) => (
+            <div key={t} className="rounded-lg border border-gray-100 p-4">
+              <dt className="font-semibold text-gray-900">{t}</dt>
+              <dd className="mt-1 text-sm leading-6 md:text-base">{d}</dd>
+            </div>
+          ))}
+        </dl>
+        <GenderShowcase slugs={GENDER_SHOWCASE.nam} products={products} />
+        <p className="mt-4 leading-7">
+          Phân tích chi tiết hơn về kiểu dáng và form tại bài{' '}
+          <Link href="/bai-viet/ao-tap-gym-cho-nam-chon-kieu-form-va-chat-lieu-phu-hop" className={linkClass}>
+            áo tập Gym cho nam: chọn kiểu, form và chất liệu
+          </Link>
+          .
+        </p>
+        {GENDER_GALLERY.nam.images.length > 0 && (
+          <div className="mt-6">
+            <ArticleImageGallery images={GENDER_GALLERY.nam.images} title={GENDER_GALLERY.nam.title} />
+          </div>
+        )}
+      </Section>
+
+      {/* 05 */}
+      <Section id="ao-tap-gym-nu" title="3. Áo tập Gym cho nữ ">
+        <p className="leading-7">
+          HLV nữ đứng lớp, PT nữ và nhân viên nữ trong phòng tập vừa cần vận động thoải mái, vừa cần hình ảnh chỉn chu khi
+          làm việc với hội viên. Áo tập Gym cho nữ nên được chọn theo các tiêu chí sau:
+        </p>
+        <dl className="mt-4 grid gap-4 grid-cols-2">
+          {[
+            ['Kiểu dáng', 'Áo thun Fit Body cho HLV, PT; polo thể thao cho lễ tân, tư vấn viên và quản lý.'],
+            ['Form áo', 'Ôm vừa phải, gọn ở thân nhưng không bó; chiều dài áo đủ để không bị kéo lên khi giơ tay.'],
+            ['Độ ôm và độ che phủ', 'Kiểm tra khi cúi người, gập người và giơ tay: vải không quá mỏng khi căng, gấu áo không cuộn.'],
+            ['Chất liệu', 'UNI SUPERCOOL mềm, mượt, mát và có độ rủ, phù hợp áo mặc sát người nhiều giờ.'],
+            ['Thoải mái khi vận động', 'Đường may vùng vai, nách, sườn cần phẳng để giảm cọ xát khi động tác lặp lại.'],
+            ['Đồng bộ với đội nam', 'Cùng màu, cùng vị trí logo và chi tiết phối; chỉ khác form để cả đội vẫn thống nhất.'],
+          ].map(([t, d]) => (
+            <div key={t} className="rounded-lg border border-gray-100 p-4">
+              <dt className="font-semibold text-gray-900">{t}</dt>
+              <dd className="mt-1 text-sm leading-6 md:text-base">{d}</dd>
+            </div>
+          ))}
+        </dl>
+        <GenderShowcase slugs={GENDER_SHOWCASE.nu} products={products} />
+        <p className="mt-4 leading-7">
+          Với đội ngũ có cả nam và nữ, nên để mỗi nhóm thử áo mẫu riêng trước khi chốt size và sản xuất toàn bộ đơn.
+        </p>
+        {GENDER_GALLERY.nu.images.length > 0 && (
+          <div className="mt-6">
+            <ArticleImageGallery images={GENDER_GALLERY.nu.images} title={GENDER_GALLERY.nu.title} />
+          </div>
+        )}
+      </Section>
+
+      <Section id="mau-mockup-ao-tap-gym" title="4. Các mẫu áo tập Gym tại Univi">
+        <p className="mb-6 leading-7">
+          Các mẫu dưới đây chia theo kiểu cổ: cổ tròn không khoá, cổ tròn có khoá, cổ trụ có khoá và cổ polo. Chọn
+          một mã mẫu để xem nhanh, sau đó gửi yêu cầu để Univi phối lại theo màu và logo của phòng tập.
+        </p>
+        <GymMockupCollection />
+      </Section>
+
+      {/* 06 */}
+      <Section id="dong-phuc-hlv-pt-nhan-vien" title="5. Đồng phục HLV, PT và nhân viên phòng Gym">
+        <p className="mb-5 leading-7">
+          Sai lầm thường gặp là dùng một loại vải và một form cho mọi vị trí. Mỗi nhóm nhân sự có cường độ vận động và yêu
+          cầu hình ảnh khác nhau:
+        </p>
+        <div className="space-y-4">
+          {staffRoles.map((role, i) => (
+            <div key={role.id} id={role.id} className="scroll-mt-24">
+              <H3>{`5.${i + 1} ${role.title}`}</H3>
+              <p className="leading-7">{role.text}</p>
+              {role.image && (
+                <div className="mt-2 w-full">
+                  <Figure
+                    src={role.image.src}
+                    alt={role.image.alt}
+                    caption={role.image.caption}
+                    width={role.image.width}
+                    height={role.image.height}
+                  />
+                </div>
+              )}
+            </div>
           ))}
         </div>
       </Section>
 
-      <Section id="vi-sao-phong-gym-can-dong-phuc" title="3. Vì Sao Phòng Gym Cần Đồng Phục Chuyên Nghiệp?">
-        <p className="mb-4 leading-6">
-          “Điều đầu tiên hội viên nhìn thấy không phải thiết bị tập.” Trước khi đánh giá máy móc hay giáo án, khách thường gặp lễ tân, nhân viên tư vấn và đội ngũ HLV. Trang phục của những người này góp phần hình thành ấn tượng ban đầu về mức độ tổ chức của phòng tập.
-
-        </p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {reasons.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
-            </TextCard>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="giai-phap-theo-vai-tro" title="4. Giải Pháp Đồng Phục Theo Từng Vai Trò Trong Phòng Tập">
-        <p className="mb-6 leading-6 text-gray-700">
-          Sai lầm phổ biến khi đặt đồng phục Gym là dùng một loại vải và một form cho mọi vị trí. Cách làm tiết kiệm thời gian ở bước đầu nhưng thường không phù hợp khi vận hành. Bản đồ vai trò dưới đây giúp phòng tập xác định đúng nhu cầu trước khi chọn mẫu.
-        </p>
-
-        <div className="space-y-8">
-          <div className="space-y-3">
-            <h3 className="text-lg md:text-xl font-medium text-gray-900">4.1 Đồng Phục Huấn Luyện Viên Gym</h3>
-            <div className="space-y-2 text-gray-700 leading-6">
-              <p>
-                HLV sàn và HLV lớp nhóm cần áo co giãn, nhẹ, quản lý ẩm tốt và dễ nhận diện từ xa. T-shirt phù hợp môi trường năng động hoặc lớp cường độ cao. Polo thể thao phù hợp với phòng tập muốn hình ảnh dịch vụ chỉn chu hơn, nhưng phải dùng chất liệu dành cho vận động thay vì polo văn phòng dày và giữ ẩm.
-              </p>
-              <p>
-                Form Athletic Fit thường ôm vừa phần vai, ngực và thân áo. Mục tiêu là tạo hình ảnh gọn gàng mà không cản trở động tác. Với lớp Group X, vùng vai và nách cần được kiểm tra kỹ vì HLV liên tục nâng tay, xoay người và thị phạm theo nhạc.
-              </p>
-            </div>
-            <div className="mt-3">
-              <ImageBlock
-                src="/images/gym/dong-phuc-hlv.jpg"
-                alt="Đồng phục Huấn Luyện Viên Gym"
-                caption="Áo thun thể thao năng động co giãn 4 chiều cho huấn luyện viên Gym."
-              />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg md:text-xl font-medium text-gray-900">4.2 Đồng Phục PT Gym</h3>
-            <div className="space-y-2 text-gray-700 leading-6">
-              <p>
-                PT tiếp xúc trực tiếp với hội viên trong buổi đánh giá thể trạng, hướng dẫn kỹ thuật và tư vấn gói tập. Áo PT vì vậy vừa phải hỗ trợ vận động, vừa phải truyền tải hình ảnh chuyên môn. Form quá rộng làm dáng thiếu gọn; form quá bó có thể kéo căng vai và làm logo biến dạng.
-              </p>
-              <p>
-                Một cấu hình thực tế là polo khóa kéo hoặc T-shirt Athletic Fit, dùng UNI SUPER COOL hoặc UNI BLENDED tùy cường độ và định vị dịch vụ. Phòng tập có thể xem sâu hơn về cách chọn đồng phục PT theo vai trò và hình ảnh thương hiệu.
-              </p>
-            </div>
-            <div className="mt-3">
-              <ImageBlock
-                src="/images/gym/dong-phuc-pt-ao-polo.jpg"
-                alt="Đồng phục PT Gym"
-                caption="Áo Polo PT chuyên nghiệp tôn dáng và co giãn thoải mái khi hướng dẫn."
-              />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg md:text-xl font-medium text-gray-900">4.3 Đồng Phục Lễ Tân Và Tư Vấn Viên</h3>
-            <div className="space-y-2 text-gray-700 leading-6">
-              <p>
-                Lễ tân là điểm chạm đầu tiên nhưng không vận động giống HLV. Nhóm này cần bề mặt vải dễ chịu, form đứng, ít nhăn và màu ổn định trong ca làm. UNI BLENDED là lựa chọn cân bằng cho polo hoặc áo phối nhận diện vì chú trọng độ bền, tính ứng dụng và vẻ chỉn chu.
-              </p>
-              <p>
-                Thiết kế nên liên quan rõ tới hệ đồng phục HLV qua màu chủ đạo hoặc chi tiết bo cổ, nhưng không cần ôm sát. Bảng tên, logo ngực và màu vai trò có thể giúp hội viên nhận biết nhanh tại quầy check-in.
-              </p>
-            </div>
-            <div className="mt-3">
-              <ImageBlock
-                src="/images/gym/dong-phuc-le-tan.jpg"
-                alt="Đồng phục Lễ Tân và Tư Vấn Viên"
-                caption="Áo thun polo đứng form lịch sự cho nhân sự quầy lễ tân và tư vấn phòng tập."
-              />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg md:text-xl font-medium text-gray-900">4.4 Đồng Phục Quản Lý Và Vận Hành</h3>
-            <div className="space-y-2 text-gray-700 leading-6">
-              <p>
-                Quản lý cần hòa vào hệ nhận diện chung nhưng có dấu hiệu phân cấp vừa đủ. Polo thể thao màu trung tính, viền màu thương hiệu hoặc tag vai trò là phương án dễ triển khai. Nhân sự kỹ thuật và vận hành cần áo bền, ít nhăn, dễ giặt và không cản trở thao tác.
-              </p>
-              <p>
-                Không nên tạo quá nhiều mẫu nếu quy mô đội ngũ nhỏ. Một ngôn ngữ thiết kế chung với 2–3 biến thể vai trò thường dễ quản lý size, tồn kho và đơn bổ sung hơn.
-              </p>
-            </div>
-            <div className="mt-3">
-              <ImageBlock
-                src="/images/gym/dong-phuc-quan-ly.jpg"
-                alt="Đồng phục Quản Lý và Vận Hành"
-                caption="Áo khoác gió thể thao cao cấp hoặc áo polo dài tay phù hợp cho quản lý, vận hành."
-              />
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            <h3 className="text-lg md:text-xl font-medium text-gray-900">4.5 Đồng Phục Hội Viên, VIP Và Sự Kiện</h3>
-            <div className="space-y-2 text-gray-700 leading-6">
-              <p>
-                Hội viên ưu tiên cảm giác dễ mặc, nhanh khô, bảng size rộng và chi phí phù hợp để triển khai số lượng lớn. UNI QUICK DRY thường phù hợp với áo member, giải đấu nội bộ, workshop hoặc challenge. Nếu chương trình có hoạt động ngoài trời, cần xác nhận thêm tính năng chống nắng của đúng mã vải; không nên mặc định mọi loại Polyester đều có cùng chỉ số bảo vệ UV.
-              </p>
-              <p>
-                Phiên bản hội viên nên giữ màu thương hiệu nhưng khác Staff Uniform ở phối màu, nhãn vai trò hoặc vị trí logo. Điều này vừa tăng cảm giác cộng đồng, vừa giữ khả năng nhận diện nhân sự trên sàn tập.
-              </p>
-            </div>
-            <div className="mt-3">
-              <ImageBlock
-                src="/images/gym/dong-phuc-member.webp"
-                alt="Đồng phục Hội Viên, VIP và Sự Kiện"
-                caption="Áo thun thể thao cổ tròn năng động phục vụ giải chạy, sự kiện, thử thách hội viên."
-              />
-            </div>
-          </div>
-        </div>
-      </Section>
-
-      <Section id="chat-lieu" title="5. Chọn Chất Liệu Quyết Định Trải Nghiệm Tập Luyện">
-        <div className="space-y-3 leading-6">
+      {/* 07 */}
+      <Section id="chat-lieu" title="6. Chất liệu và công nghệ vải cho áo tập Gym">
+        <div className="space-y-3 leading-7">
           <p>
-            Chất liệu là phần quyết định đồng phục có được đội ngũ sử dụng lâu dài hay không. Một
-            mẫu áo nhìn đẹp trên mockup nhưng nóng, giữ mồ hôi hoặc thiếu co giãn sẽ nhanh chóng bị
-            bỏ qua trong vận hành thật.
+            Chất liệu quyết định đồng phục có được đội ngũ mặc lâu dài hay không. Univi dùng hệ 5 dòng vải có thông số công
+            bố, chọn theo vị trí và cường độ vận động thay vì một loại vải cho mọi người.
           </p>
           <p>
-            <Link href="/cong-nghe-uni-dry" className="font-semibold text-[#105d97] hover:underline">
+            <Link href="/cong-nghe-uni-dry" className={linkClass}>
               Công nghệ UNI DRY
             </Link>{' '}
-            hỗ trợ đưa hơi ẩm từ bề mặt da ra lớp ngoài vải, giúp giảm cảm giác bí bách khi HLV và
-            PT vận động trong ca dài.
+            là công nghệ xử lý thoát ẩm Univi ứng dụng trên các dòng vải thể thao (không phải tên một loại vải): kiểm soát
+            chuyển động một chiều của hơi ẩm từ bề mặt da ra lớp ngoài vải rồi bay hơi, hạn chế ẩm thấm ngược vào da.
           </p>
         </div>
+
         <div className="mt-6">
-          <FabricCardComponent />
-        </div>
-        <div className="mt-8">
-          <UniformStylesComponent />
-        </div>
-        <div className="mt-6">
-          <SimpleTable
-            headers={['Chất liệu', 'Cấu tạo / định vị', 'Ưu điểm', 'Phù hợp']}
-            rows={materialRows}
-          />
+          <FabricCatalogView defaultTab="UNIA02" titleAs="h3" />
         </div>
       </Section>
 
-      <Section id="sai-lam" title="6. Những Sai Lầm Khi Đặt Đồng Phục Gym">
-        <p className="mb-4 leading-6">
-          Phần lớn lỗi đồng phục Gym không xuất hiện ở bản thiết kế. Chúng xuất hiện sau khi đội ngũ
-          mặc thật: áo nóng, nhanh bết, logo lệch, form không hợp vai trò, hoặc các đợt đặt sau
-          không giống đợt đầu.
-        </p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {painPoints.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
-            </TextCard>
-          ))}
+      {/* 08 */}
+      <Section id="kinh-nghiem-chon-ao" title="7. Kinh nghiệm lựa chọn áo đồng phục Gym phù hợp">
+        <div className="grid gap-5 md:grid-cols-2">
+          <TextCard title="Chọn form áo">
+            <p>Athletic Fit vừa phải cho HLV, PT; Regular Fit cho nhân viên và hội viên. Quá rộng mất vẻ gọn, quá bó gây khó chịu khi thị phạm.</p>
+          </TextCard>
+          <TextCard title="Chọn kiểu cổ">
+            <p>Cổ tròn cho sàn tập năng động, cổ trụ cho vẻ chỉn chu, polo cho vị trí tư vấn và quầy lễ tân.</p>
+          </TextCard>
+          <TextCard title="Chọn chất liệu">
+            <p>Theo vị trí và cường độ vận động (bảng ở mục 6). Không dùng polo văn phòng dày cho HLV vì nóng và giữ ẩm.</p>
+          </TextCard>
+          <TextCard title="Chọn màu sắc">
+            <p>
+              Giữ màu chủ đạo của thương hiệu, phân vai bằng màu phối hoặc chi tiết nhỏ. Chọn màu trực tiếp trên{' '}
+              <Link href="/bang-mau" className={linkClass}>bảng màu</Link> để đơn sau không lệch tông.
+            </p>
+          </TextCard>
+          <TextCard title="Thiết kế logo">
+            <p>Logo ngực trái, lưng hoặc tay áo, có thứ bậc rõ; tránh đặt logo lớn ở vùng vải thường xuyên bị kéo căng.</p>
+          </TextCard>
+          <TextCard title="Đường may và hoàn thiện">
+            <p>
+              Kiểm tra đường may ở vai, nách, cổ và sườn vì đây là điểm dễ ma sát khi tập lặp lại. Xem ví dụ{' '}
+              <Link href="/bai-viet/ao-tap-gym-duong-tran-unvi" className={linkClass}>áo tập Gym đường trần</Link>.
+            </p>
+          </TextCard>
+          <TextCard title="Thử mẫu trước khi sản xuất">
+            <p>Áo đẹp trên catalogue chưa chắc đẹp trên người. Nhận áo mẫu, cho người mặc vận động thật rồi mới duyệt sản xuất toàn bộ đơn.</p>
+          </TextCard>
+          <TextCard title="Không chọn theo giá mua rẻ nhất">
+            <p>Áo nhanh giãn, bạc màu sẽ phải đặt lại sớm. Nên so sánh theo chi phí sử dụng trong suốt thời gian đội ngũ mặc áo.</p>
+          </TextCard>
         </div>
-        <figure className="mt-6 overflow-hidden">
-          <Image
+        <div className="mt-6">
+          <Figure
             src="/images/gym/thiet-ke-dong-phuc-gym-dep.jpg"
-            alt="Nhóm huấn luyện viên trong hệ đồng phục cho các mô hình phòng Gym"
+            alt="Nhóm huấn luyện viên mặc mẫu áo đồng phục Gym đồng bộ màu sắc"
             width={1200}
             height={1200}
-            quality={90}
-            className="h-auto w-full object-cover"
-            sizes="(max-width: 1024px) 100vw, 900px"
           />
-          <figcaption className="px-4 py-3 text-center text-sm italic text-gray-500">
-            Mỗi mô hình phòng tập cần cấu hình riêng, nhưng toàn đội ngũ vẫn nên giữ chung màu sắc, form dáng và hệ nhận diện.
-          </figcaption>
-        </figure>
+        </div>
       </Section>
 
-      <Section id="cong-nghe-vai" title="7. Công Nghệ Vải Chuyên Dụng Của UNIVI">
-        <div className="space-y-3 leading-6">
-          <p>
-            UNIVI phát triển chất liệu theo triết lý đúng bộ môn, đúng chất liệu, đúng trải nghiệm.
-            Gym khác{' '}
-            <Link href="/dong-phuc-yoga-pilates" className="font-semibold text-[#105d97] hover:underline">
-              Yoga Pilates
-            </Link>
-            , Running khác{' '}
-            <Link href="/dong-phuc-pickleball" className="font-semibold text-[#105d97] hover:underline">
-              Pickleball
-            </Link>
-            , vì vậy không nên dùng một loại vải cho mọi vai trò.
-          </p>
-          <p>
-            <Link href="/vai-super-cool-la-gi" className="font-semibold text-[#105d97] hover:underline">
-              UNI SUPER COOL
-            </Link>{' '}
-            phù hợp với PT cao cấp, boutique gym hoặc phòng tập định vị dịch vụ cao. UNI QUICK DRY
-            phù hợp áo member và sự kiện; UNI BLENDED phù hợp lễ tân, sale, quản lý hoặc Polo đứng
-            form.
-          </p>
-        </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          <TextCard title="UNI DRY">
-            <p>Hỗ trợ thoát ẩm ở vùng lưng, vai, nách và cổ áo, nơi dễ bết khi HLV vận động liên tục.</p>
-          </TextCard>
-          <TextCard title="UNI QUICK DRY">
-            <p>Nhẹ, nhanh khô, thực dụng cho áo T-shirt Gym, áo dài tay vận động, áo challenge và áo cộng đồng.</p>
-          </TextCard>
-          <TextCard title="UNI SUPER COOL">
-            <p>Mềm, mượt, mát, mịn, giảm ma sát và phù hợp môi trường PT cao cấp hoặc lớp GroupX cần cảm giác da tốt hơn.</p>
-          </TextCard>
-          <TextCard title="UNI POWERZIP">
-            <p>Polo khóa kéo cân bằng giữa hình ảnh dịch vụ, sự gọn gàng và hiệu suất vận động.</p>
-          </TextCard>
-        </div>
-        <figure className="mt-6 overflow-hidden">
-          <Image
-            src="/images/gym/uni-super-col.webp"
-            alt="Cận cảnh vải UNI SUPER COOL chuyên dụng cho đồng phục Gym"
-            width={1200}
-            height={1200}
-            quality={90}
-            className="h-auto w-full object-cover"
-            sizes="(max-width: 1024px) 100vw, 900px"
-          />
-          <figcaption className="px-4 py-3 text-center text-sm italic text-gray-500">
-            Bề mặt vải UNI SUPER COOL mềm mịn, co giãn và phù hợp với đồng phục PT, HLV và Boutique Fitness.
-          </figcaption>
-        </figure>
-      </Section>
-
-      <Section id="thiet-ke" title="8. Thiết Kế Tối Ưu Hiệu Suất Vận Động">
-        <p className="mb-4 leading-6">
-          Thiết kế đồng phục Gym không nên chỉ xử lý màu sắc và logo. Một mẫu áo tốt cần hỗ trợ
-          chuyển động thật: nâng tay, xoay vai, cúi người, chống đẩy, kéo giãn, chạy ngắn, hướng dẫn
-          máy và giao tiếp với hội viên trong nhiều giờ.
+      {/* 09 */}
+      <Section id="du-an" title="8. Dự án đồng phục Gym và Fitness">
+        <p className="mb-5 leading-7">
+          Một số phòng tập và chuỗi Fitness đã triển khai đồng phục cùng Univi. Nội dung chi tiết, hình ảnh và phản hồi nằm
+          ở trang feedback của từng dự án.
         </p>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {designPrinciples.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
-            </TextCard>
+        <ul className="grid gap-5 md:grid-cols-2">
+          {projects.map((p) => (
+            <li key={p.name} className="overflow-hidden rounded-lg border border-gray-100 bg-white">
+              <Image src={p.image} alt={p.alt} width={1200} height={800} sizes="(max-width: 768px) 100vw, 420px" className={`aspect-[3/2] h-auto w-full object-cover ${p.imagePosition || ''}`} />
+              <div className="p-4">
+                <h3 className="text-lg font-semibold text-gray-900">{p.name}</h3>
+                <p className="mt-1 text-sm leading-6 md:text-base">{p.text}</p>
+                <p className="mt-3 flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  <Link href={p.feedback} className={linkClass}>Feedback {p.name}</Link>
+                  {p.article && (
+                    <Link href={p.article} className="font-medium text-gray-700 hover:text-[#105d97] hover:underline">Đọc bài dự án</Link>
+                  )}
+                </p>
+              </div>
+            </li>
           ))}
+        </ul>
+        <div className="mt-6 space-y-5">
+          <div className="space-y-3 leading-7">
+            <p>
+              Univi sản xuất khép kín từ thiết kế, rập, cắt, may, in/thêu đến kiểm tra chất lượng, với xưởng 2.000m² và công
+              suất 100.000 sản phẩm/tháng. Chủ đầu tư có thể đối chiếu{' '}
+              <Link href="/ho-so-nang-luc" className={linkClass}>hồ sơ năng lực</Link> và{' '}
+              <Link href="/xuong-may-dong-phuc-univi" className={linkClass}>xưởng may đồng phục Gym</Link> trước khi triển khai.
+            </p>
+            <p>
+              Xem thêm{' '}
+              <Link href="/feedback" className={linkClass}>các dự án và feedback khác</Link>.
+            </p>
+          </div>
+          <div className="w-full overflow-hidden rounded-lg border border-gray-200">
+            <iframe
+              className="aspect-video w-full"
+              src="https://www.youtube.com/embed/0AABoh2a-Sk"
+              title="Năng lực sản xuất đồng phục thể thao Univi"
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
         </div>
       </Section>
 
-      <Section id="mo-hinh-phong-tap" title="9. Giải Pháp Theo Từng Mô Hình Phòng Tập">
-        <p className="mb-4 leading-6">
-          Không phải mọi phòng Gym đều cần cùng một cấu hình đồng phục. Boutique Fitness, Hybrid
-          Training, Strength & Conditioning, Cross Training và Recovery Zone có bản đồ vai trò
-          khác nhau; mô hình vận hành sẽ quyết định số nhóm người mặc, mức độ phân vai, chất liệu và
-          ngân sách.
+      {/* 10 */}
+      <Section id="giai-phap-2s" title="9. Giải pháp 2S Uniform cho phòng tập">
+        <p className="leading-7">
+          Với phòng tập có nhiều nhóm người mặc, đặt từng mẫu riêng lẻ dễ tạo ra hệ thống rời rạc.{' '}
+          <Link href="/giai-phap-2s" className={linkClass}>Giải pháp 2S Uniform</Link> của Univi chia bài toán thành hai phần
+          dùng chung một ngôn ngữ thương hiệu:
         </p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {modelSolutions.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="rounded-lg border border-[#105d97]/20 bg-[#105d97]/5 p-5">
+            <h3 className="text-lg font-semibold text-[#0b3f66]">Staff Uniform</h3>
+            <p className="mt-1 text-sm font-medium text-gray-600">Lễ tân, HLV, PT, quản lý, tư vấn viên</p>
+            <p className="mt-2 leading-7">Đồng bộ hình ảnh, chuyên nghiệp hóa dịch vụ và tăng nhận diện thương hiệu tại mọi điểm chạm.</p>
+          </div>
+          <div className="rounded-lg border border-gray-200 bg-white p-5">
+            <h3 className="text-lg font-semibold text-gray-900">Member Uniform</h3>
+            <p className="mt-1 text-sm font-medium text-gray-600">Áo tập, áo sự kiện, áo thử thách, áo CLB, bộ sưu tập riêng</p>
+            <p className="mt-2 leading-7">Tăng gắn kết cộng đồng, tạo doanh thu bổ sung và biến hội viên thành người lan tỏa thương hiệu.</p>
+          </div>
+        </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {rolloutScenarios.map(([t, d]) => (
+            <TextCard key={t} title={t}>
+              <p>{d}</p>
             </TextCard>
           ))}
         </div>
-        <figure className="mt-6 overflow-hidden">
-          <Image
-            src="https://live.staticflickr.com/65535/55348303761_ed7662817d_b.jpg"
-            alt="Đồng phục PT, HLV tại phòng tập"
-            width={1200}
-            height={1200}
-            quality={90}
-            className="h-auto w-full object-cover"
-            sizes="(max-width: 1024px) 100vw, 900px"
-          />
-          <figcaption className="px-4 py-3 text-center text-sm italic text-gray-500">
-            Mỗi mô hình phòng tập cần cấu hình riêng, nhưng toàn đội ngũ vẫn nên giữ chung màu sắc, form dáng và hệ nhận diện.
-          </figcaption>
-        </figure>
       </Section>
 
-      <Section id="phong-rd-feedback" title="10. Phòng R&D Và Feedback Chất Lượng">
-        <div className="space-y-4 leading-6 text-gray-700">
-          <p>
-            Phòng R&D của Univi tập trung nghiên cứu các yếu tố ảnh hưởng trực tiếp đến trải nghiệm
-            sử dụng thực tế như chất liệu, form dáng, độ co giãn, độ thoáng khí, khả năng thoát ẩm,
-            chống xù và độ bền màu sau nhiều chu kỳ sử dụng.
-          </p>
-          <p>
-            Thay vì áp dụng một cấu hình vải duy nhất cho mọi bộ môn, đội ngũ phát triển sản phẩm
-            tiếp cận theo hướng tối ưu theo đặc thù vận động của từng nhóm người mặc. Một bộ đồng
-            phục dành cho Gym sẽ có yêu cầu khác với Yoga, Running hay MMA về mức độ co giãn, khả
-            năng giữ form và cường độ vận động thực tế.
-          </p>
-          <p>
-            Triết lý phát triển sản phẩm được xây dựng dựa trên nguyên tắc:
-          </p>
-          <blockquote className="border-l-4 border-[#105d97] bg-blue-50 py-3 pl-5 pr-4 font-quote text-[#105d97]">
-            Đúng bộ môn – Đúng chất liệu – Đúng trải nghiệm.
-          </blockquote>
-          <p>
-            Cách tiếp cận này giúp hệ thống đồng phục phù hợp hơn với môi trường sử dụng thực tế
-            thay vì chỉ đáp ứng yêu cầu về hình ảnh hoặc chi phí sản xuất.
-          </p>
-        </div>
-
-        {/* 10.1 */}
-        <div className="mt-8 space-y-3">
-          <h3 className="text-lg md:text-xl font-medium text-gray-900">
-            10.1 Goldmark Fitness: Khi Đồng Phục HLV Phải Hoạt Động Trong Chuyển Động Thực
-          </h3>
-          <div className="space-y-3 leading-6 text-gray-700">
-            <p>
-              Dự án đồng phục cho <Link href="/bai-viet/dong-phuc-hlv-goldmark-fitness" className="font-semibold text-[#105d97] hover:underline">Goldmark Fitness</Link> cho thấy một yêu cầu rất đặc thù của môi trường
-              Gym: đồng phục không chỉ cần đẹp khi đứng yên mà còn phải giữ được form và sự thoải
-              mái khi HLV squat, thị phạm kỹ thuật hoặc hỗ trợ hội viên trong suốt ca làm việc.
-            </p>
-            <p>
-              Phản hồi từ đội ngũ vận hành tập trung vào các yếu tố như form áo gọn gàng, khả năng
-              vận động linh hoạt, độ thoáng khí và khả năng giữ hình ảnh chuyên nghiệp trong nhiều
-              giờ làm việc liên tục.
-            </p>
-            <p>
-              Đây cũng là lý do các tiêu chí như form vai, độ co giãn vùng nách, tốc độ thoát ẩm
-              và khả năng giữ form sau nhiều lần giặt được đưa vào quá trình phát triển sản phẩm
-              thay vì chỉ đánh giá thông qua hình ảnh studio.
-            </p>
-          </div>
-          <div className="mt-4">
-            <ImageBlock
-              src="/images/gym/dong-phuc-hlv-goldmark-fitness-univi.jpg"
-              alt="Đồng phục HLV Goldmark Fitness – thiết kế tối ưu cho vận động thực tế"
-              caption="Đồng phục Goldmark Fitness: form áo gọn gàng, thoáng khí và giữ hình ảnh chuyên nghiệp trong ca làm việc dài."
-            />
-          </div>
-        </div>
-
-        {/* 10.2 */}
-        <div className="mt-8 space-y-3">
-          <h3 className="text-lg md:text-xl font-medium text-gray-900">
-            10.2 The One KickFit: Đồng Phục Trong Môi Trường Vận Động Cường Độ Cao
-          </h3>
-          <div className="space-y-3 leading-6 text-gray-700">
-            <p>
-              Nếu Goldmark đại diện cho môi trường Fitness Center tổng hợp thì{' '}
-              <Link href="/bai-viet/feedback-the-one-kickfit-ao-gym-pt-thoang-nhe-univi" className="font-semibold text-[#105d97] hover:underline">The One KickFit</Link>{' '}
-              lại là bài toán của vận động cường độ cao với lượng mồ hôi lớn và thời gian mặc kéo dài.
-            </p>
-            <p>
-              Trong bối cảnh đó, các yếu tố như trọng lượng vải, khả năng thoát nhiệt, tốc độ khô
-              và cảm giác bám dính khi vận động trở thành những tiêu chí quan trọng hơn yếu tố hình
-              ảnh đơn thuần.
-            </p>
-            <p>
-              Đối với các phòng tập chuyên về Boxing, Kickboxing hoặc Functional Training, việc lựa
-              chọn chất liệu phù hợp thường tạo ra khác biệt rõ rệt về trải nghiệm mặc trong quá
-              trình huấn luyện kéo dài nhiều giờ liên tục.
-            </p>
-          </div>
-          <div className="mt-4">
-            <ImageBlock
-              src="/images/gym/univi-dong-hanh-cung-the-one-kickfit-3.jpg"
-              alt="Đồng phục The One KickFit – vải thoát nhiệt nhanh khô cho vận động cường độ cao"
-              caption="The One KickFit: trọng lượng vải, tốc độ khô và cảm giác thoáng khí là tiêu chí quan trọng nhất."
-            />
-          </div>
-        </div>
-
-        {/* 10.3 */}
-        <div className="mt-8 space-y-3">
-          <h3 className="text-lg md:text-xl font-medium text-gray-900">
-            10.3 AhaGym: Cân Bằng Giữa Form Dáng Và Sự Thoải Mái
-          </h3>
-          <div className="space-y-3 leading-6 text-gray-700">
-            <p>
-              Feedback từ{' '}
-              <Link href="/bai-viet/feedback-ahagym" className="font-semibold text-[#105d97] hover:underline">AhaGym</Link>{' '}
-              phản ánh một nhu cầu rất phổ biến trong ngành Fitness: đồng phục
-              cần đủ đứng form để tạo hình ảnh chuyên nghiệp nhưng vẫn phải đảm bảo sự thoải mái
-              trong quá trình coaching và thị phạm.
-            </p>
-            <p>
-              Một chiếc áo quá rộng dễ làm mất đi hình ảnh gọn gàng của đội ngũ, trong khi một
-              chiếc áo quá bó lại ảnh hưởng trực tiếp tới khả năng vận động và sự tự tin khi làm
-              việc với hội viên.
-            </p>
-            <p>
-              Vì vậy, việc lựa chọn form dáng phù hợp với từng vai trò như PT, GroupX, lễ tân hay
-              quản lý thường quan trọng không kém việc lựa chọn chất liệu.
-            </p>
-          </div>
-          <div className="mt-4">
-            <ImageBlock
-              src="/images/gym/univi-dong-hanh-cung-ahagym-1.jpg"
-              alt="Đồng phục AhaGym – cân bằng form dáng và sự thoải mái khi coaching"
-              caption="AhaGym: cân bằng hình ảnh chuyên nghiệp và sự thoải mái cho từng vai trò PT, GroupX, lễ tân và quản lý."
-            />
-          </div>
-        </div>
-
-        {/* 10.4 */}
-        <div className="mt-8 space-y-3">
-          <h3 className="text-lg md:text-xl font-medium text-gray-900">
-            10.4 FitCaree: Khi Đồng Phục Trở Thành Một Phần Của Thương Hiệu
-          </h3>
-          <div className="space-y-3 leading-6 text-gray-700">
-            <p>
-              Dự án đồng hành cùng{' '}
-              <Link href="/bai-viet/univi-dong-hanh-cung-fitcaree" className="font-semibold text-[#105d97] hover:underline">FitCaree</Link>{' '}
-              cho thấy một hệ đồng phục Gym hiện đại không chỉ phục
-              vụ hoạt động huấn luyện hàng ngày mà còn xuất hiện xuyên suốt trong nhiều điểm chạm
-              thương hiệu khác nhau.
-            </p>
-            <p>
-              Từ hình ảnh đội ngũ trong phòng tập, nội dung mạng xã hội, workshop, sự kiện ngoài
-              trời cho tới các hoạt động cộng đồng, đồng phục đóng vai trò như một thành phần nhận
-              diện giúp duy trì sự nhất quán của thương hiệu trong mắt hội viên và khách hàng tiềm
-              năng.
-            </p>
-            <p>
-              Điều này cũng đặt ra yêu cầu khác cho quá trình phát triển sản phẩm. Một bộ đồng phục
-              phù hợp không chỉ cần đảm bảo sự thoải mái khi vận động mà còn phải giữ được form
-              dáng, màu sắc và hình ảnh chuyên nghiệp trong nhiều bối cảnh sử dụng khác nhau.
-            </p>
-            <p>
-              Bài học rút ra cho các chủ phòng tập là không nên đánh giá đồng phục chỉ dựa trên
-              một ảnh studio hoặc một buổi thử đồ ngắn. Giá trị thực sự của đồng phục chỉ xuất
-              hiện khi quan sát trong quá trình vận hành thực tế: khi huấn luyện viên làm việc với
-              hội viên, khi đội ngũ chụp ảnh tập thể hoặc khi thương hiệu xuất hiện trên các nền
-              tảng truyền thông.
-            </p>
-          </div>
-          <div className="mt-4">
-            <ImageBlock
-              src="/images/gym/univi-dong-hanh-cung-fitcaree-2.jpg"
-              alt="FitCaree – đồng phục Gym xuất hiện xuyên suốt các điểm chạm thương hiệu"
-              caption="FitCaree: đồng phục không chỉ phục vụ sàn tập – đây là một thành phần nhận diện thương hiệu xuất hiện nhất quán ở mọi điểm chạm."
-            />
-          </div>
-        </div>
-
-        {/* 10.5 */}
-        <div className="mt-8 space-y-3">
-          <h3 className="text-lg md:text-xl font-medium text-gray-900">
-            10.5 Đồng Phục Gym Không Chỉ Xuất Hiện Trên Sàn Tập
-          </h3>
-          <div className="space-y-3 leading-6 text-gray-700">
-            <p>Một hệ đồng phục hiện đại thường xuất hiện ở nhiều điểm chạm khác nhau:</p>
-            <ul className="ml-5 list-disc space-y-1">
-              <li>Hoạt động coaching hàng ngày.</li>
-              <li>Hình ảnh đội ngũ trên mạng xã hội.</li>
-              <li>Video hướng dẫn kỹ thuật.</li>
-              <li>Workshop và sự kiện ngoài trời.</li>
-              <li>Nội dung tuyển dụng và truyền thông thương hiệu.</li>
-            </ul>
-            <p>
-              Vì vậy, việc đánh giá đồng phục chỉ thông qua một ảnh studio thường chưa phản ánh
-              đầy đủ trải nghiệm sử dụng thực tế.
-            </p>
-            <p>
-              Chủ phòng tập nên hình dung đồng phục trong bối cảnh đội ngũ làm việc, khi chụp ảnh
-              tập thể hoặc khi thương hiệu xuất hiện trên các nền tảng truyền thông thay vì chỉ
-              nhìn vào một mẫu áo riêng lẻ.
-            </p>
-          </div>
-          <div className="mt-4">
-            <ImageBlock
-              src="/images/gym/dong-phuc-gym-xuat-hien-da-diem-cham.jpg"
-              alt="Đồng phục Gym xuất hiện đa điểm chạm – mạng xã hội, sự kiện, video"
-              caption="Đồng phục Gym không chỉ là trang phục sàn tập – đây là bộ nhận diện thương hiệu xuất hiện ở mọi điểm chạm."
-            />
-          </div>
-        </div>
-
-        {/* Closing summary */}
-        <div className="mt-8 space-y-3 leading-6 text-gray-700">
-          <p>
-            Các dự án đã được công bố trên hệ thống nội dung của Univi trải dài từ phòng Gym truyền
-            thống, PT Studio, Kickboxing, Pilates cho tới các chuỗi Fitness nhiều cơ sở.
-          </p>
-          <p>
-            Mỗi mô hình vận hành đều đặt ra những yêu cầu khác nhau về chất liệu, form dáng, mức
-            độ co giãn, khả năng thoát ẩm, độ bền màu và cách đồng phục xuất hiện trong quá trình
-            vận hành thương hiệu.
-          </p>
-          <p>
-            Có dự án ưu tiên sự linh hoạt trong vận động cường độ cao, có dự án tập trung vào hình
-            ảnh đội ngũ huấn luyện viên, trong khi một số hệ thống lại đặt trọng tâm vào khả năng
-            tái sản xuất đồng bộ khi mở rộng nhiều cơ sở. Tham khảo thêm{' '}
-            <Link href="/feedback" className="font-semibold text-[#105d97] hover:underline">toàn bộ feedback và dự án đã triển khai tại Univi</Link>.
-          </p>
-        </div>
+      {/* 11 */}
+      <Section id="quy-trinh" title="10. Quy trình đặt may đồng phục Gym">
+        <UniviOrderProcess />
+        <p className="mt-5 leading-7">
+          Mẫu có sẵn được giao nhanh; đơn thiết kế riêng có tiến độ theo số lượng và thời điểm, Univi báo lịch cụ thể khi
+          chốt đơn. Xem{' '}
+          <Link href="/huong-dan-dat-hang" className={linkClass}>hướng dẫn đặt hàng</Link> và kinh nghiệm{' '}
+          <Link href="/bai-viet/dat-may-dong-phuc-gym-so-luong-lon" className={linkClass}>đặt may đồng phục Gym số lượng lớn</Link>.
+        </p>
       </Section>
 
-
-      <Section id="giai-phap-2s" title="11. Giải Pháp 2S Uniform Cho Phòng Tập Và Chuỗi Fitness">
-        <div className="space-y-3 leading-6">
-          <p>
-            Với phòng tập có nhiều nhóm nhân sự hoặc chuỗi đang mở rộng, đặt từng mẫu áo riêng lẻ
-            thường tạo ra hệ thống rời rạc. Đây là lý do{' '}
-            <Link href="/giai-phap-2s" className="font-semibold text-[#105d97] hover:underline">
-              giải pháp 2S Uniform
-            </Link>{' '}
-            phù hợp với Gym và Fitness Center.
-          </p>
-          <p>
-            2S Uniform gồm Staff Uniform cho HLV, PT, lễ tân, sale, quản lý và vận hành; Member
-            Uniform cho hội viên, VIP, lớp cộng đồng, sự kiện, workshop hoặc merchandise.
-          </p>
-        </div>
-        <div className="mt-6">
-          <ProcessSteps variant="vertical" />
-        </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {rolloutScenarios.map(([title, text]) => (
-            <TextCard key={title} title={title}>
-              <p>{text}</p>
-            </TextCard>
+      {/* 12 */}
+      <Section id="bai-viet-lien-quan" title="11. Bài viết kiến thức liên quan">
+        <ul className="grid gap-3 md:grid-cols-2">
+          {relatedArticles.map(([label, href, note]) => (
+            <li key={href}>
+              <Link href={href} className="block rounded-lg border border-gray-100 p-4 transition hover:border-[#105d97]">
+                <span className="font-semibold text-[#105d97]">{label}</span>
+                <span className="mt-1 block text-sm text-gray-600">{note}</span>
+              </Link>
+            </li>
           ))}
-        </div>
-        <div className="mt-6">
-          <ImageBlock
-            src="https://live.staticflickr.com/65535/55315396424_112c185301_b.jpg"
-            alt="Quy trình triển khai đồng phục Gym theo giải pháp 2S Uniform"
-            caption="2S Uniform giúp phòng tập đồng bộ Staff Uniform và Member Uniform theo cùng một ngôn ngữ thương hiệu."
-          />
-        </div>
+        </ul>
       </Section>
 
-      <Section id="internal-link-hub" title="12. Bài Viết Liên Quan">
-        <div className="grid gap-3 md:grid-cols-2">
-          {relatedLinks.map(([label, href]) => (
-            <Link
-              key={href}
-              href={href}
-              className="rounded-lg border border-gray-100 bg-gray-50 p-4 font-medium text-[#105d97] transition hover:border-[#105d97] hover:bg-white"
-            >
-              {label}
-            </Link>
-          ))}
-        </div>
-      </Section>
-
-      <Section id="footer-seo" title="13. Đồng Phục Gym Theo Yêu Cầu Tại UNIVI">
-        <div className="space-y-4 leading-6">
-          <p>
-            Đồng phục Gym không chỉ là trang phục cho nhân sự phòng tập. Đó là một phần của vận hành
-            thương hiệu, trải nghiệm hội viên và khả năng mở rộng hệ thống.
-          </p>
-          <p>
-            Phòng Gym không nên chọn đồng phục theo một mẫu áo chung cho tất cả. Cách đúng hơn là
-            phân vai đội ngũ, chọn chất liệu theo cường độ vận động, thiết kế theo nhận diện thương
-            hiệu và lưu chuẩn tái sản xuất cho dài hạn.
-          </p>
-          <p>
-            Với nền tảng R&D, công nghệ UNI DRY, hệ chất liệu thể thao chuyên dụng và giải pháp 2S
-            Uniform, UNIVI có thể đồng hành với Gym Owner, PT Studio và chuỗi Fitness Center trong
-            việc xây dựng hệ đồng phục chuyên dụng, đồng bộ và có giá trị thương hiệu rõ ràng.
-          </p>
-        </div>
-        <div className="mt-6">
-          <ImageBlock
-            src="https://live.staticflickr.com/65535/55231505620_c9ef4cb492_b.jpg"
-            alt="Đồng phục Gym theo yêu cầu tại UNIVI"
-            caption="Một bộ đồng phục đúng giúp hội viên nhận diện người hỗ trợ, giúp đội ngũ tự tin hơn và giúp phòng tập duy trì hình ảnh nhất quán."
-          />
-        </div>
-      </Section>
-
-      <section className="bg-[#105d97] p-5 text-white">
-        <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-center">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[0.15em] text-blue-100">
-              UNIVI SPORTS UNIFORM - YOUR UNIFORM, YOUR BRAND!
-            </p>
-            <h2 className="mt-1 text-xl md:text-2xl font-medium tracking-tight leading-6">
-              Liên Hệ Với Xưởng May Đồng Phục UNIVI Ngay Hôm Nay
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-blue-50">
-              Gửi UNIVI logo, màu thương hiệu, vai trò nhân sự, số lượng dự kiến, mô hình phòng tập
-              và ngày cần hàng để được tư vấn chất liệu, mockup và giải pháp 2S Uniform phù hợp.
-            </p>
-            <div className="mt-3 grid gap-1 text-sm text-blue-50">
-              <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
-              <p><span className="font-semibold">Xưởng sản xuất:</span> Phường Chương Mỹ, Thành phố Hà Nội</p>
-              <p><span className="font-semibold">Hotline:</span> 0834.204.999 / 096.156.7997</p>
-              <p><span className="font-semibold">Email:</span> dongphucunivi@gmail.com</p>
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setIsQuoteFormOpen(true)}
-            className="inline-flex rounded-lg bg-white px-5 py-3 text-sm font-medium text-[#105d97] hover:bg-blue-50"
-          >
-            Nhận tư vấn đồng phục Gym
-          </button>
-        </div>
-      </section>
-
-      <Section id="faq" title="Câu Hỏi Thường Gặp Về Đồng Phục Gym">
+      {/* 13 */}
+      <Section id="faq" title="Câu hỏi thường gặp về đồng phục Gym">
         <div className="space-y-3">
-          {gymFaqs.map(([question, answer]) => (
-            <details key={question} className="group rounded-lg border border-gray-200 bg-gray-50">
-              <summary className="cursor-pointer px-4 py-3 font-semibold text-gray-900">
-                {question}
-              </summary>
-              <p className="px-4 py-3 text-sm leading-6 text-gray-700">{answer}</p>
+          {gymFaqs.map(([q, a]) => (
+            <details key={q} className="group rounded-lg border border-gray-200 bg-white">
+              <summary className="flex min-h-[44px] cursor-pointer items-center px-4 py-3 font-semibold text-gray-900">{q}</summary>
+              <p className="border-t border-gray-100 px-4 py-3 text-sm leading-6 text-gray-700 md:text-base">{a}</p>
             </details>
           ))}
         </div>
       </Section>
 
-      <ContactForm
-        source="Đồng phục Gym - Nhận tư vấn"
-        isModal
-        isOpen={isQuoteFormOpen}
-        onClose={() => setIsQuoteFormOpen(false)}
-      />
+      {/* 14 */}
+      <section aria-labelledby="gym-cta-title" className="mt-4 rounded-xl p-5 text-white md:p-8" style={{ backgroundColor: BRAND }}>
+        <p className="text-base font-semibold uppercase tracking-[0.15em] text-blue-100">Your uniform, your brand!</p>
+        <h2 id="gym-cta-title" className="mt-1 text-xl md:text-2xl font-semibold tracking-tight">
+          Xây dựng hình ảnh phòng tập chuyên nghiệp cùng đồng phục Univi
+        </h2>
+        <p className="mt-3 leading-7 text-blue-50">
+          Một hệ đồng phục Gym đúng bắt đầu từ việc phân vai đội ngũ, chọn chất liệu theo cường độ vận động và lưu chuẩn để
+          đặt bổ sung về sau. Gửi Univi logo, màu thương hiệu, các vị trí nhân sự, số lượng dự kiến và thời điểm cần hàng để
+          nhận tư vấn chất liệu, mockup và phương án 2S Uniform.
+        </p>
+        <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+          <button
+            type="button"
+            onClick={() => setOpen(true)}
+            className="inline-flex min-h-[44px] items-center justify-center rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-[#105d97] hover:bg-blue-50"
+          >
+            Nhận tư vấn
+          </button>
+
+          <a href="#bo-suu-tap-gym" className="inline-flex min-h-[44px] items-center justify-center rounded-lg border border-white/60 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10">
+            Xem bộ sưu tập
+          </a>
+        </div>
+        <div className="mt-5 grid gap-1 text-sm text-blue-50">
+          <p><span className="font-semibold">Văn phòng:</span> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội · giao hàng toàn quốc</p>
+          <p><span className="font-semibold">Hotline/Zalo:</span> 0834.204.999 · 0961.567.997</p>
+        </div>
+      </section>
+
+      <ContactForm source="Đồng phục Gym - Nhận tư vấn" isModal isOpen={open} onClose={() => setOpen(false)} />
     </div>
   );
 }

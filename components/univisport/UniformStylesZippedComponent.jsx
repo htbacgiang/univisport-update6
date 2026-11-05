@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import ContactForm from '../header/ContactForm';
 
-const ROUND_ZIP_PRODUCTS = [
+export const ROUND_ZIP_PRODUCTS = [
   {
     id: 'mag1-gag1',
     code: 'MAG1-GAG1',
@@ -37,7 +37,7 @@ const ROUND_ZIP_PRODUCTS = [
   },
 ];
 
-const COLLAR_ZIP_PRODUCTS = [
+export const COLLAR_ZIP_PRODUCTS = [
   {
     id: 'mag17-gag17',
     code: 'MAG17-GAG17',

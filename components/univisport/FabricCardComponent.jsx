@@ -49,7 +49,7 @@ const FABRICS = [
     image: '/images/fabric-uniair-polo.png',
     cardTitle: 'ĐẶC TÍNH UNI – AIR | UNIA12',
     composition: [
-      { percentage: '90%', name: 'Polyamide' },
+      { percentage: '90%', name: 'Polyester' },
       { percentage: '10%', name: 'Elastane' },
     ],
     bullets: [

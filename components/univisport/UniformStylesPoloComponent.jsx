@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import ContactForm from '../header/ContactForm';
 
-const POLO_PRODUCTS = [
+export const POLO_PRODUCTS = [
   {
     id: 'mag30-gag30',
     code: 'MAG30-GAG30',

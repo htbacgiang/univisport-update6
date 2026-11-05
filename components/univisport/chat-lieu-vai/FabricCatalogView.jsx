@@ -57,6 +57,9 @@ export default function FabricCatalogView({
   defaultTab = 'uniair',
   initialTab = '',
   tab = '',
+  // Thẻ heading cho tiêu đề vải. Mặc định 'h2' (giữ nguyên các trang đang dùng);
+  // trang nhúng component bên trong một H2 có thể truyền 'h3'.
+  titleAs: TitleTag = 'h2',
 }) {
   const router = useRouter();
 
@@ -155,9 +158,9 @@ export default function FabricCatalogView({
 
             {/* Ribbon Header Tiêu Đề */}
             <div className="inline-block bg-gradient-to-r from-[#0d3b66] to-[#105d97] text-white px-3.5 sm:px-5 py-1.5 rounded-lg sm:rounded-xl shadow-sm self-start">
-              <h2 className="text-xs sm:text-sm md:text-base lg:text-[18px] font-black uppercase tracking-wider font-sans leading-tight text-white ">
+              <TitleTag className="text-xs sm:text-sm md:text-base lg:text-[18px] font-black uppercase tracking-wider font-sans leading-tight text-white ">
                 {currentFabric.leftTitle}
-              </h2>
+              </TitleTag>
             </div>
 
             {/* Khung Vân Vải (Fabric Texture Box) */}

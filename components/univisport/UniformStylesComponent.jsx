@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import Image from 'next/image';
 import ContactForm from '../header/ContactForm';
 
-const PRODUCTS = [
+export const PRODUCTS = [
   {
     id: 'mag2-gag2',
     code: 'MAG2-GAG2',
@@ -106,7 +106,7 @@ const UniformStylesComponent = () => {
         {/* Center Hero Image */}
         <div className="relative w-full aspect-[16/8] sm:aspect-[16/7] md:aspect-[16/7] min-h-[220px]">
           <Image
-            src="/mockup/mau-ao-gym-co-tron-ko-khoa.png"
+            src="/mockup/mau-ao-gym-co-tron-ko-khoa.jpg"
             alt="Kiểu dáng áo Gym UNIVI - Các mẫu áo gym cổ tròn không khoá"
             fill
             sizes="(max-width: 1024px) 100vw, 1100px"
