@@ -22,7 +22,7 @@ const GYM_CATEGORY_SLUG = 'dong-phuc-gym';
 const CATEGORY_H1 = {
   'dong-phuc-gym': 'Đồng Phục Gym Thiết Kế Theo Yêu Cầu Cho Phòng Tập Và Chuỗi Fitness Center',
   'dong-phuc-yoga-pilates': 'Đồng Phục Yoga Thiết Kế Theo Yêu Cầu Cho Studio Và Cộng Đồng Wellness',
-  'dong-phuc-pilates': 'Đồng Phục Pilates: Giải Pháp Đồng Phục Chuyên Nghiệp Cho Studio Và HLV',
+  'dong-phuc-pilates': 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio | Univi',
   'dong-phuc-pickleball': 'Đồng Phục Pickleball Thiết Kế Theo Yêu Cầu Cho CLB, Học Viện Và Giải Đấu',
   'dong-phuc-chay-bo': 'Đồng Phục Chạy Bộ Thiết Kế Riêng Cho CLB Và Giải Chạy',
   'dong-phuc-mma': 'Đồng Phục MMA Thiết Kế Riêng Cho CLB Võ Thuật',
@@ -36,7 +36,7 @@ const CATEGORY_DESCRIPTION = {
   'dong-phuc-yoga-pilates':
     'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Yoga theo yêu cầu cho Yoga Studio và Wellness Center trên toàn quốc. Hệ đồng phục được phát triển dựa trên đặc thù vận động, trải nghiệm người mặc và yêu cầu nhận diện thương hiệu của từng studio.',
   'dong-phuc-pilates':
-    'Cách chọn đồng phục Pilates cho studio và HLV: chất liệu, form, màu, các mẫu Yoga – Pilates, quy trình đặt may và giải pháp từ Univi.',
+    'Đồng phục Pilates và áo tập Pilates cho studio, HLV: các mẫu áo, chất liệu, form cho lớp Mat và Reformer, quy trình đặt may theo nhận diện studio tại Univi.',
 
   'dong-phuc-pickleball':
     'Đồng Phục Univi tiên phong cung cấp giải pháp đồng phục Pickleball theo yêu cầu cho câu lạc bộ, học viện, giải đấu và cộng đồng Pickleball tại Việt Nam. Sản phẩm được tối ưu về độ thoáng khí, khả năng vận động và hình ảnh thương hiệu trong thi đấu cũng như tập luyện.',
@@ -148,11 +148,11 @@ export default function
               if (domNode.attribs["data-props"]) {
                 props = JSON.parse(domNode.attribs["data-props"]);
               }
-            } catch (_) {}
+            } catch (_) { }
             if (!props.steps && domNode.attribs["data-steps"]) {
               try {
                 props.steps = JSON.parse(domNode.attribs["data-steps"]);
-              } catch (_) {}
+              } catch (_) { }
             }
             if (!props.title && domNode.attribs["data-title"]) {
               props.title = domNode.attribs["data-title"];
@@ -282,9 +282,9 @@ export default function
   const breadcrumbItems = categorySlug === 'dong-phuc-the-thao'
     ? [{ name: 'Đồng Phục Thể Thao' }]
     : [
-        { name: 'Đồng Phục Thể Thao', href: '/dong-phuc-the-thao' },
-        { name: displayCategory },
-      ];
+      { name: 'Đồng Phục Thể Thao', href: '/dong-phuc-the-thao' },
+      { name: displayCategory },
+    ];
 
   return (
     <DefaultLayout2>
@@ -318,25 +318,25 @@ export default function
           {CollectionComponent && !activeProductLine && !activeCollarType ? (
             <CollectionComponent products={safeProducts} />
           ) : (
-          <ProductGridSection
-            products={displayProducts}
-            loading={isNavigating || router.isFallback}
-            emptyMessage={
-              filteredEmptyLabel
-                ? `Không tìm thấy sản phẩm nào thuộc ${filteredEmptyLabel}.`
-                : `Không tìm thấy sản phẩm nào trong danh mục ${displayCategory}.`
-            }
-            ariaLabel={`Danh sách sản phẩm ${displayCategory}`}
-            filterButton={
-              <button
-                onClick={() => setIsSidebarOpen((o) => !o)}
-                className="flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-300 px-3 py-2 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors lg:hidden"
-              >
-                <SlidersHorizontal className="w-4 h-4" />
-                Lọc sản phẩm
-              </button>
-            }
-          />
+            <ProductGridSection
+              products={displayProducts}
+              loading={isNavigating || router.isFallback}
+              emptyMessage={
+                filteredEmptyLabel
+                  ? `Không tìm thấy sản phẩm nào thuộc ${filteredEmptyLabel}.`
+                  : `Không tìm thấy sản phẩm nào trong danh mục ${displayCategory}.`
+              }
+              ariaLabel={`Danh sách sản phẩm ${displayCategory}`}
+              filterButton={
+                <button
+                  onClick={() => setIsSidebarOpen((o) => !o)}
+                  className="flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-300 px-3 py-2 rounded hover:border-gray-400 hover:bg-gray-50 transition-colors lg:hidden"
+                >
+                  <SlidersHorizontal className="w-4 h-4" />
+                  Lọc sản phẩm
+                </button>
+              }
+            />
           )}
 
           {hasArticle && isArticleVisible && (

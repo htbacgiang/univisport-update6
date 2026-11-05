@@ -2,25 +2,17 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import ContactForm from '../../header/ContactForm';
-import FabricCardComponent from '../FabricCardComponent';
 import ProcessSteps from '../ProcessSteps';
 import BangMauHero from '../bang-mau/BangMauHero';
 
-const heroStats = [
-  'Xưởng 2.000m2 tại Chương Mỹ, Hà Nội',
-  'Công suất 100.000 sản phẩm/tháng',
-  'Tư vấn cấu hình theo từng lớp tập & Reformer',
-  'Thiết kế theo nhận diện thương hiệu studio',
-];
-
 export const pilatesFaqs = [
   [
-    'Đồng phục Pilates khác đồng phục Yoga thế nào?',
+    'Đồng phục, áo tập Pilates khác đồ tập Yoga thế nào?',
     'Hai loại có thể dùng chung một số kiểu, nhưng Pilates đòi hỏi HLV nhìn rõ trục vai, hông, cột sống và đầu gối, và người mặc còn phải tập trên máy. Vì vậy nên ưu tiên form ổn định, che phủ tốt và ít chi tiết gây vướng.'
   ],
   [
-    'Đồng phục Pilates nên ôm hay rộng?',
-    'Ôm vừa đủ. Đủ sát để thấy rõ căn chỉnh, nhưng vẫn co giãn để không gò bó khi cúi, xoay, nằm hay giơ tay.'
+    'Áo tập Pilates nên chọn form ôm hay rộng?',
+    'Ôm vừa đủ. Đủ sát để thấy rõ căn chỉnh, nhưng vẫn co giãn để không gò bó khi cúi, xoay, nằm hay giơ tay. Áo quá rộng dễ tốc lên khi cuộn người hoặc nằm trên máy, và che mất đường vai, lưng mà HLV cần quan sát.'
   ],
   [
     'Chất liệu nào phù hợp đồng phục Pilates?',
@@ -29,6 +21,18 @@ export const pilatesFaqs = [
   [
     'Tập Reformer nên chọn đồng phục thế nào?',
     'Ưu tiên form không xô lệch, che phủ ổn định, không có chi tiết cứng hay dây thừa dễ cấn. HLV nên thử trực tiếp các động tác nằm, trượt, đẩy và đổi tư thế trên máy trước khi chốt.'
+  ],
+  [
+    'Áo tập Pilates nữ cần lưu ý gì về độ che phủ?',
+    'Khi cúi, giơ tay hay nằm trên máy, áo dễ bị kéo lên hoặc lộ ở nách, eo và gấu áo. Nên chọn áo có độ dài và độ ôm giữ được vị trí khi vận động. Nếu chọn croptop, hãy phối với legging cạp cao để phần eo không hở quá nhiều. Cách kiểm tra chắc nhất vẫn là mặc thử và tập vài động tác thật.'
+  ],
+  [
+    'Nên chọn áo tập Pilates ngắn tay hay dài tay?',
+    'Áo ngắn tay và croptop gọn, thoáng, giúp HLV dễ quan sát vai và cánh tay khi thị phạm. Áo dài tay như mẫu PLT03 hợp khi phòng tập lạnh hoặc studio muốn hình ảnh kín đáo, thanh lịch hơn. Studio có thể chọn cả hai trong cùng hệ màu để HLV đổi theo lịch dạy.'
+  ],
+  [
+    'HLV nam nên mặc áo tập Pilates kiểu nào?',
+    'Nguyên tắc giống HLV nữ: áo ôm vừa, co giãn, không quá rộng ở thân để học viên nhìn rõ trục vai và lưng khi thị phạm. Áo thun ôm vừa hoặc polo thể thao là hai hướng có thể cân nhắc. Các mẫu Pilates trên trang hiện chủ yếu là mẫu nữ, vì vậy với HLV nam, studio nên trao đổi trực tiếp để Univi tư vấn kiểu dáng và chất liệu.'
   ],
   [
     'Studio Pilates nên may đồng phục cho những vị trí nào?',
@@ -59,10 +63,10 @@ export const pilatesFaqs = [
 const tocItems = [
   { id: 'tong-quan-ve-dong-phuc-pilates', title: '1. Tổng quan về đồng phục Pilates' },
   { id: 'dong-phuc-pilates-danh-cho-nhung-ai', title: '2. Đồng phục Pilates dành cho những ai?' },
-  { id: 'dong-phuc-pilates-gom-nhung-san-pham-nao', title: '3. Đồng phục Pilates gồm những sản phẩm nào?' },
-  { id: 'tieu-chuan-lua-chon-dong-phuc-pilates', title: '4. Tiêu chuẩn lựa chọn đồng phục Pilates' },
-  { id: 'thiet-ke-dong-phuc-pilates-theo-nhan-dien-thuong-hieu', title: '5. Thiết kế đồng phục Pilates theo nhận diện thương hiệu' },
-  { id: 'cac-mau-dong-phuc-pilates', title: '6. Các mẫu đồng phục Pilates' },
+  { id: 'dong-phuc-pilates-gom-nhung-san-pham-nao', title: '3. Đồng phục Pilates gồm những loại áo, quần nào?' },
+  { id: 'tieu-chuan-lua-chon-dong-phuc-pilates', title: '4. Tiêu chí chọn áo tập Pilates và đồng phục' },
+  { id: 'thiet-ke-dong-phuc-pilates-theo-nhan-dien-thuong-hieu', title: '5. Đồng phục Pilates trong nhận diện thương hiệu studio' },
+  { id: 'cac-mau-dong-phuc-pilates', title: '6. Các mẫu áo tập và đồng phục Pilates' },
   { id: 'bang-mau-dong-phuc-pilates', title: '7. Bảng màu đồng phục Pilates' },
   { id: 'quy-trinh-dat-may-dong-phuc-pilates', title: '8. Quy trình đặt may đồng phục Pilates' },
   { id: 'so-luong-toi-thieu-va-thoi-gian-san-xuat', title: '9. Số lượng tối thiểu và thời gian sản xuất' },
@@ -77,38 +81,42 @@ const pilatesModels = [
   {
     code: 'AG29',
     name: 'Áo Đồng Phục Pilates AG29',
-    desc: 'Áo đồng phục Pilates form ôm nhẹ, chất vải co giãn nhã nhặn',
+    desc: 'Áo tập Pilates nữ dáng ôm gọn, cổ cao, khóa kéo ngắn, tay ngắn',
     colors: 7,
     isNew: true,
-    fit: '7 màu (đỏ thẫm, xanh ngọc, đen, vàng, xanh mint, hồng nhạt, cam). Mẫu mới nổi bật cho studio.',
+    fit: '7 màu (đỏ thẫm, xanh ngọc, đen, vàng, xanh mint, hồng nhạt, cam). Dành cho HLV và nhân sự studio Pilates.',
     href: '/san-pham/ao-dong-phuc-pilates-ag29',
+    alt: 'Áo tập Pilates nữ AG29 tay ngắn, cổ cao khóa kéo - đồng phục Pilates Univi',
     img: 'https://live.staticflickr.com/65535/55564396724_02804ebf61_b.jpg'
   },
   {
     code: 'PL15',
     name: 'Đồng Phục Pilates PL15',
-    desc: 'Polo thể thao cổ khóa kéo 1/4, co giãn 4 chiều, công nghệ UNI DRY',
+    desc: 'Polo thể thao cổ bẻ, khóa kéo 1/4, phối màu hai bên sườn',
     colors: 4,
-    fit: 'Áo polo thể thao cổ khóa kéo 1/4 thoáng khí, co giãn 4 chiều, hợp cho HLV và nhân viên studio.',
+    fit: 'Áo polo đồng phục Pilates dành cho lễ tân, quản lý và HLV studio Pilates.',
     href: '/san-pham/dong-phuc-pilates-pl15',
+    alt: 'Áo polo đồng phục Pilates PL15 cổ bẻ, khóa kéo 1/4 cho lễ tân và HLV',
     img: 'https://live.staticflickr.com/65535/55342975852_735caef9ab_b.jpg'
   },
   {
     code: 'ACT1',
     name: 'Đồng phục Pilates ACT1',
-    desc: 'Áo croptop thể thao hỗ trợ vận động linh hoạt',
+    desc: 'Set áo tập ôm gọn đi cùng legging cạp cao, thiết kế tối giản',
     colors: 5,
-    fit: 'Thiết kế tinh tế, hỗ trợ vận động linh hoạt và quan sát căn chỉnh tư thế khi dạy tập.',
+    fit: 'Thiết kế tối giản, tập trung vào chuyển động; 5 màu dễ chọn theo không gian và nhận diện studio.',
     href: '/san-pham/dong-phuc-yoga-act1',
+    alt: 'Set áo tập Pilates ACT1 ôm gọn và legging cạp cao',
     img: 'https://live.staticflickr.com/65535/54898282848_92c3b05acc_b.jpg'
   },
   {
     code: 'ACT7',
     name: 'Đồng phục Pilates ACT7',
-    desc: 'Áo croptop ôm vừa vặn, nâng đỡ tối ưu',
-    colors: 5,
-    fit: 'Form ôm chuẩn, che phủ tốt, giữ độ ổn định cao khi thực hiện các bài tập Mat & Reformer.',
-    href: '/san-pham/dong-phuc-yoga-act7',
+    desc: 'Crop tee tay ngắn, cổ tròn, ôm gọn, vải gân nhỏ',
+    colors: 7,
+    fit: 'Kín vai hơn bra, dễ phối legging cạp cao cho HLV và học viên.',
+    href: '/san-pham/dong-phuc-pilates-act7',
+    alt: 'Áo crop tee tập Pilates ACT7 tay ngắn, cổ tròn, vải gân',
     img: 'https://live.staticflickr.com/65535/55338905720_f595a69e42_b.jpg'
   },
   {
@@ -118,6 +126,7 @@ const pilatesModels = [
     colors: 6,
     fit: 'Croptop cổ polo không tay thanh lịch, vải gân mềm co giãn tốt, phối với legging hoặc quần ống loe.',
     href: '/san-pham/dong-phuc-pilates-apl1',
+    alt: 'Áo croptop tập Pilates APL1 cổ polo không tay, vải gân',
     img: 'https://live.staticflickr.com/65535/55342001246_8139acfd74_b.jpg'
   },
   {
@@ -125,16 +134,17 @@ const pilatesModels = [
     name: 'Đồng Phục Pilates BDCV',
     desc: 'Set áo croptop tay ngắn cổ vuông + legging cạp cao',
     colors: 4,
-    fit: 'Set áo croptop tay ngắn cổ vuông kết hợp legging cạp cao tôn dáng, ôm ổn định không lo vướng.',
+    fit: 'Vải trơn mịn, ôm gọn. Kín đáo hơn bra, dễ thị phạm cho HLV Pilates.',
     href: '/san-pham/dong-phuc-yoga-bdcv',
+    alt: 'Set đồng phục Pilates BDCV gồm croptop cổ vuông và legging cạp cao',
     img: 'https://live.staticflickr.com/65535/55342367304_67da854335_b.jpg'
   }
 ];
 
 function Section({ id, title, children, className = '' }) {
   return (
-    <article id={id} className={`scroll-mt-24 bg-white py-6 ${className}`}>
-      <h2 className="mb-4 text-xl md:text-2xl font-bold tracking-tight leading-tight text-gray-900 border-b pb-2 border-gray-100">
+    <article id={id} className={`scroll-mt-24 bg-white py-2 md:py-3  ${className}`}>
+      <h2 className="text-xl md:text-2xl font-bold tracking-tight leading-tight text-gray-900 pb-2">
         {title}
       </h2>
       {children}
@@ -194,7 +204,7 @@ function ImageBlock({ src, alt, caption, priority = false, portrait = false }) {
 
   return (
     <figure
-      className={`overflow-hidden rounded-xl border border-gray-100 shadow-sm bg-gray-50 transition-all duration-300 ${portrait || isPortrait ? 'max-w-md md:max-w-lg mx-auto w-full md:w-1/2' : 'w-full'
+      className={`overflow-hidden rounded-xl transition-all duration-300 ${portrait || isPortrait ? 'max-w-md md:max-w-lg mx-auto w-full md:w-1/2' : 'w-full'
         }`}
     >
       <Image
@@ -213,7 +223,7 @@ function ImageBlock({ src, alt, caption, priority = false, portrait = false }) {
         }}
       />
       {caption && (
-        <figcaption className="px-4 py-3 text-center text-sm font-medium italic text-gray-600 bg-gray-50 border-t border-gray-100">
+        <figcaption className="px-4 py-3 text-center text-base font-medium italic">
           {caption}
         </figcaption>
       )}
@@ -228,16 +238,14 @@ export default function PilatesUniviPage() {
   return (
     <div className="text-gray-700 container mx-auto">
       {/* Hero Section */}
-      <section className="bg-white pb-8 border-b border-gray-100">
-        <p className="mb-2 text-xs font-semibold text-[#105d97] uppercase tracking-[0.15em]">
-          Univi Pilates Uniform Solutions
-        </p>
-        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight text-gray-900">
-          Đồng phục Pilates: giải pháp đồng phục chuyên nghiệp cho studio và HLV
-        </h1>
+      <section className="bg-white pb-2">
+        {/* H1 duy nhất của trang nằm ở CategoryPageTemplate; tiêu đề bài dùng H2, giữ nguyên class hiển thị */}
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight leading-tight text-gray-900">
+          Đồng phục Pilates và áo tập Pilates: giải pháp cho studio và HLV
+        </h2>
 
         {/* Sapo */}
-        <div className="mt-5 space-y-3 text-base leading-7 text-gray-700 bg-blue-50/40 p-5 rounded-2xl border border-blue-100/60">
+        <div className="mt-5 space-y-1 text-base leading-7 text-gray-700 bg-blue-50/40 p-5 rounded-2xl border border-blue-100/60">
           <p>
             Ở một Pilates Studio, đồng phục không chỉ là bộ đồ HLV mặc khi đứng lớp. Nhìn vào đồng phục, học viên biết ai là người hướng dẫn. Cũng nhờ nó mà đội ngũ trông đồng bộ, dù đang ở lớp mat, lớp Reformer, quầy lễ tân hay một buổi workshop cuối tuần.
           </p>
@@ -245,7 +253,7 @@ export default function PilatesUniviPage() {
             Nhưng Pilates có những đòi hỏi rất riêng. HLV phải nhìn rõ vai, hông, cột sống và đầu gối của học viên. Người mặc liên tục cúi, xoay, nằm, giơ tay, đổi tư thế. Trên máy, chỉ một chi tiết cứng hay một sợi dây thừa cũng đủ gây khó chịu.
           </p>
           <p>
-            Vì vậy, chọn đồng phục Pilates nên bắt đầu từ chất liệu, độ che phủ, độ co giãn và khả năng giữ form. Màu sắc và kiểu dáng để sau. Bài viết này dành cho chủ studio, HLV trưởng và người phụ trách mua hàng: cách đánh giá sản phẩm, chọn mẫu, chuẩn bị thông tin đặt may và triển khai đồng bộ cho cả đội. Univi làm theo nguyên tắc &quot;gốc vững – diện sang&quot;: giải quyết trải nghiệm mặc và vận động trước, rồi mới hoàn thiện nhận diện thương hiệu.
+            Vì vậy, chọn đồng phục Pilates hay một mẫu áo tập Pilates nên bắt đầu từ chất liệu, độ che phủ, độ co giãn và khả năng giữ form. Màu sắc và kiểu dáng để sau. Bài viết này dành cho chủ studio, chuỗi Pilates, HLV và người phụ trách mua hàng: cách đánh giá áo tập, chọn mẫu cho lớp Mat và Reformer, chuẩn bị thông tin đặt may và triển khai đồng bộ cho cả đội. Univi làm theo nguyên tắc &quot;gốc vững – diện sang&quot;: giải quyết trải nghiệm mặc và vận động trước, rồi mới hoàn thiện nhận diện thương hiệu.
           </p>
         </div>
 
@@ -264,41 +272,13 @@ export default function PilatesUniviPage() {
             Xem mẫu Pilates
           </Link>
         </div>
-
-        <div className="mt-6 flex flex-wrap gap-2">
-          {heroStats.map((stat) => (
-            <span key={stat} className="rounded-lg bg-gray-100 px-3 py-1.5 text-xs font-medium text-gray-700">
-              ✓ {stat}
-            </span>
-          ))}
-        </div>
       </section>
-
-      {/* Mục lục */}
-      <nav className="my-8 rounded-2xl bg-slate-50 p-6 border border-slate-200/80 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-          <span className="w-2 h-5 bg-[#105d97] rounded-full inline-block"></span>
-          Mục lục bài viết
-        </h2>
-        <ul className="grid gap-2 text-sm md:grid-cols-2">
-          {tocItems.map((item) => (
-            <li key={item.id}>
-              <a
-                href={`#${item.id}`}
-                className="text-[#105d97] hover:underline font-medium flex items-center gap-1.5"
-              >
-                <span className="text-gray-400">›</span> {item.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
 
       {/* 1. Tổng quan về đồng phục Pilates */}
       <Section id="tong-quan-ve-dong-phuc-pilates" title="1. Tổng quan về đồng phục Pilates">
         <div className="space-y-4 leading-7">
           <p>
-            Đồng phục Pilates là bộ trang phục được chọn hoặc thiết kế đồng bộ cho HLV, nhân viên, quản lý, và đôi khi cả học viên của studio. Một bộ đồng phục phù hợp giúp đội ngũ trông nhất quán, giúp HLV thị phạm dễ dàng, và không khiến người mặc phải liên tục kéo áo, chỉnh quần khi vận động.
+            Đồng phục Pilates là bộ trang phục được chọn hoặc thiết kế đồng bộ cho HLV, nhân viên, quản lý, và đôi khi cả học viên của studio. Trung tâm của bộ đồng phục thường là áo tập Pilates, đi cùng legging, polo hoặc áo khoác tùy vai trò. Một bộ đồng phục phù hợp giúp đội ngũ trông nhất quán, giúp HLV thị phạm dễ dàng, và không khiến người mặc phải liên tục kéo áo, chỉnh quần khi vận động.
           </p>
           <p>
             Pilates tập trung vào core, căn chỉnh tư thế và kiểm soát chuyển động. Trong giờ dạy, HLV phải quan sát vai, hông, cột sống và đầu gối của học viên. Ở lớp Reformer, người mặc còn nằm, trượt, đẩy và đổi tư thế ngay trên máy. Vì thế, ba điều cần ưu tiên là form ôm vừa đủ, độ che phủ ổn định và càng ít chi tiết gây vướng càng tốt.
@@ -318,7 +298,7 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-08.jpg"
-            alt="HLV mặc đồng phục Pilates thị phạm cạnh máy Reformer"
+            alt="Đội HLV mặc áo tập Pilates tay ngắn cổ khóa kéo màu hồng và legging đen cạnh máy Pilates"
             caption="Đồng phục Pilates phải theo kịp cả lớp mat lẫn lớp máy."
             priority
           />
@@ -330,7 +310,7 @@ export default function PilatesUniviPage() {
         <p className="mb-6 leading-7">
           Mỗi vai trò một kiểu trang phục, nhưng chung một hệ nhận diện.
         </p>
-        <div className="space-y-6">
+        <div className="space-y-3">
           <TextCard title="2.1. Studio Pilates">
             <p>
               Một studio có thể xây hệ đồng phục gồm: trang phục tập cho HLV, polo hoặc áo thun ôm vừa cho lễ tân, và một mẫu lịch sự hơn cho quản lý. Chia theo vai trò như vậy, học viên sẽ nhận ra ngay ai có thể hỗ trợ mình, còn studio thì giữ được hình ảnh boutique nhất quán từ lớp học, khu đón khách đến ảnh đăng mạng xã hội.
@@ -342,7 +322,7 @@ export default function PilatesUniviPage() {
 
           <TextCard title="2.2. HLV Pilates">
             <p>
-              HLV cần trang phục ôm vừa đủ để thị phạm rõ và để học viên nhìn được căn chỉnh, nhưng không được bó gò. Áo phải che tốt ở vai, nách, eo và gấu. Quần phải đứng yên khi cúi, xoay, nằm và đổi tư thế. Nếu studio có Reformer, hãy để HLV mặc thử và tập thật trên máy trước khi chốt mẫu.
+              HLV và giáo viên Pilates cần trang phục ôm vừa đủ để thị phạm rõ và để học viên nhìn được căn chỉnh, nhưng không được bó gò. Áo phải che tốt ở vai, nách, eo và gấu. Quần phải đứng yên khi cúi, xoay, nằm và đổi tư thế. Nếu studio có Reformer, hãy để HLV mặc thử và tập thật trên máy trước khi chốt mẫu.
             </p>
             <p className="mt-2">
               Bài <InlineLink href="/bai-viet/dong-phuc-hlv-pilates-giai-phap-thiet-ke-rieng-cho-studio">đồng phục HLV Pilates</InlineLink> đi sâu hơn vào nhóm này.
@@ -368,21 +348,21 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-03.jpg"
-            alt="Đội ngũ studio Pilates gồm HLV, lễ tân và quản lý mặc đồng phục cùng hệ màu"
+            alt="HLV Pilates mặc áo polo đồng phục màu tím nhạt hướng dẫn học viên trên máy Cadillac và Reformer"
             caption="Mỗi vai trò một kiểu trang phục, nhưng chung một hệ nhận diện."
           />
         </div>
       </Section>
 
       {/* 3. Đồng phục Pilates gồm những sản phẩm nào? */}
-      <Section id="dong-phuc-pilates-gom-nhung-san-pham-nao" title="3. Đồng phục Pilates gồm những sản phẩm nào?">
+      <Section id="dong-phuc-pilates-gom-nhung-san-pham-nao" title="3. Đồng phục Pilates gồm những loại áo, quần nào?">
         <p className="mb-6 leading-7">
-          Một bộ đồng phục Pilates thường gồm áo, quần, áo khoác hoặc set liền.
+          Một bộ đồng phục Pilates thường gồm áo tập Pilates, quần, áo khoác hoặc set liền.
         </p>
         <div className="grid gap-5 md:grid-cols-2">
-          <TextCard title="3.1. Áo">
+          <TextCard title="3.1. Áo tập Pilates">
             <p>
-              Áo cho HLV có thể là sports bra, croptop, tanktop hoặc áo thun ôm vừa. Lễ tân và quản lý thường hợp với polo hơn, vì polo vừa lịch sự vừa dễ nhận diện; có thể cân nhắc vải UNI COOL PIQUÉ hoặc UNI ELITE tùy nhu cầu thực tế. Dù là kiểu áo nào, logo nên đặt ở chỗ không cấn khi nằm hay tì lên máy.
+              Áo tập Pilates cho HLV nữ có thể là croptop, crop tee, áo ôm tay ngắn hoặc áo dài tay. Bộ sưu tập của Univi hiện có croptop cổ polo không tay (APL1), crop tee tay ngắn cổ tròn (ACT7), áo ôm tay ngắn cổ cao khóa kéo (AG29) và áo dài tay ôm gọn (PLT03). Lễ tân và quản lý thường hợp với polo như PL15, vì polo vừa lịch sự vừa dễ nhận diện; có thể cân nhắc vải UNI COOL PIQUÉ hoặc UNI ELITE tùy nhu cầu thực tế. Với HLV nam, áo thun ôm vừa hoặc polo thể thao là hướng nên trao đổi khi tư vấn. Dù là kiểu áo nào, logo nên đặt ở chỗ không cấn khi nằm hay tì lên máy.
             </p>
           </TextCard>
           <TextCard title="3.2. Quần">
@@ -405,16 +385,16 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-04.jpg"
-            alt="Bra, croptop, legging, polo và áo khoác đồng phục Pilates xếp phẳng trên nền sáng"
+            alt="Áo tập Pilates tay ngắn màu đen phối viền trắng và legging khi tập trên máy Reformer"
             caption="Một bộ đồng phục Pilates thường gồm áo, quần, áo khoác hoặc set liền."
           />
         </div>
       </Section>
 
       {/* 4. Tiêu chuẩn lựa chọn đồng phục Pilates */}
-      <Section id="tieu-chuan-lua-chon-dong-phuc-pilates" title="4. Tiêu chuẩn lựa chọn đồng phục Pilates">
+      <Section id="tieu-chuan-lua-chon-dong-phuc-pilates" title="4. Tiêu chí chọn áo tập Pilates và đồng phục">
         <p className="mb-4 leading-7">
-          Năm tiêu chí dưới đây giúp studio đánh giá một mẫu đồng phục trước khi đặt số lượng.
+          Năm tiêu chí dưới đây giúp studio đánh giá một mẫu áo tập Pilates hay cả bộ đồng phục trước khi đặt số lượng.
         </p>
         <SimpleTable
           headers={['Tiêu chí', 'Vì sao quan trọng với Pilates', 'Cần kiểm tra gì', 'Gợi ý từ Univi']}
@@ -448,7 +428,7 @@ export default function PilatesUniviPage() {
 
           <TextCard title="4.4. Form dáng">
             <p>
-              Áo cần ôm để HLV nhìn rõ đường vai, eo và thân người, nhưng phải đủ co giãn để không cản động tác. Tránh chi tiết cứng, dây thừa hay phụ kiện có thể cấn khi nằm trên máy.
+              Áo tập Pilates cần ôm để HLV nhìn rõ đường vai, eo và thân người, nhưng phải đủ co giãn để không cản động tác. Với lớp Mat, xem áo có bị tốc lên khi cuộn người, nằm ngửa hay chống tay không. Với lớp Reformer, ưu tiên áo gọn, không có dây thừa hay chi tiết cứng ở lưng và vai, vì đây là vùng tì lên máy khi nằm, trượt, đẩy; đường may cũng không nên nằm ở chỗ dễ cấn. Xem thêm <InlineLink href="/bai-viet/ao-tap-pilates-cach-chon-form-vai-va-mau-phu-hop">cách chọn áo tập Pilates theo form, vải và màu</InlineLink>.
             </p>
           </TextCard>
 
@@ -462,26 +442,80 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-05.jpg"
-            alt="Cận cảnh bề mặt vải UNI SUPERCOOL và đường may co giãn trên đồng phục Pilates"
+            alt="Áo tập Pilates nữ dài tay màu tím nhạt khi tập trên ghế Pilates"
             caption="Chất liệu và đường may quyết định cảm giác mặc nhiều hơn kiểu dáng."
           />
         </div>
       </Section>
 
       {/* 5. Thiết kế đồng phục Pilates theo nhận diện thương hiệu */}
-      <Section id="thiet-ke-dong-phuc-pilates-theo-nhan-dien-thuong-hieu" title="5. Thiết kế đồng phục Pilates theo nhận diện thương hiệu">
-        <div className="space-y-4 leading-7">
+      <Section id="thiet-ke-dong-phuc-pilates-theo-nhan-dien-thuong-hieu" title="5. Đồng phục Pilates trong nhận diện thương hiệu studio">
+        <div className="space-y-2 leading-7">
           <p>
-            Logo và màu được đặt sau khi đã chốt chất liệu và form.
+            Một studio Pilates không chỉ được nhận diện qua biển hiệu, không gian tập hay hệ thống máy Reformer. HLV, lễ tân và quản lý là những người học viên gặp mỗi buổi, nên đồng phục của họ là một điểm chạm thương hiệu lặp lại hằng ngày: trong lớp học, ở quầy đón khách, trên ảnh và video của studio.
           </p>
           <p>
-            Thiết kế nên đi theo thứ tự: ai mặc → mặc ở đâu → vận động thế nào → chất liệu và form → vị trí logo → màu và hoàn thiện.
+            Khi mỗi HLV mặc một kiểu, đội ngũ trông thiếu đồng nhất dù không gian đã được đầu tư chỉn chu. Ngược lại, đồng phục quá giống áo công sở thì mất tính chuyên môn, còn quá giống đồ tập đại trà thì mất dấu ấn riêng. Đồng phục Pilates cần nằm ở khoảng giữa: mặc được khi thị phạm, và đúng hình ảnh của studio.
           </p>
+          <p className="font-semibold text-gray-900">
+            Năm giá trị thương hiệu của một hệ thống đồng phục:
+          </p>
+          <div className="grid gap-5 md:grid-cols-2">
+            <TextCard title="5.1. Thể hiện đúng định vị">
+              <p>
+                Màu, kiểu dáng, chất liệu và vị trí logo cho thấy studio theo hướng cao cấp, tối giản hay trẻ trung, năng động. Hai studio khác phong cách sẽ có hai cách chọn đồng phục khác nhau.
+              </p>
+            </TextCard>
+            <TextCard title="5.2. Chuyên nghiệp, đáng tin cậy">
+              <p>
+                Đội ngũ mặc thống nhất trông chỉn chu hơn khi đón tiếp, hướng dẫn và chăm sóc học viên.
+              </p>
+            </TextCard>
+            <TextCard title="5.3. Khớp hình ảnh online và offline">
+              <p>
+                Đồng phục xuất hiện trong lớp học, ảnh chụp, video giới thiệu và mạng xã hội. Giữ cùng màu, logo và kiểu dáng thì hình ảnh studio trên các kênh khớp với những gì học viên thấy khi đến tập.
+              </p>
+            </TextCard>
+            <TextCard title="5.4. Dễ ghi nhớ">
+              <p>
+                Màu và dấu hiệu nhận diện rõ ràng giúp học viên dễ liên hệ hình ảnh đội ngũ với studio mình đang theo học.
+              </p>
+            </TextCard>
+            <TextCard title="5.5. Gắn kết đội ngũ">
+              <p>
+                Trang phục thống nhất tạo cảm giác cùng thuộc về một tập thể, cùng đại diện cho một thương hiệu.
+              </p>
+            </TextCard>
+          </div>
+          <p className="font-semibold text-gray-900">
+            Thiết kế bắt đầu từ định vị studio, không phải từ một mẫu áo:
+          </p>
+          <ul className="list-disc pl-5 space-y-1 text-gray-700">
+            <li>Studio theo phong cách nào: cao cấp, tối giản, hiện đại hay năng động?</li>
+            <li>Màu nhận diện chủ đạo là gì, đã có file logo gốc chưa?</li>
+            <li>Đội ngũ gồm những vị trí nào: HLV, lễ tân, quản lý, học viên?</li>
+            <li>HLV đứng lớp và thị phạm bao nhiêu giờ mỗi ngày, studio có lớp Reformer không?</li>
+            <li>Có kế hoạch tuyển thêm HLV hoặc mở thêm cơ sở không?</li>
+          </ul>
           <p>
-            Với HLV, studio có thể dùng màu chủ đạo hoặc màu trung tính. Với lễ tân và quản lý, có thể phân vai bằng polo, áo thun hoặc cách phối màu. Học viên và nhóm workshop nên có ít nhất một điểm chung về màu, logo hoặc đường nét để người ngoài vẫn nhận ra cùng một thương hiệu.
+            Từ đó, thiết kế đi theo thứ tự: ai mặc → mặc ở đâu → vận động thế nào → chất liệu và form → vị trí logo → màu và hoàn thiện. Logo và màu được đặt sau khi đã chốt chất liệu và form.
+          </p>
+          <p className="font-semibold text-gray-900">
+            Một hệ đồng phục Pilates thường gồm ba nhóm:
+          </p>
+          <ul className="list-disc pl-5 space-y-1 text-gray-700">
+            <li><strong>HLV:</strong> legging, bra, T-shirt ôm vừa hoặc polo, dùng màu chủ đạo hoặc màu trung tính của studio.</li>
+            <li><strong>Lễ tân và quản lý:</strong> polo, áo thun hoặc cách phối màu thanh lịch hơn để phân vai.</li>
+            <li><strong>Workshop, retreat và sự kiện:</strong> áo cho học viên và hoạt động cộng đồng, thiết kế đơn giản hơn nhưng có ít nhất một điểm chung về màu, logo hoặc đường nét.</li>
+          </ul>
+          <p>
+            Ba nhóm có thể khác kiểu dáng, nhưng nên chung màu, logo và ngôn ngữ thiết kế để người ngoài vẫn nhận ra cùng một thương hiệu.
           </p>
           <p>
             Trên đồ ôm sát, logo cần được tính kỹ về kích thước, vị trí và kỹ thuật in hay thêu. Kỹ thuật cụ thể sẽ được tư vấn theo từng mẫu và từng nền vải. Mockup nên được duyệt cùng mẫu vải thật, vì màu trên màn hình có thể khác màu vải.
+          </p>
+          <p>
+            Ở Univi, mỗi phương án được may mẫu thật để HLV mặc thử và vận động, kể cả trên Reformer nếu studio có, rồi điều chỉnh và duyệt mẫu chuẩn trước khi sản xuất. Với đồng phục ôm sát, mặc thật có ổn không quan trọng hơn nhìn mockup có đẹp không. Dự án <InlineLink href="/bai-viet/univi-x-home-pilates-giai-phap-dong-phuc-pilates-cao-cap">đồng phục cho Home Pilates</InlineLink> là một ví dụ thực tế về cách làm này.
           </p>
           <p>
             Studio có nhiều cơ sở nên lập một bộ tiêu chuẩn gồm: mã màu thương hiệu, phiên bản logo, mẫu chuẩn, bảng size, vị trí logo và quy cách may. Khi tuyển thêm HLV, chỉ cần đối chiếu bộ tiêu chuẩn này là đặt thêm được đồng bộ.
@@ -491,16 +525,16 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-08.jpg"
-            alt="Mockup logo studio trên set đồng phục Pilates ôm vừa, đặt cạnh bảng nhận diện thương hiệu"
+            alt="Đội HLV studio Pilates mặc đồng phục cùng màu, cùng kiểu áo để giữ nhận diện thương hiệu"
             caption="Logo và màu được đặt sau khi đã chốt chất liệu và form."
           />
         </div>
       </Section>
 
       {/* 6. Các mẫu đồng phục Pilates */}
-      <Section id="cac-mau-dong-phuc-pilates" title="6. Các mẫu đồng phục Pilates">
+      <Section id="cac-mau-dong-phuc-pilates" title="6. Các mẫu áo tập và đồng phục Pilates">
         <p className="mb-4 leading-7">
-          Các mẫu dưới đây thuộc bộ sưu tập Yoga – Pilates của Univi, phù hợp sử dụng cho Pilates tùy theo thiết kế và form dáng. Studio nên cho HLV mặc thử, nhất là khi có lớp Reformer.
+          Các mẫu áo tập Pilates và set đồng phục dưới đây thuộc bộ sưu tập Yoga – Pilates của Univi, dùng cho HLV, nhân sự và học viên tùy theo thiết kế và form dáng. Danh sách đầy đủ, gồm cả PLT02 và PLT03, nằm ở phần sản phẩm đầu trang. Studio nên cho HLV mặc thử, nhất là khi có lớp Reformer.
         </p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 my-6">
@@ -509,7 +543,7 @@ export default function PilatesUniviPage() {
               <div className="relative aspect-[3/4] bg-gray-100">
                 <Image
                   src={item.img}
-                  alt={item.name}
+                  alt={item.alt || item.name}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 300px"
@@ -530,8 +564,7 @@ export default function PilatesUniviPage() {
                   </p>
                 </div>
                 <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs">
-                  <span className="text-gray-500 font-medium">{item.colors} màu</span>
-                  <InlineLink href={item.href}>Xem chi tiết →</InlineLink>
+                  <InlineLink href={item.href}>Xem chi tiết </InlineLink>
                 </div>
               </div>
             </div>
@@ -541,7 +574,7 @@ export default function PilatesUniviPage() {
 
       {/* 7. Bảng màu đồng phục Pilates */}
       <Section id="bang-mau-dong-phuc-pilates" title="7. Bảng màu đồng phục Pilates">
-        <div className="space-y-4 leading-7">
+        <div className="space-y-2 leading-7">
           <p className="font-semibold text-gray-900">
             Studio có thể bắt đầu từ một trong ba hướng màu:
           </p>
@@ -586,14 +619,14 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/tu-van-univi.jpg"
-            alt="Đội ngũ tư vấn chuyên nghiệp của Univi"
+            alt="Tư vấn viên Univi trao đổi mẫu vải và bảng màu với khách hàng đặt may đồng phục"
           />
         </div>
       </Section>
 
       {/* 9. Số lượng tối thiểu và thời gian sản xuất */}
       <Section id="so-luong-toi-thieu-va-thoi-gian-san-xuat" title="9. Số lượng tối thiểu và thời gian sản xuất">
-        <div className="space-y-4 leading-7">
+        <div className="space-y-2 leading-7">
           <p>
             Số lượng và lịch sản xuất được tư vấn theo từng mẫu cụ thể.
           </p>
@@ -611,19 +644,19 @@ export default function PilatesUniviPage() {
         <div className="mt-6">
           <ImageBlock
             src="/pilates/dong-phuc-pilates-14.jpg"
-            alt="Nhân sự studio kiểm mẫu đồng phục Pilates cùng bảng size và mẫu chuẩn"
+            alt="HLV mặc áo polo đồng phục Pilates màu đỏ tập trên máy Reformer"
           />
         </div>
       </Section>
 
       {/* 10. Báo giá đồng phục Pilates */}
       <Section id="bao-gia-dong-phuc-pilates" title="10. Báo giá đồng phục Pilates">
-        <div className="space-y-4 leading-7">
+        <div className="space-y-2 leading-7">
           <p>
             Báo giá có căn cứ khi brief đủ thông tin về sản phẩm, chất liệu và số lượng.
           </p>
           <p>
-            Giá đồng phục Pilates phụ thuộc vào nhiều yếu tố: món sản phẩm, chất liệu, số lượng, kiểu dáng, mức độ tùy biến, cách xử lý logo và bảng size. Vì vậy, thay vì hỏi giá cho một &quot;bộ đồ&quot; chung chung, studio nên gửi brief đủ thông tin để nhận báo giá sát thực tế.
+            Giá đồng phục Pilates và áo tập Pilates phụ thuộc vào nhiều yếu tố: món sản phẩm, chất liệu, số lượng, kiểu dáng, mức độ tùy biến, kỹ thuật in hoặc thêu logo, yêu cầu thiết kế theo nhận diện và bảng size. Vì vậy, thay vì hỏi giá cho một &quot;bộ đồ&quot; chung chung, studio nên gửi brief đủ thông tin để nhận báo giá sát thực tế.
           </p>
           <p className="font-semibold text-gray-900">
             Khi so sánh các báo giá, hãy nhìn vào chi phí sử dụng:
@@ -851,7 +884,7 @@ export default function PilatesUniviPage() {
 
       {/* 11. Kinh nghiệm đặt đồng phục Pilates cho studio */}
       <Section id="kinh-nghiem-dat-dong-phuc-pilates-cho-studio" title="11. Kinh nghiệm đặt đồng phục Pilates cho studio">
-        <div className="space-y-4 leading-7">
+        <div className="space-y-2 leading-7">
           <p>
             Chuẩn bị kỹ trước khi đặt giúp tránh phải làm lại.
           </p>
@@ -866,10 +899,15 @@ export default function PilatesUniviPage() {
         </div>
 
       </Section>
-
+      <div className="mt-6">
+        <ImageBlock
+          src="/pilates/dong-phuc-pilates-17.jpg"
+          alt="Học viên mặc set bra và legging màu hồng tập Pilates, HLV hỗ trợ căn chỉnh tư thế"
+        />
+      </div>
       {/* 12. Câu hỏi thường gặp */}
       <Section id="cau-hoi-thuong-gap" title="12. Câu hỏi thường gặp">
-        <div className="space-y-3">
+        <div className="space-y-2">
           {pilatesFaqs.map(([q, a], idx) => {
             const isOpen = openFaq === idx;
             return (
@@ -895,7 +933,7 @@ export default function PilatesUniviPage() {
 
       {/* 13. Giải pháp đồng phục Pilates của Univi */}
       <Section id="giai-phap-dong-phuc-pilates-cua-univi" title="13. Giải pháp đồng phục Pilates của Univi">
-        <div className="space-y-4 leading-7">
+        <div className="space-y-2 leading-7">
           <p>
             Từ chất liệu, may mẫu đến kiểm tra chất lượng, Univi làm trực tiếp tại xưởng.
           </p>
@@ -914,20 +952,25 @@ export default function PilatesUniviPage() {
           </p>
         </div>
 
-        <div className="mt-6">
-          <ImageBlock
-            src="/pilates/dong-phuc-pilates-17.jpg"
-            alt="Xưởng may và khâu kiểm tra chất lượng đồng phục Pilates tại Univi"
-            caption="Từ chất liệu, may mẫu đến kiểm tra chất lượng, Univi làm trực tiếp tại xưởng."
+        <div className="mt-6 w-full overflow-hidden rounded-lg border border-gray-200">
+          <iframe
+            className="aspect-video w-full"
+            src="https://www.youtube.com/embed/0AABoh2a-Sk"
+            title="Năng lực sản xuất đồng phục thể thao Univi"
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
           />
         </div>
+
+
       </Section>
 
       {/* 14. Kết luận & CTA */}
       <Section id="ket-luan" title="14. Kết luận">
         <div className="space-y-4 leading-7">
           <p>
-            Một bộ đồng phục Pilates phù hợp bắt đầu từ trải nghiệm vận động: mềm, đủ che phủ, co giãn, hồi form và không vướng khi HLV thị phạm hay tập trên máy. Có được nền đó rồi, studio mới hoàn thiện màu, logo, phân vai và quy trình đặt lại. Khi những tiêu chí này được chuẩn hóa, đồng phục trở thành một phần của vận hành và nhận diện thương hiệu, chứ không chỉ là bộ đồ mặc theo mùa.
+            Một bộ đồng phục Pilates hay một mẫu áo tập Pilates phù hợp bắt đầu từ trải nghiệm vận động: mềm, đủ che phủ, co giãn, hồi form và không vướng khi HLV thị phạm hay tập trên máy. Có được nền đó rồi, studio mới hoàn thiện màu, logo, phân vai và quy trình đặt lại. Khi những tiêu chí này được chuẩn hóa, đồng phục trở thành một phần của vận hành và nhận diện thương hiệu, chứ không chỉ là bộ đồ mặc theo mùa.
           </p>
 
           <div className="mt-6 rounded-2xl bg-[#105d97] p-6 text-white shadow-lg">
@@ -942,17 +985,6 @@ export default function PilatesUniviPage() {
               <li>Số cơ sở hiện tại và kế hoạch đặt thêm.</li>
               <li>Mẫu tham khảo, hoặc yêu cầu về form, độ che phủ và vị trí logo.</li>
             </ul>
-            <p className="text-sm text-blue-100 mb-6">
-              Từ đó, Univi tư vấn chất liệu, lên mockup, gửi mẫu vải và báo giá theo đúng cấu hình.{' '}
-              <button
-                type="button"
-                onClick={() => setIsQuoteFormOpen(true)}
-                className="text-white underline font-semibold cursor-pointer"
-              >
-                Liên hệ Univi
-              </button>{' '}
-              để trao đổi nhu cầu, hoặc xem trước <InlineLink href="/bang-mau"><span className="text-white underline">bảng màu</span></InlineLink>. Univi phục vụ và giao hàng toàn quốc.
-            </p>
 
             <button
               type="button"
@@ -963,7 +995,7 @@ export default function PilatesUniviPage() {
             </button>
           </div>
 
-          <div className="mt-8 border-t border-gray-200 pt-6 text-xs text-gray-600 space-y-1.5">
+          <div className="mt-8 border-t border-gray-200 pt-6 text-base text-gray-600 space-y-1.5">
             <p className="font-bold text-gray-900 text-sm">UNIVI SPORTS UNIFORM - YOUR UNIFORM, YOUR BRAND!</p>
             <p><strong>Văn phòng giao dịch:</strong> Nhà D14, ngõ 180 đường Thanh Bình, phường Hà Đông, thành phố Hà Nội</p>
             <p><strong>Xưởng sản xuất:</strong> phường Chương Mỹ, Hà Nội</p>

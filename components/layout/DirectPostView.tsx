@@ -105,6 +105,20 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
 
   const parseOptions = {
     replace(domNode: any) {
+      if (domNode.type === "tag" && domNode.name === "p") {
+        const isInsideTable = domNode.parent?.name === "td" || domNode.parent?.name === "th";
+        if (!isInsideTable) {
+          const isEmpty =
+            (!domNode.children || domNode.children.length === 0) ||
+            (domNode.children.length === 1 && domNode.children[0].type === "tag" && domNode.children[0].name === "br") ||
+            (domNode.children.every((c: any) => c.type === "text" && !c.data?.trim()));
+
+          if (isEmpty) {
+            return <p className="min-h-[1.5em] mb-5">&nbsp;</p>;
+          }
+        }
+      }
+
       if (domNode.type === "tag" && domNode.name === "a") {
         normalizeInternalLinkAttributes(domNode.attribs);
       }
@@ -242,7 +256,11 @@ const DirectPostView: React.FC<Props> = ({ post, randomFeedbacks = [] }) => {
                   .blog :global(table) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; width: max-content !important; margin: 1.5em auto !important; border-collapse: collapse; border: 1px solid #d1d5db; }
                   .blog :global(td), .blog :global(th) { padding: 0.5em 0.5em; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
                   .blog :global(th) { background-color: #f3f4f6; font-weight: 600; }
-                  .blog :global(td p), .blog :global(th p) { text-align: left !important; margin: 0; }
+                  .blog :global(p) { margin-top: 0 !important; margin-bottom: 1.25rem !important; line-height: 1.8 !important; }
+                  .blog :global(p:empty) { min-height: 1.5em !important; margin-bottom: 1.25rem !important; }
+                  .blog :global(p:empty::before) { content: "\\00a0"; display: inline-block; }
+                  .blog :global(li p) { margin-top: 0 !important; margin-bottom: 0.25rem !important; }
+                  .blog :global(td p), .blog :global(th p) { text-align: left !important; margin: 0 !important; }
                   .blog :global(h1), .blog :global(h2), .blog :global(h3), .blog :global(h4), .blog :global(h5), .blog :global(h6) { scroll-margin-top: 100px; }
                 `}</style>
                 {parse(processedContent, parseOptions)}

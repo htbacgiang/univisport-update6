@@ -4,13 +4,26 @@ import { getProductsByCategory, getSidebarNavCounts } from '../../lib/getProduct
 import { getCategoryArticleSetting } from '../../lib/categoryArticleSettings';
 
 const SLUG = 'dong-phuc-pilates';
-const META_TITLE = 'Đồng phục Pilates cho studio & HLV | Đồng phục Univi';
+const META_TITLE = 'Đồng Phục Pilates & Áo Tập Pilates Cho Studio | Univi';
 const META_DESCRIPTION =
-  'Cách chọn đồng phục Pilates cho studio và HLV: chất liệu, form, màu, các mẫu Pilates, quy trình đặt may và giải pháp từ Univi.';
+  'Đồng phục Pilates, áo tập Pilates cho studio và HLV: mẫu áo, chất liệu, form cho Mat và Reformer, thiết kế và sản xuất theo nhận diện thương hiệu tại Univi.';
 const META_KEYWORDS =
-  'đồng phục Pilates, đồng phục Pilates Studio, đồng phục HLV Pilates, đồng phục giáo viên Pilates, đồng phục Pilates Reformer, may đồng phục Pilates, vải Super Cool, công nghệ UNI DRY, giải pháp 2S Uniform, jumpsuit Pilates';
-const OG_IMAGE = 'https://dongphucunivi.com/thumbnail/dong-phuc-pilates.jpg';
-const OG_IMAGE_ALT = 'Đồng phục Pilates chuyên nghiệp cho studio và HLV - Đồng phục Univi';
+  'đồng phục Pilates, áo tập Pilates, áo đồng phục Pilates, áo tập Pilates nữ, áo Pilates Reformer, đồng phục Pilates Studio, đồng phục HLV Pilates, đồng phục giáo viên Pilates, đồng phục Pilates Reformer, may đồng phục Pilates, vải Super Cool, công nghệ UNI DRY, giải pháp 2S Uniform';
+const PAGE_HEADING = 'Đồng phục Pilates và áo tập Pilates: giải pháp cho studio và HLV';
+const OG_IMAGE = 'https://dongphucunivi.com/thumbnail/dong-phuc-pilates.png';
+const OG_IMAGE_ALT = 'Đồng phục Pilates và áo tập Pilates cho studio, HLV - Đồng Phục Univi';
+
+// Dự phòng khi không lấy được sản phẩm từ DB: đúng 8 mẫu đang hiển thị trên trang.
+const FALLBACK_PRODUCTS = [
+  { slug: 'ao-dong-phuc-pilates-ag29', name: 'Đồng Phục Pilates AG29' },
+  { slug: 'dong-phuc-pilates-plt03', name: 'Đồng phục Pilates PLT03' },
+  { slug: 'dong-phuc-pilates-plt02', name: 'Đồng phục Pilates PLT02' },
+  { slug: 'dong-phuc-pilates-pl15', name: 'Đồng Phục Pilates PL15' },
+  { slug: 'dong-phuc-yoga-act1', name: 'Đồng phục Pilates ACT1' },
+  { slug: 'dong-phuc-pilates-act7', name: 'Đồng phục Pilates ACT7' },
+  { slug: 'dong-phuc-pilates-apl1', name: 'Đồng Phục Pilates APL1' },
+  { slug: 'dong-phuc-yoga-bdcv', name: 'Đồng Phục Pilates BDCV' },
+];
 
 function buildFaqSchema() {
   return {
@@ -33,7 +46,12 @@ function buildArticleSchema() {
     '@context': 'https://schema.org',
     '@type': 'Article',
     '@id': `https://dongphucunivi.com/${SLUG}#article`,
-    'headline': 'Đồng phục Pilates: giải pháp đồng phục chuyên nghiệp cho studio và HLV',
+    'headline': PAGE_HEADING,
+    'image': OG_IMAGE,
+    'about': [
+      { '@type': 'Thing', 'name': 'Đồng phục Pilates' },
+      { '@type': 'Thing', 'name': 'Áo tập Pilates' },
+    ],
     'description': META_DESCRIPTION,
     'mainEntityOfPage': {
       '@type': 'WebPage',
@@ -59,6 +77,7 @@ function buildArticleSchema() {
 
 function buildMeta(products = []) {
   const canonical = `https://dongphucunivi.com/${SLUG}`;
+  const listProducts = products.length > 0 ? products : FALLBACK_PRODUCTS;
   return {
     title: META_TITLE,
     description: META_DESCRIPTION,
@@ -71,8 +90,8 @@ function buildMeta(products = []) {
       description: META_DESCRIPTION,
       type: 'website',
       image: OG_IMAGE,
-      imageWidth: '1200',
-      imageHeight: '630',
+      imageWidth: '1672',
+      imageHeight: '941',
       imageAlt: OG_IMAGE_ALT,
       url: canonical,
       site_name: 'Đồng Phục Univi',
@@ -100,7 +119,7 @@ function buildMeta(products = []) {
         '@context': 'https://schema.org',
         '@type': 'Service',
         '@id': `${canonical}#service`,
-        'name': 'May đồng phục Pilates thiết kế theo yêu cầu cho Studio & HLV',
+        'name': 'Thiết kế và may đồng phục Pilates, áo tập Pilates theo yêu cầu cho studio và HLV',
         'description': META_DESCRIPTION,
         'provider': { '@id': 'https://dongphucunivi.com/#organization' },
         'serviceType': 'May đồng phục thể thao theo yêu cầu',
@@ -114,43 +133,24 @@ function buildMeta(products = []) {
         '@id': `${canonical}#breadcrumb`,
         'itemListElement': [
           { '@type': 'ListItem', 'position': 1, 'name': 'Trang chủ', 'item': 'https://dongphucunivi.com/' },
-          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Pilates', 'item': canonical },
+          { '@type': 'ListItem', 'position': 2, 'name': 'Đồng Phục Thể Thao', 'item': 'https://dongphucunivi.com/dong-phuc-the-thao' },
+          { '@type': 'ListItem', 'position': 3, 'name': 'Đồng Phục Pilates', 'item': canonical },
         ],
       },
-      ...(products.length > 0
-        ? [
-          {
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            '@id': `${canonical}#itemlist`,
-            'name': 'Bộ sưu tập Yoga – Pilates của Univi',
-            'url': canonical,
-            'numberOfItems': products.length,
-            'itemListElement': products.slice(0, 20).map((p, i) => ({
-              '@type': 'ListItem',
-              'position': i + 1,
-              'url': `https://dongphucunivi.com/san-pham/${p.slug}`,
-              'name': p.name,
-            })),
-          },
-        ]
-        : [
-          {
-            '@context': 'https://schema.org',
-            '@type': 'ItemList',
-            '@id': `${canonical}#itemlist`,
-            'name': 'Bộ sưu tập Yoga – Pilates của Univi',
-            'url': canonical,
-            'itemListElement': [
-              { '@type': 'ListItem', 'position': 1, 'name': 'AG29', 'url': 'https://dongphucunivi.com/san-pham/ao-dong-phuc-pilates-ag29' },
-              { '@type': 'ListItem', 'position': 2, 'name': 'PL15', 'url': 'https://dongphucunivi.com/san-pham/dong-phuc-pilates-pl15' },
-              { '@type': 'ListItem', 'position': 3, 'name': 'ACT1', 'url': 'https://dongphucunivi.com/san-pham/dong-phuc-yoga-act1' },
-              { '@type': 'ListItem', 'position': 4, 'name': 'ACT7', 'url': 'https://dongphucunivi.com/san-pham/dong-phuc-yoga-act7' },
-              { '@type': 'ListItem', 'position': 5, 'name': 'APL1', 'url': 'https://dongphucunivi.com/san-pham/dong-phuc-pilates-apl1' },
-              { '@type': 'ListItem', 'position': 6, 'name': 'BDCV', 'url': 'https://dongphucunivi.com/san-pham/dong-phuc-yoga-bdcv' },
-            ],
-          },
-        ]),
+      {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        '@id': `${canonical}#itemlist`,
+        'name': 'Mẫu đồng phục Pilates và áo tập Pilates của Univi',
+        'url': canonical,
+        'numberOfItems': Math.min(listProducts.length, 20),
+        'itemListElement': listProducts.slice(0, 20).map((p, i) => ({
+          '@type': 'ListItem',
+          'position': i + 1,
+          'url': `https://dongphucunivi.com/san-pham/${p.slug}`,
+          'name': p.name,
+        })),
+      },
       buildArticleSchema(),
       buildFaqSchema(),
     ],
