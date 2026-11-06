@@ -297,13 +297,11 @@ const ToolBar: FC<Props> = ({
     const doc = editor.state.doc;
     const lastNode = doc.lastChild;
 
-    // Nếu khối cuối cùng là paragraph rỗng thì thay thế trực tiếp, tránh tạo khoảng cách/dòng trống thừa ở trên
+    // Đảm bảo CTA luôn cách phần nội dung phía trên đúng 1 dòng trắng
     if (lastNode && lastNode.isTextblock && lastNode.textContent.trim() === "") {
-      const from = Math.max(0, doc.content.size - lastNode.nodeSize);
-      const to = doc.content.size;
-      editor.chain().focus().deleteRange({ from, to }).insertContent(ctaHtml).run();
-    } else {
       editor.chain().focus("end").insertContent(ctaHtml).run();
+    } else {
+      editor.chain().focus("end").insertContent(`<p><br /></p>` + ctaHtml).run();
     }
 
     toast.success("Đã chèn đoạn CTA thông tin liên hệ vào cuối bài viết!");

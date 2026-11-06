@@ -1667,30 +1667,12 @@ blog h2 strong {
 
 .blog p {
   font-size: 18px !important;
-  line-height: 1.8 !important;
   margin-top: 0px !important;
-  margin-bottom: 1.25rem !important;
+  margin-bottom: 0px !important;
 }
 
-.blog p:empty {
-  min-height: 1.5em !important;
-  margin-bottom: 1.25rem !important;
-}
-
-.blog p:empty::before {
-  content: "\00a0";
-  display: inline-block;
-}
-
-.blog li p {
-  margin-top: 0px !important;
-  margin-bottom: 0.25rem !important;
-}
-
-.blog td p,
-.blog th p,
-.blog table p {
-  margin: 0px !important;
+.blog p.cta-contact-info {
+  margin-top: 1.75rem !important;
 }
 
 .blog li {

@@ -1,6 +1,6 @@
 import { GetServerSideProps, NextPage } from "next";
 import { useEffect, useMemo, useRef, useState } from "react";
-import parse from "html-react-parser";
+import parse, { domToReact } from "html-react-parser";
 import DefaultLayout from "../../components/layout/DefaultLayout";
 import db from "../../utils/db";
 import Post from "../../models/Post";
@@ -195,16 +195,16 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
   const parseOptions = {
     replace(domNode: any) {
       if (domNode.type === "tag" && domNode.name === "p") {
-        const isInsideTable = domNode.parent?.name === "td" || domNode.parent?.name === "th";
-        if (!isInsideTable) {
-          const isEmpty =
-            (!domNode.children || domNode.children.length === 0) ||
-            (domNode.children.length === 1 && domNode.children[0].type === "tag" && domNode.children[0].name === "br") ||
-            (domNode.children.every((c: any) => c.type === "text" && !c.data?.trim()));
-
-          if (isEmpty) {
-            return <p className="min-h-[1.5em] mb-5">&nbsp;</p>;
-          }
+        const text =
+          domNode.children
+            ?.map((c: any) => c.data || (c.children?.map((sub: any) => sub.data || "").join("")) || "")
+            .join("") || "";
+        if (text.includes("UNIVI SPORTS UNIFORM")) {
+          return (
+            <p className="cta-contact-info" style={{ marginTop: "1.75rem" }}>
+              {domToReact(domNode.children, parseOptions)}
+            </p>
+          );
         }
       }
 
@@ -388,11 +388,8 @@ const SinglePost: NextPage<Props> = ({ post, meta }) => {
                     .blog :global(table) { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; max-width: 100%; width: max-content !important; margin: 1.5em auto !important; border-collapse: collapse; border: 1px solid #d1d5db; }
                     .blog :global(td), .blog :global(th) { padding: 0.5em 0.5em; border: 1px solid #d1d5db; text-align: left; vertical-align: top; }
                     .blog :global(th) { background-color: #f3f4f6; font-weight: 600; color: #111827; }
-                    .blog :global(p) { margin-top: 0 !important; margin-bottom: 1.25rem !important; line-height: 1.8 !important; }
-                    .blog :global(p:empty) { min-height: 1.5em !important; margin-bottom: 1.25rem !important; }
-                    .blog :global(p:empty::before) { content: "\\00a0"; display: inline-block; }
-                    .blog :global(li p) { margin-top: 0 !important; margin-bottom: 0.25rem !important; }
-                    .blog :global(td p), .blog :global(th p) { text-align: left !important; margin: 0 !important; }
+                    .blog :global(p.cta-contact-info) { margin-top: 1.75rem !important; }
+                    .blog :global(td p), .blog :global(th p) { text-align: left !important; margin: 0; }
                     .blog :global(h1), .blog :global(h2), .blog :global(h3), .blog :global(h4), .blog :global(h5), .blog :global(h6) { scroll-margin-top: 100px; }
                     .blog :global(.cloudinary-video-embed[data-aspect-ratio="vertical"]) { width: 100% !important; max-width: 420px !important; margin-left: auto !important; margin-right: auto !important; }
                     .blog :global(.cloudinary-video-embed[data-aspect-ratio="square"]) { width: 100% !important; max-width: 640px !important; margin-left: auto !important; margin-right: auto !important; }
